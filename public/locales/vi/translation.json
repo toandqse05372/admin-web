@@ -1,0 +1,23 @@
+{
+    "UserName": {
+        "1": "Tên người dùng"
+    },
+    "Password": {
+        "1": "Mật khẩu"
+    },
+    "UserNameRegister": {
+        "1": "Đăng kí tên đăng nhập"
+    },
+    "PasswordRegister": {
+        "1": "Đăng kí mật khẩu"
+    },
+    "EmailRegister": {
+        "1": "Đăng kí Mail"
+    },
+    "Login": {
+        "1": "Đăng nhập"
+    },
+    "Register": {
+        "1": "Đăng kí"
+    }
+}

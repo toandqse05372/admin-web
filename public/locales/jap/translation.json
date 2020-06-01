@@ -1,0 +1,23 @@
+{
+    "UserName": {
+        "1": "ユーザー名"
+    },
+    "Password": {
+        "1": "パスワード"
+    },
+    "UserNameRegister": {
+        "1": "パスワードを登録"
+    },
+    "PasswordRegister": {
+        "1": "パスワードを登録"
+    },
+    "EmailRegister": {
+        "1": "メールを登録"
+    },
+    "Login": {
+        "1": "ログインする"
+    },
+    "Register": {
+        "1": "登録"
+    }
+}
