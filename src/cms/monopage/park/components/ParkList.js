@@ -10,10 +10,10 @@ class ParkList extends Component {
                     <h2><i className="halflings-icon white align-justify" /><span className="break" />Parks</h2>
                 </div>
                 <div className="box-content">
-                    <table className="table table-striped table-bordered bootstrap-datatable datatable">
+                    <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>#</th>
                                 <th>Name</th>
                                 <th>City</th>
                                 <th>Open hours</th>

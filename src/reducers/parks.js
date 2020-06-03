@@ -3,12 +3,11 @@ import * as Types from '../constants/ParksActionType';
 var initialState = [];
 
 const parks = (state = initialState, action) => {
-    console.group(action);
     var { park, id } = action;
     var index = -1;
     switch (action.type) {
         case Types.FETCH_PARKS:
-            return [...action.parks];
+            return action.parks;
         case Types.ADD_PARK:
             state.push(parks);
             return [...state];

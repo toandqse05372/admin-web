@@ -1,26 +1,73 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+import { Container, Form, FormControl, Button, InputGroup } from 'react-bootstrap'
 import { connect } from 'react-redux';
 import ParkItem from './components/ParkItem';
 import ParkList from './components/ParkList';
 import { actFetchParksRequest, actDeleteParkRequest } from '../../../actions/index';
 
 class ParksCMS extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            paramBody : {
+                name: '',
+                page: 1,
+                limit: 10,
+            }
+        }
+    }
     componentDidMount() {
         // Gọi trước khi component đc render lần đầu tiên
-        this.props.fetchAllParks();
+        this.props.fetchAllParks(this.state.paramBody);
+    }
+
+    onChange = (e) => {
+        var target = e.target;
+        var name = target.name;
+        var value = target.value;
+        this.setState({
+            [name]: value
+        })
+    }
+
+    onSubmitSearch = (e) => {
+        e.preventDefault();
+        var {txtParkName} = this.state;
+        this.setState({
+            paramBody : {
+                name: txtParkName,
+                page: 1,
+                limit: 10,
+            }
+        })
+        this.props.fetchAllParks(this.state.paramBody);
     }
 
     render() {
-
+        const { txtParkName } = this.state;
         var { parks } = this.props;
-
         return (
             <div className="container span14">
-                <Link to="/parks/add" className="btn btn-primary mb-5">
+                <Form onSubmit={this.onSubmitSearch} >
+                    <InputGroup>
+                        <FormControl
+                            type="text"
+                            placeholder="Search"
+                            name="txtParkName"
+                            value={txtParkName}
+                            onChange={this.onChange}
+                        />
+                    </InputGroup>
+                    <Button
+                        type="Submit"
+                        variant="outline-success">
+                        Search
+                    </Button>
+                </Form>
+                <Link to="/parks/add" className="btn btn-primary mb-5 ">
                     <i className="glyphicon glyphicon-plus"></i> Add Park
-                    </Link>
+                </Link>
                 <ParkList>
                     {this.showParks(parks)}
                 </ParkList>
@@ -50,8 +97,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        fetchAllParks: () => {
-            dispatch(actFetchParksRequest());
+        fetchAllParks: (paramBody) => {
+            dispatch(actFetchParksRequest(paramBody));
         },
         onDeletePark: (id) => {
             dispatch(actDeleteParkRequest(id));
@@ -59,4 +106,4 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParksCMS);;
+export default connect(mapStateToProps, mapDispatchToProps)(ParksCMS);

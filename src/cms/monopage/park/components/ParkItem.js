@@ -15,7 +15,7 @@ class ParkItem extends Component {
             <tr>
                 <td>{index + 1}</td>
                 <td>{parks.name}</td>
-                <td>{parks.cityName}</td>
+                <td>{parks.cityId}</td>
                 <td>{parks.openHours}</td>
                 <td>{parks.phoneNumber}</td>
                 <td>{parks.shortDescription}</td>

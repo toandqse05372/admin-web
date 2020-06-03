@@ -1,11 +1,20 @@
 import * as Types from '../constants/ParksActionType';
+import axios from 'axios';
+import * as URL from '../constants/ConfigURL';
 import callApi from '../utils/apiCaller';
 
-export const actFetchParksRequest = () => {
+export const actFetchParksRequest = (paramBody) => {
     return (dispatch) => {
-        return callApi('parks', 'GET', null).then(res => {
-            dispatch(actFetchParks(res.data));
-        });
+        axios.get(URL.API_URL + '/park/searchName', {
+            params: {
+                name: paramBody.name,
+                page: paramBody.page,
+                limit: paramBody.limit
+            }
+        })
+            .then(res => {
+                dispatch(actFetchParks(res.data.listResult));
+            });
     }
 }
 
@@ -73,7 +82,7 @@ export const actGetParkRequest = (id) => {
 
 export const actGetPark = (park) => {
     return {
-        type : Types.EDIT_PARK,
+        type: Types.EDIT_PARK,
         park
     }
 }
