@@ -1,13 +1,13 @@
 import React, { Component, container } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddParkRequest, actUpdateParkRequest, actGetParkRequest } from '../../../actions/indexParks';
+import { actAddUserRequest, actUpdateUserRequest, actGetUserRequest } from '../../../actions/indexUsers';
 import DateTimePicker from 'react-datetime-picker'
 import TimePicker from 'rc-time-picker';
 import ReactDOM from 'react-dom';
 import 'rc-time-picker/assets/index.css';
 
-class ParksActionCMS extends Component {
+class UsersActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -25,7 +25,7 @@ class ParksActionCMS extends Component {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditPark(id)
+            this.props.onEditUser(id)
         } // else => add
     }
 
@@ -56,7 +56,7 @@ class ParksActionCMS extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber } = this.state;
-        var park = {
+        var user = {
             id: id,
             name: txtName,
             cityName: txtCity,
@@ -65,9 +65,9 @@ class ParksActionCMS extends Component {
             phoneNumber: txtPhoneNumber
         };
         if (id) {
-            this.props.onUpdatePark(park);
+            this.props.onUpdateUser(user);
         } else {
-            this.props.onAddPark(park);
+            this.props.onAddUser(user);
         }
         this.props.history.goBack();
     }
@@ -79,7 +79,7 @@ class ParksActionCMS extends Component {
                 <form onSubmit={this.onSubmit}>
                     <legend>* Vui lòng nhập đầy đủ thông tin</legend>
                     <div className="form-group">
-                        <label>Park name </label>
+                        <label>user name </label>
                         <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
@@ -100,7 +100,7 @@ class ParksActionCMS extends Component {
                         <textarea onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
                         </textarea>
                     </div>
-                    <Link to="/parks" className="btn btn-danger mr-5">
+                    <Link to="/users" className="btn btn-danger mr-5">
                         <i className="glyphicon glyphicon-arrow-left"></i> Trở Lại
                     </Link>
                     <button type="submit" className="btn btn-primary">
@@ -120,16 +120,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddPark: (park) => {
-            dispatch(actAddParkRequest(park));
+        onAddUser: (user) => {
+            dispatch(actAddUserRequest(user));
         },
-        onUpdatePark: (park) => {
-            dispatch(actUpdateParkRequest(park));
+        onUpdateUser: (user) => {
+            dispatch(actUpdateUserRequest(user));
         },
-        onEditPark: (id) => {
-            dispatch(actGetParkRequest(id));
+        onEditUser: (id) => {
+            dispatch(actGetUserRequest(id));
         }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParksActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(UsersActionCMS);

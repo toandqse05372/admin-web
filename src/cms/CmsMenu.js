@@ -4,6 +4,11 @@ import './cmsMenu.css';
 
 const cmsMenus = [
     {
+        name: 'User',
+        to: '/users',
+        exact: true
+    },
+    {
         name: 'Park',
         to: '/parks',
         exact: true

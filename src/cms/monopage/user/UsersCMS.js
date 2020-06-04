@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, InputGroup } from 'react-bootstrap'
 import { connect } from 'react-redux';
-import ParkItem from './components/ParkItem';
-import ParkList from './components/ParkList';
-import { actFetchParksRequest, actDeleteParkRequest } from '../../../actions/indexParks';
+import UserItem from './components/UserItem';
+import UserList from './components/UserList';
+import { actFetchUsersRequest, actDeleteUserRequest } from '../../../actions/indexUsers';
 
-class ParksCMS extends Component {
+class UsersCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            txtParkName :'',
-            paramBody : {
+            txtUserName: '',
+            paramBody: {
                 name: '',
                 page: 1,
                 limit: 10,
@@ -19,9 +19,10 @@ class ParksCMS extends Component {
         }
     }
     componentDidMount() {
+        // Gọi trước khi component đc render lần đầu tiên
         console.log()
-        debugger// Gọi trước khi component đc render lần đầu tiên
-        this.props.fetchAllParks(this.state.paramBody);
+        debugger
+        this.props.fetchAllUsers(this.state.paramBody);
     }
 
     onChange = (e) => {
@@ -30,23 +31,23 @@ class ParksCMS extends Component {
         var value = target.value;
         this.setState({
             [name]: value,
-            paramBody : {
+            paramBody: {
                 name: value,
                 page: 1,
                 limit: 10,
             }
         })
-        
+
     }
 
     onSubmitSearch = (e) => {
         e.preventDefault();
-        this.props.fetchAllParks(this.state.paramBody);
+        this.props.fetchAllUsers(this.state.paramBody);
     }
 
     render() {
-        const { txtParkName } = this.state;
-        var { parks } = this.props;
+        const { txtUserName } = this.state;
+        var { users } = this.props;
         return (
             <div className="container span14">
                 <Form onSubmit={this.onSubmitSearch} >
@@ -54,8 +55,8 @@ class ParksCMS extends Component {
                         <FormControl
                             type="text"
                             placeholder="Search"
-                            name="txtParkName"
-                            value={txtParkName}
+                            name="txtUserName"
+                            value={txtUserName}
                             onChange={this.onChange}
                         />
                     </InputGroup>
@@ -65,22 +66,22 @@ class ParksCMS extends Component {
                         Search
                     </Button>
                 </Form>
-                <Link to="/parks/add" className="btn btn-primary mb-5 ">
-                    <i className="glyphicon glyphicon-plus"></i> Add Park
+                <Link to="/users/add" className="btn btn-primary mb-5 ">
+                    <i className="glyphicon glyphicon-plus"></i> Add User
                 </Link>
-                <ParkList>
-                    {this.showParks(parks)}
-                </ParkList>
+                <UserList>
+                    {this.showUser(users)}
+                </UserList>
             </div>
         );
     }
 
-    showParks(parks) {
+    showUser(users) {
         var result = null;
-        var { onDeletePark } = this.props;
-        if (parks.length > 0) {
-            result = parks.map((parks, index) => {
-                return <ParkItem parks={parks} key={index} index={index} onDeletePark={onDeletePark} />
+        var { onDeleteUser } = this.props;
+        if (users.length > 0) {
+            result = users.map((users, index) => {
+                return <UserItem users={users} key={index} index={index} onDeleteUser={onDeleteUser} />
             });
         }
         return result;
@@ -89,20 +90,22 @@ class ParksCMS extends Component {
 }
 
 const mapStateToProps = state => {
+    console.log(this)
+    debugger
     return {
-        parks: state.parks
+        users: state.users
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        fetchAllParks: (paramBody) => {
-            dispatch(actFetchParksRequest(paramBody));
+        fetchAllUsers: (paramBody) => {
+            dispatch(actFetchUsersRequest(paramBody));
         },
-        onDeletePark: (id) => {
-            dispatch(actDeleteParkRequest(id));
+        onDeleteUser: (id) => {
+            dispatch(actDeleteUserRequest(id));
         }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParksCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(UsersCMS);
