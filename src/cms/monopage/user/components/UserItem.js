@@ -14,11 +14,11 @@ class UserItem extends Component {
         return (
             <tr>
                 <td>{index + 1}</td>
-                <td>{users.name}</td>
-                <td>{users.cityId}</td>
-                <td>{users.openHours}</td>
+                <td>{users.firstName}</td>
+                <td>{users.lastName}</td>
+                <td>{users.mail}</td>
                 <td>{users.phoneNumber}</td>
-                <td>{users.shortDescription}</td>
+                <td>{users.roleKey}</td>
 
                 <td className="center">
                     <Link to={`/users/${users.id}/edit`} className="btn btn-info">

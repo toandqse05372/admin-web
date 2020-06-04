@@ -4,20 +4,15 @@ import * as URL from '../constants/ConfigURL';
 import callApi from '../utils/apiCaller';
 
 export const actFetchUsersRequest = (paramBody) => {
-    console.log()
-    debugger
     return (dispatch) => {
-        axios.get(URL.API_URL + '/user/searchName', {
+        axios.get(URL.API_URL + '/user/searchMul', {
             params: {
-                name: paramBody.name,
-                page: paramBody.page,
-                limit: paramBody.limit
+                firstName: paramBody.firstName,
+                mail: paramBody.mail
             }
         })
             .then(res => {
-                console.log()
-                debugger
-                dispatch(actFetchUsers(res.data.listResult));
+                dispatch(actFetchUsers(res.data));
             });
     }
 }

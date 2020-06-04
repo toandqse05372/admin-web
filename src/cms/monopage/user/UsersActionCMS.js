@@ -34,11 +34,11 @@ class UsersActionCMS extends Component {
             var { itemEditing } = nextProps;
             this.setState({
                 id: itemEditing.id,
-                txtName: itemEditing.name,
-                txtDescription: itemEditing.description,
-                txtPhoneNumber: itemEditing.phoneNumber,
-                txtOpenHours: itemEditing.openHours,
-                txtCity: itemEditing.cityId
+                txtFirstName: itemEditing.firstName,
+                txtLastName: itemEditing.lastName,
+                txtMail: itemEditing.mail,
+                txtRole: itemEditing.roleKey,
+                txtPhoneNumber: itemEditing.phoneNumber
             })
         }
     }
@@ -55,13 +55,13 @@ class UsersActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber } = this.state;
+        var { id, txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber } = this.state;
         var user = {
             id: id,
-            name: txtName,
-            cityName: txtCity,
-            shortDescription: txtDescription,
-            openHours: txtOpenHours,
+            firstName: txtFirstName,
+            lastName: txtLastName,
+            mail: txtMail,
+            roleKey: txtRole,
             phoneNumber: txtPhoneNumber
         };
         if (id) {
@@ -73,31 +73,30 @@ class UsersActionCMS extends Component {
     }
 
     render() {
-        var { txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber } = this.state;
+        var { txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber } = this.state;
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
                     <legend>* Vui lòng nhập đầy đủ thông tin</legend>
                     <div className="form-group">
-                        <label>user name </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        <label>First Name </label>
+                        <input onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>City </label>
-                        <input onChange={this.onChange} value={txtCity} name="txtCity" type="text" className="form-control" />
-
+                        <label>Last Name </label>
+                        <input onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Open hours </label>
-                        <TimePicker/>
+                        <label>Mail </label>
+                        <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
                         <label>Phone number </label>
                         <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Description </label>
-                        <textarea onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
+                        <label>Role </label>
+                        <textarea onChange={this.onChange} value={txtRole} name="txtRole" className="form-control" rows="3">
                         </textarea>
                     </div>
                     <Link to="/users" className="btn btn-danger mr-5">

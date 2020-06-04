@@ -14,11 +14,11 @@ class UserList extends Component {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>City</th>
-                                <th>Open hours</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Mail</th>
                                 <th>Phone number</th>
-                                <th>Description</th>
+                                <th>Role</th>
                             </tr>
                         </thead>
                         <tbody>

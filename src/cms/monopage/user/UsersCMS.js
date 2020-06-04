@@ -10,9 +10,9 @@ class UsersCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            txtUserName: '',
+            txtFirstName: '',
             paramBody: {
-                name: '',
+                firstName: '',
                 page: 1,
                 limit: 10,
             }
@@ -20,8 +20,6 @@ class UsersCMS extends Component {
     }
     componentDidMount() {
         // Gọi trước khi component đc render lần đầu tiên
-        console.log()
-        debugger
         this.props.fetchAllUsers(this.state.paramBody);
     }
 
@@ -32,7 +30,7 @@ class UsersCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                name: value,
+                firstName: value,
                 page: 1,
                 limit: 10,
             }
@@ -43,10 +41,12 @@ class UsersCMS extends Component {
     onSubmitSearch = (e) => {
         e.preventDefault();
         this.props.fetchAllUsers(this.state.paramBody);
+        console.log()
+        debugger
     }
 
     render() {
-        const { txtUserName } = this.state;
+        const { txtFirstName } = this.state;
         var { users } = this.props;
         return (
             <div className="container span14">
@@ -55,8 +55,8 @@ class UsersCMS extends Component {
                         <FormControl
                             type="text"
                             placeholder="Search"
-                            name="txtUserName"
-                            value={txtUserName}
+                            name="txtFirstName"
+                            value={txtFirstName}
                             onChange={this.onChange}
                         />
                     </InputGroup>
@@ -90,8 +90,6 @@ class UsersCMS extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log(this)
-    debugger
     return {
         users: state.users
     }

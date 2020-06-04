@@ -18,9 +18,7 @@ class ParksCMS extends Component {
             }
         }
     }
-    componentDidMount() {
-        console.log()
-        debugger// Gọi trước khi component đc render lần đầu tiên
+    componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
         this.props.fetchAllParks(this.state.paramBody);
     }
 
