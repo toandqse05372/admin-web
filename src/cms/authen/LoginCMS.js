@@ -6,7 +6,7 @@ import axios from 'axios';
 import * as URL from '../../constants/ConfigURL';
 import callApi from '../../utils/apiCaller';
 class LoginCMS extends Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -29,16 +29,17 @@ class LoginCMS extends Component {
     onSubmitForm(e) {
         e.preventDefault();
         const { txtMail, txtPassword } = this.state;
+        const { history } = this.props;
         var user = {
             mail: txtMail,
             password: txtPassword,
         };
         callApi('login', 'POST', user).then(res => {
             localStorage.setItem('tokenLogin', JSON.stringify(res.data));
-            debugger
+            window.location.reload();
         });
 
-        
+
     }
 
 
@@ -72,8 +73,8 @@ class LoginCMS extends Component {
                                     <input className="input-large span10"
                                         value={txtPassword}
                                         name="txtPassword"
-                                        id="mail" 
-                                        type="password" 
+                                        id="mail"
+                                        type="password"
                                         onChange={this.onChange}
                                         placeholder="type password" />
                                 </div>

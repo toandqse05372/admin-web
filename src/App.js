@@ -10,16 +10,30 @@ class App extends Component {
     super(props);
     this.state = {
       loaded: false,
+      tokenLoginGot: null
     }
   }
+
+  componentWillMount() {
+    var tokenLogin = JSON.parse(localStorage.getItem('tokenLogin'));
+    this.setState({
+      tokenLoginGot: tokenLogin
+    })
+  }
+
   render() {
+    const { tokenLoginGot } = this.state;
+    if (tokenLoginGot !== null) {
+      return (
+        <Router>
+          <CmsParent />
+        </Router>
+      )
+    }
+    
     return (
-
       <Router>
-        {/* <LoginCMS/> */}
-        <CmsParent/>
-       
-
+        <LoginCMS />
       </Router>
     );
   }
