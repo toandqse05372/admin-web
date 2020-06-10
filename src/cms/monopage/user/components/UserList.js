@@ -13,7 +13,7 @@ class UserList extends Component {
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>ID</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Mail</th>

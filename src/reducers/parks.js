@@ -19,7 +19,7 @@ const parks = (state = initialState, action) => {
             index = findIndex(state, id);
             state.splice(index, 1);
             return [...state];
-        default: return [...state];
+        default: return state;
     }
 };
 

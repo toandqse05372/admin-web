@@ -6,14 +6,15 @@ class UserItem extends Component {
     onDelete = (id) => {
         if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
             this.props.onDeleteUser(id);
+            window.location.reload();
         }
     }
 
     render() {
-        var { users, index } = this.props;
+        var { users } = this.props;
         return (
             <tr>
-                <td>{index + 1}</td>
+                <td>{users.id}</td>
                 <td>{users.firstName}</td>
                 <td>{users.lastName}</td>
                 <td>{users.mail}</td>

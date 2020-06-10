@@ -6,6 +6,7 @@ class ParkItem extends Component {
     onDelete = (id) => {
         if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
             this.props.onDeletePark(id);
+            window.location.reload();
         }
     }
 
@@ -13,12 +14,12 @@ class ParkItem extends Component {
         var { parks, index } = this.props;
         return (
             <tr>
-                <td>{index + 1}</td>
+                <td>{parks.id}</td>
                 <td>{parks.name}</td>
                 <td>{parks.cityId}</td>
-                <td>{parks.openHours}</td>
+                <td>{parks.address}</td>
                 <td>{parks.phoneNumber}</td>
-                <td>{parks.shortDescription}</td>
+                <td>{parks.description}</td>
 
                 <td className="center">
                     <Link to={`/parks/${parks.id}/edit`} className="btn btn-info">

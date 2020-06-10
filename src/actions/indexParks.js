@@ -25,10 +25,11 @@ export const actFetchParks = (parks) => {
     }
 }
 
-export const actAddParkRequest = (parks) => {
+export const actAddParkRequest = (parks, child) => {
     return (dispatch) => {
         return callApi('park', 'POST', parks).then(res => {
             dispatch(actAddPark(res.data));
+            child.goBack();
         });
     }
 }
@@ -40,11 +41,12 @@ export const actAddPark = (parks) => {
     }
 }
 
-export const actUpdateParkRequest = (park) => {
+export const actUpdateParkRequest = (park, child) => {
     return (dispatch) => {
         return callApi(`park/${park.id}`, 'PUT', park).then(res => {
             if (res) {
                 dispatch(actUpdatePark(res.data));
+                child.goBack();
             }
         });
     }
@@ -84,5 +86,35 @@ export const actGetPark = (park) => {
     return {
         type: Types.EDIT_PARK,
         park
+    }
+}
+
+export const actFetchCitiesRequest = () => {
+    return dispatch => {
+        return callApi(`city`, 'GET', null).then(res => {
+            dispatch(actFetchCities(res.data))
+        });
+    }
+}
+
+export const actFetchCities = (cities) => {
+    return {
+        type: Types.FETCH_CITIES,
+        cities
+    }
+}
+
+export const actFetchParkTypesRequest = () => {
+    return dispatch => {
+        return callApi(`park/parktypes`, 'GET', null).then(res => {
+            dispatch(actFetchParkTypes(res.data))
+        });
+    }
+}
+
+export const actFetchParkTypes = (parktypes) => {
+    return {
+        type: Types.FETCH_PARK_TYPES,
+        parktypes
     }
 }

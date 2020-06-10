@@ -8,6 +8,8 @@ const users = (state = initialState, action) => {
     switch (action.type) {
         case Types.FETCH_USERS:
             return action.users;
+        case Types.FETCH_ROLES:
+            return [...action.roles];
         case Types.ADD_USER:
             state.push(users);
             return [...state];

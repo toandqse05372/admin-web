@@ -16,7 +16,7 @@ class ParkList extends Component {
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>City</th>
-                                <th>Open hours</th>
+                                <th>Mail</th>
                                 <th>Phone number</th>
                                 <th>Description</th>
                             </tr>

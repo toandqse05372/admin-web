@@ -5,6 +5,9 @@ export default function callApi(endpoint, method = 'GET', body) {
     return axios({
         method,
         url: `${Config.API_URL}/${endpoint}`,
+        headers: {
+            Authorization: localStorage.getItem('tokenLogin')
+        },
         data: body
     });
 }

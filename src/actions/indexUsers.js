@@ -8,7 +8,12 @@ export const actFetchUsersRequest = (paramBody) => {
         axios.get(URL.API_URL + '/user/searchMul', {
             params: {
                 firstName: paramBody.firstName,
-                mail: paramBody.mail
+                lastName: paramBody.lastName,
+                mail: paramBody.mail,
+                phoneNumber: paramBody.phoneNumber,
+                role: paramBody.role,
+                limit: paramBody.limit,
+                page: paramBody.page
             }
         })
             .then(res => {
@@ -24,10 +29,11 @@ export const actFetchUsers = (users) => {
     }
 }
 
-export const actAddUserRequest = (users) => {
+export const actAddUserRequest = (users, child) => {
     return (dispatch) => {
-        return callApi('user', 'POST', users).then(res => {
+        return callApi('user/createUserCMS', 'POST', users).then(res => {
             dispatch(actAddUser(res.data));
+            child.goBack();
         });
     }
 }
@@ -39,12 +45,13 @@ export const actAddUser = (users) => {
     }
 }
 
-export const actUpdateUserRequest = (user) => {
+export const actUpdateUserRequest = (user, child) => {
     return (dispatch) => {
         return callApi(`user/${user.id}`, 'PUT', user).then(res => {
             if (res) {
                 dispatch(actUpdateUser(res.data));
             }
+            child.goBack();
         });
     }
 }
@@ -83,5 +90,35 @@ export const actGetUser = (user) => {
     return {
         type: Types.EDIT_USER,
         user
+    }
+}
+
+export const actFetchRolesRequest = () => {
+    return dispatch => {
+        return callApi(`user/roles`, 'GET', null).then(res => {
+            dispatch(actFetchRoles(res.data))
+        });
+    }
+}
+
+export const actFetchRoles = (roles) => {
+    return {
+        type: Types.FETCH_ROLES,
+        roles
+    }
+}
+
+export const actFetchTokenRequest = (token) => {
+    return (dispatch) => {
+        return callApi('user/token', 'POST', token).then(res => {
+            dispatch(actFetchToken(res.data));
+        });
+    }
+}
+
+export const actFetchToken = (token) => {
+    return {
+        type: Types.FETCH_TOKEN,
+        token
     }
 }

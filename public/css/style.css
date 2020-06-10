@@ -1863,7 +1863,7 @@ fieldset[disabled] .btn-link:focus {
 
 .table th,
 .table td {
-  border-top: 1px solid #eee;	
+  border-top: 1px solid #fff;	
 }
 
 .table-bordered {
@@ -2130,9 +2130,9 @@ fieldset[disabled] .btn-link:focus {
 }
 
 .login-box .button-login {
-	margin-top: 20px;
-	margin-right: 20px;
-	float: right;
+	margin-top: 10px;
+	margin-left: 20px;
+	float: left;
 }
 
 /* UI - Uniform

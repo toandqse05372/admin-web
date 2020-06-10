@@ -14,6 +14,8 @@
     "react-bootstrap": "^1.0.1",
     "react-datetime-picker": "^3.0.2",
     "react-dom": "^16.13.1",
+    "react-js-pagination": "^3.0.3",
+    "react-promise-tracker": "^2.1.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",

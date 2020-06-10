@@ -1,11 +1,8 @@
-import React, { Component, container } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddParkRequest, actUpdateParkRequest, actGetParkRequest } from '../../../actions/indexParks';
-import DateTimePicker from 'react-datetime-picker'
-import TimePicker from 'rc-time-picker';
-import ReactDOM from 'react-dom';
-import 'rc-time-picker/assets/index.css';
+import { actAddParkRequest, actUpdateParkRequest, actGetParkRequest, actFetchParkTypesRequest, actFetchCitiesRequest } from '../../../actions/indexParks';
+import { Form } from 'react-bootstrap'
 
 class ParksActionCMS extends Component {
 
@@ -17,8 +14,15 @@ class ParksActionCMS extends Component {
             txtCity: '',
             txtOpenHours: '',
             txtPhoneNumber: '',
-            txtDescription: ''
+            txtDescription: '',
+            drbCity:'',
+            drbParkType:''
         };
+    }
+
+    componentDidMount(){
+        this.props.fetchAllCities();
+        this.props.fetchAllParkTypes();
     }
 
     componentWillMount() {
@@ -30,7 +34,7 @@ class ParksActionCMS extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps && nextProps.itemEditing) {
+        if (nextProps.match && nextProps.itemEditing) {
             var { itemEditing } = nextProps;
             this.setState({
                 id: itemEditing.id,
@@ -55,7 +59,7 @@ class ParksActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber } = this.state;
+        var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber, drbParkType } = this.state;
         var park = {
             id: id,
             name: txtName,
@@ -73,7 +77,8 @@ class ParksActionCMS extends Component {
     }
 
     render() {
-        var { txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber } = this.state;
+        var { txtName, txtDescription, drbCity, txtOpenHours, txtPhoneNumber, drbCity, drbParkType } = this.state;
+        var { cities, parktypes } = this.props
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
@@ -83,14 +88,29 @@ class ParksActionCMS extends Component {
                         <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>City </label>
-                        <input onChange={this.onChange} value={txtCity} name="txtCity" type="text" className="form-control" />
-
+                    <label>City </label>
+                    <Form.Control as="select"
+                        name="drbCity"
+                        value={drbCity}
+                        onChange={this.onChange}>
+                        <option key={0} index={0} value={0}>--Select City--</option>
+                        {this.showCities(cities)}
+                    </Form.Control>
                     </div>
-                    <div className="form-group">
+                    <div>
+                    <label>Park Type </label>
+                    <Form.Control as="select"
+                        name="drbParkType"
+                        value={drbParkType}
+                        onChange={this.onChange}>
+                        <option key={0} index={0} value={0}>--Select Park Type--</option>
+                        {this.showParkTypes(parktypes)}
+                    </Form.Control>
+                    </div>
+                    {/* <div className="form-group">
                         <label>Open hours </label>
                         <TimePicker/>
-                    </div>
+                    </div> */}
                     <div className="form-group">
                         <label>Phone number </label>
                         <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
@@ -101,34 +121,62 @@ class ParksActionCMS extends Component {
                         </textarea>
                     </div>
                     <Link to="/parks" className="btn btn-danger mr-5">
-                        <i className="glyphicon glyphicon-arrow-left"></i> Trở Lại
+                        <i className="glyphicon glyphicon-arrow-left"></i> Back
                     </Link>
                     <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu Lại
+                        <i className="glyphicon glyphicon-save"></i> Save Park
                             </button>
                 </form>
             </div>
         );
     }
+
+    showCities(cities) {
+        var result = null;
+        if (cities.length > 0) {
+            result = cities.map((cities, index) => {
+                return <option key={index} index={index} value={cities.id}>{cities.name}</option>
+            });
+        }
+        return result;
+    }
+
+    showParkTypes(parktypes) {
+        var result = null;
+        if (parktypes.length > 0) {
+            result = parktypes.map((parktypes, index) => {
+                return <option key={index} index={index} value={parktypes.id}>{parktypes.parkTypeName}</option>
+            });
+        }
+        return result;
+    }
 }
 
 const mapStateToProps = state => {
     return {
-        itemEditing: state.itemEditing
+        itemEditing: state.itemEditing,
+        cities: state.cities,
+        parktypes: state.parktypes,
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
         onAddPark: (park) => {
-            dispatch(actAddParkRequest(park));
+            dispatch(actAddParkRequest(park, props.history));
         },
         onUpdatePark: (park) => {
-            dispatch(actUpdateParkRequest(park));
+            dispatch(actUpdateParkRequest(park, props.history));
         },
         onEditPark: (id) => {
             dispatch(actGetParkRequest(id));
-        }
+        },
+        fetchAllCities: () => {
+            dispatch(actFetchCitiesRequest());
+        },
+        fetchAllParkTypes: () => {
+            dispatch(actFetchParkTypesRequest());
+        },
     }
 }
 

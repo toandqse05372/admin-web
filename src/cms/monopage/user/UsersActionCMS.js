@@ -1,10 +1,11 @@
-import React, { Component, container } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddUserRequest, actUpdateUserRequest, actGetUserRequest } from '../../../actions/indexUsers';
-import DateTimePicker from 'react-datetime-picker'
-import TimePicker from 'rc-time-picker';
-import ReactDOM from 'react-dom';
+import { Form, FormControl } from 'react-bootstrap'
+import { actAddUserRequest, actUpdateUserRequest, actGetUserRequest, actFetchRolesRequest } from '../../../actions/indexUsers';
+// import DateTimePicker from 'react-datetime-picker'
+// import TimePicker from 'rc-time-picker';
+// import ReactDOM from 'react-dom';
 import 'rc-time-picker/assets/index.css';
 
 class UsersActionCMS extends Component {
@@ -17,8 +18,14 @@ class UsersActionCMS extends Component {
             txtCity: '',
             txtOpenHours: '',
             txtPhoneNumber: '',
-            txtDescription: ''
+            txtDescription: '',
+            txtPassword: '',
+            txtRole: ''
         };
+    }
+
+    componentDidMount() {
+        this.props.fetchAllRoles();
     }
 
     componentWillMount() {
@@ -30,7 +37,7 @@ class UsersActionCMS extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps && nextProps.itemEditing) {
+        if (nextProps.match && nextProps.itemEditing) {
             var { itemEditing } = nextProps;
             this.setState({
                 id: itemEditing.id,
@@ -38,7 +45,8 @@ class UsersActionCMS extends Component {
                 txtLastName: itemEditing.lastName,
                 txtMail: itemEditing.mail,
                 txtRole: itemEditing.roleKey,
-                txtPhoneNumber: itemEditing.phoneNumber
+                txtPhoneNumber: itemEditing.phoneNumber,
+                txtPassword: itemEditing.password
             })
         }
     }
@@ -47,7 +55,7 @@ class UsersActionCMS extends Component {
     onChange = (e) => {
         var target = e.target;
         var name = target.name;
-        var value = target.type === 'checkbox' ? target.checked : target.value;
+        var value = target.value;
         this.setState({
             [name]: value
         });
@@ -55,13 +63,14 @@ class UsersActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber } = this.state;
+        var { id, txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber, txtPassword } = this.state;
         var user = {
             id: id,
             firstName: txtFirstName,
             lastName: txtLastName,
+            password: txtPassword,
             mail: txtMail,
-            roleKey: txtRole,
+            roleKey: Array.isArray(txtRole) ? txtRole: [txtRole],
             phoneNumber: txtPhoneNumber
         };
         if (id) {
@@ -69,11 +78,22 @@ class UsersActionCMS extends Component {
         } else {
             this.props.onAddUser(user);
         }
-        this.props.history.goBack();
+        
+    }
+
+    showRoles(roles) {
+        var result = null;
+        if (roles.length > 0) {
+            result = roles.map((roles, index) => {
+                return <option key={index} index={index} value={roles.roleKey}>{roles.roleKey}</option>
+            });
+        }
+        return result;
     }
 
     render() {
-        var { txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber } = this.state;
+        var { txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber, txtPassword } = this.state;
+        var { roles } = this.props
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
@@ -91,14 +111,27 @@ class UsersActionCMS extends Component {
                         <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
+                        <label>Password </label>
+                        <input onChange={this.onChange} value={txtPassword} name="txtPassword" type="text" className="form-control" />
+                    </div>
+                    <div className="form-group">
                         <label>Phone number </label>
                         <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
                     </div>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label>Role </label>
                         <textarea onChange={this.onChange} value={txtRole} name="txtRole" className="form-control" rows="3">
                         </textarea>
-                    </div>
+                    </div> */}
+                    <label>Role </label>
+                    <Form.Control as="select"
+                        name="txtRole"
+                        value={txtRole}
+                        onChange={this.onChange}>
+                        <option key={0} index={0} value={0}>--Select Role--</option>
+                        {this.showRoles(roles)}
+                    </Form.Control>
+                    <br />
                     <Link to="/users" className="btn btn-danger mr-5">
                         <i className="glyphicon glyphicon-arrow-left"></i> Trở Lại
                     </Link>
@@ -113,20 +146,24 @@ class UsersActionCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        itemEditing: state.itemEditing
+        itemEditing: state.itemEditing,
+        roles: state.roles
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
         onAddUser: (user) => {
-            dispatch(actAddUserRequest(user));
+            dispatch(actAddUserRequest(user, props.history));
         },
         onUpdateUser: (user) => {
-            dispatch(actUpdateUserRequest(user));
+            dispatch(actUpdateUserRequest(user, props.history));
         },
         onEditUser: (id) => {
             dispatch(actGetUserRequest(id));
+        },
+        fetchAllRoles: () => {
+            dispatch(actFetchRolesRequest());
         }
     }
 }
