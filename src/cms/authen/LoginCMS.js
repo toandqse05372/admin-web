@@ -29,7 +29,6 @@ class LoginCMS extends Component {
     onSubmitForm(e) {
         e.preventDefault();
         const { txtMail, txtPassword } = this.state;
-        const { history } = this.props;
         var user = {
             mail: txtMail,
             password: txtPassword,

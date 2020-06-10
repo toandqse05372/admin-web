@@ -11,6 +11,12 @@ class CmsParent extends Component {
             loaded: false,
         }
     }
+
+    logOut = () => {
+        localStorage.removeItem('tokenLogin');
+        window.location.reload();
+    }
+
     render() {
         return (
             <div>
@@ -23,6 +29,7 @@ class CmsParent extends Component {
                                 <span className="icon-bar" />
                             </a>
                             <a className="brand" href="index.html"><span>GOBOKI</span></a>
+
                             {/* start: Header Menu */}
                             <div className="nav-no-collapse header-nav">
                                 <ul className="nav pull-right">
@@ -32,8 +39,20 @@ class CmsParent extends Component {
                                             <i className="halflings-icon white user" /> Dennis Ji
                                             <span className="caret" />
                                         </a>
+
                                         <ul className="dropdown-menu">
-                                            <li><a href="login.html"><i className="halflings-icon off" /> Logout</a></li>
+
+                                            <li onClick={this.logOut}>
+                                                <a>
+                                                    <i
+                                                        type="button"
+                                                        onClick={this.logOut}
+                                                        className="halflings-icon off"
+                                                    />
+                                                    Logout
+                                                </a>
+                                            </li>
+
                                         </ul>
                                     </li>
                                     {/* end: User Dropdown */}
