@@ -9,6 +9,7 @@ class CmsParent extends Component {
         super(props);
         this.state = {
             loaded: false,
+            username:''
         }
     }
 
@@ -17,7 +18,18 @@ class CmsParent extends Component {
         window.location.reload();
     }
 
+    componentWillMount(){
+        var jwtDecode = require('jwt-decode')
+        var token = localStorage.getItem('tokenLogin')
+        var decoded = jwtDecode(token)
+        debugger
+        this.setState({
+            username: decoded.user.lastName + " " +decoded.user.firstName
+        })
+    }
+
     render() {
+        const {username} = this.state
         return (
             <div>
                 <div className="navbar">
@@ -36,7 +48,7 @@ class CmsParent extends Component {
                                     {/* start: User Dropdown */}
                                     <li className="dropdown">
                                         <a className="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                            <i className="halflings-icon white user" /> Dennis Ji
+                                            <i className="halflings-icon white user" /> {username}
                                             <span className="caret" />
                                         </a>
 
@@ -49,7 +61,7 @@ class CmsParent extends Component {
                                                         onClick={this.logOut}
                                                         className="halflings-icon off"
                                                     />
-                                                    Logout
+                                                    Đăng xuất
                                                 </a>
                                             </li>
 

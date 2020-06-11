@@ -3,5 +3,4 @@ export const ADD_PARK = 'ADD_PARK';
 export const UPDATE_PARK = 'UPDATE_PARK';
 export const DELETE_PARK = 'DELETE_PARK';
 export const EDIT_PARK = 'EDIT_PARK';
-export const FETCH_CITIES = 'FETCH_CITIES';
 export const FETCH_PARK_TYPES = 'FETCH_PARK_TYPES';

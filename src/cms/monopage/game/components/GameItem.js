@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-class ParkItem extends Component {
+class GameItem extends Component {
 
     onDelete = (id) => {
         if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
@@ -11,21 +11,21 @@ class ParkItem extends Component {
     }
 
     render() {
-        var { parks, index } = this.props;
+        var { games, index } = this.props;
         return (
             <tr>
-                <td>{parks.id}</td>
-                <td>{parks.name}</td>
-                <td>{parks.city.name}</td>
-                <td>{parks.address}</td>
-                <td>{parks.phoneNumber}</td>
-                <td>{parks.description}</td>
+                <td>{games.id}</td>
+                <td>{games.gameName}</td>
+                <td>{games.gameDescription}</td>
+                <td>{games.ticketTypeName}</td>
+                <td>{games.ticketInventoryStatus}</td>
+                <td>{games.park}</td>
 
                 <td className="center">
-                    <Link to={`/parks/${parks.id}/edit`} className="btn btn-info">
+                    <Link to={`/parks/${games.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDelete(parks.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDelete(games.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
@@ -35,4 +35,4 @@ class ParkItem extends Component {
     }
 }
 
-export default ParkItem;
+export default GameItem;

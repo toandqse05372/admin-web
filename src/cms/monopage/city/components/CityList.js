@@ -1,24 +1,21 @@
 import React, { Component } from 'react';
 
-class UserList extends Component {
+class CityList extends Component {
 
     render() {
         return (
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Danh sách người dùng</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Quản lý tỉnh / thành</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Họ</th>
-                                <th>Tên</th>
-                                <th>Mail</th>
-                                <th>Số điện thoại</th>
-                                <th>Role</th>
+                                <th>Tỉnh / thành</th>
+                                <th>Giới thiệu ngắn</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,4 +32,4 @@ class UserList extends Component {
 
 }
 
-export default UserList;
+export default CityList;

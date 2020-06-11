@@ -7,18 +7,18 @@ class ParkList extends Component {
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Parks</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Danh sách công viên</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>City</th>
+                                <th>Tên công viên</th>
+                                <th>Tỉnh / Thành</th>
                                 <th>Mail</th>
-                                <th>Phone number</th>
-                                <th>Description</th>
+                                <th>Số điện thoại</th>
+                                <th>Giới thiệu</th>
                             </tr>
                         </thead>
                         <tbody>

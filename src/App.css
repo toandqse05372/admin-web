@@ -38,3 +38,8 @@
 }
 
 .pointer{cursor: pointer;}
+
+.myDiv {
+  width: 300px;
+  margin-bottom: 20px;
+}

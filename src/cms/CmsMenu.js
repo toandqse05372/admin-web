@@ -4,18 +4,23 @@ import './cmsMenu.css';
 
 const cmsMenus = [
     {
-        name: 'User',
+        name: 'Quản lý người dùng',
         to: '/users',
         exact: true
     },
     {
-        name: 'Park',
+        name: 'Quản lý công viên',
         to: '/parks',
         exact: true
     },
     {
-        name: 'Transaction',
-        to: '/transaction',
+        name: 'Quản lý trò chơi',
+        to: '/games',
+        exact: true
+    },
+    {
+        name: 'Quản lý tỉnh / thành',
+        to: '/cities',
         exact: true
     },
 ];

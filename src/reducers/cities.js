@@ -1,4 +1,4 @@
-import * as Types from '../constants/ParksActionType';
+import * as Types from '../constants/CitiesActionType';
 
 var initialState = [];
 

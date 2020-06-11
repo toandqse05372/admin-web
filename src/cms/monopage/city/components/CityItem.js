@@ -1,31 +1,28 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-class ParkItem extends Component {
+class CityItem extends Component {
 
     onDelete = (id) => {
         if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-            this.props.onDeletePark(id);
+            this.props.onDeleteCity(id);
             window.location.reload();
         }
     }
 
     render() {
-        var { parks, index } = this.props;
+        var { cities, index } = this.props;
         return (
             <tr>
-                <td>{parks.id}</td>
-                <td>{parks.name}</td>
-                <td>{parks.city.name}</td>
-                <td>{parks.address}</td>
-                <td>{parks.phoneNumber}</td>
-                <td>{parks.description}</td>
+                <td>{cities.id}</td>
+                <td>{cities.name}</td>
+                <td>{cities.shortDescription}</td>
 
                 <td className="center">
-                    <Link to={`/parks/${parks.id}/edit`} className="btn btn-info">
+                    <Link to={`/parks/${cities.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDelete(parks.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDelete(cities.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
@@ -35,4 +32,4 @@ class ParkItem extends Component {
     }
 }
 
-export default ParkItem;
+export default CityItem;

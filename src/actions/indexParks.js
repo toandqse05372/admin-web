@@ -89,21 +89,6 @@ export const actGetPark = (park) => {
     }
 }
 
-export const actFetchCitiesRequest = () => {
-    return dispatch => {
-        return callApi(`city`, 'GET', null).then(res => {
-            dispatch(actFetchCities(res.data))
-        });
-    }
-}
-
-export const actFetchCities = (cities) => {
-    return {
-        type: Types.FETCH_CITIES,
-        cities
-    }
-}
-
 export const actFetchParkTypesRequest = () => {
     return dispatch => {
         return callApi(`park/parktypes`, 'GET', null).then(res => {

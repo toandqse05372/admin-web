@@ -99,11 +99,11 @@ class UsersActionCMS extends Component {
                 <form onSubmit={this.onSubmit}>
                     <legend>* Vui lòng nhập đầy đủ thông tin</legend>
                     <div className="form-group">
-                        <label>First Name </label>
+                        <label>Họ </label>
                         <input onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Last Name </label>
+                        <label>Tên </label>
                         <input onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
@@ -111,11 +111,11 @@ class UsersActionCMS extends Component {
                         <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Password </label>
+                        <label>Mật khẩu </label>
                         <input onChange={this.onChange} value={txtPassword} name="txtPassword" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Phone number </label>
+                        <label>Số điện thoại </label>
                         <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
                     </div>
                     {/* <div className="form-group">
@@ -128,7 +128,7 @@ class UsersActionCMS extends Component {
                         name="txtRole"
                         value={txtRole}
                         onChange={this.onChange}>
-                        <option key={0} index={0} value={0}>--Select Role--</option>
+                        <option key={0} index={0} value={0}>--Chọn Role--</option>
                         {this.showRoles(roles)}
                     </Form.Control>
                     <br />
@@ -136,7 +136,7 @@ class UsersActionCMS extends Component {
                         <i className="glyphicon glyphicon-arrow-left"></i> Trở Lại
                     </Link>
                     <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu Lại
+                        <i className="glyphicon glyphicon-save"></i> Lưu người dùng
                             </button>
                 </form>
             </div>

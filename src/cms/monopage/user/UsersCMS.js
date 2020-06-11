@@ -129,23 +129,23 @@ class UsersCMS extends Component {
             return (
                 <div >
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>User Management</h1>
+                        <h1>Quản lý người dùng</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">First Name </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Họ </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="First Name"
+                                            placeholder="Họ"
                                             name="txtFirstName"
                                             value={txtFirstName}
                                             onChange={this.onChange}
                                         />
                                     </th>
-                                    <th><Form.Label id="basic-addon1">Last Name </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Tên </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Last Name"
+                                            placeholder="Tên"
                                             name="txtLastName"
                                             value={txtLastName}
                                             onChange={this.onChange}
@@ -161,10 +161,10 @@ class UsersCMS extends Component {
                                 </tr>
                                 <tr>
                                     <td>
-                                        <Form.Label id="basic-addon1">Phone number </Form.Label>
+                                        <Form.Label id="basic-addon1">Số điện thoại </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Phone number"
+                                            placeholder="Số điện thoại"
                                             name="txtPhoneNumber"
                                             value={txtPhoneNumber}
                                             onChange={this.onChange}
@@ -176,19 +176,19 @@ class UsersCMS extends Component {
                                             name="drbRole"
                                             value={drbRole}
                                             onChange={this.onChange}>
-                                            <option key={0} index={0} value={0}>--Select Role--</option>
+                                            <option key={0} index={0} value={0}>--Chọn Role--</option>
                                             {this.showRoles(roles)}
                                         </Form.Control>
                                     </td>
                                     <td>
-                                        <Form.Label>Show</Form.Label>
+                                        <Form.Label>Hiển thị</Form.Label>
                                         <Form.Control as="select"
                                             name="drbLimit"
                                             value={drbLimit}
                                             onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10</option>
-                                            <option key={1} index={1} value={15}>15</option>
-                                            <option key={2} index={2} value={20}>20</option>
+                                            <option key={0} index={0} value={10}>10 / trang</option>
+                                            <option key={1} index={1} value={15}>15 / trang</option>
+                                            <option key={2} index={2} value={20}>20 / trang</option>
                                         </Form.Control>
                                     </td>
                                 </tr>
@@ -197,7 +197,7 @@ class UsersCMS extends Component {
                                         <Button
                                             type="Submit"
                                             className="btn btn-inverse mb-5">
-                                            Search
+                                            Tìm kiếm
                                         </Button>
                                     </td>
                                     <td>
@@ -208,7 +208,7 @@ class UsersCMS extends Component {
                         </Table>
                     </Form>
                     <Link to="/users/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Add User
+                        <i className="glyphicon glyphicon-plus"></i> Thêm người dùng
                     </Link>
                     <UserList>
                         {this.showUser(this.state.searchList)}
