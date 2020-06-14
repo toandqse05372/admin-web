@@ -11,10 +11,10 @@ class UserItem extends Component {
     }
 
     render() {
-        var { users } = this.props;
+        var { users, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{users.id}</td>
+                <td>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{users.firstName}</td>
                 <td>{users.lastName}</td>
                 <td>{users.mail}</td>

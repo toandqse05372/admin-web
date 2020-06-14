@@ -16,18 +16,18 @@ class UsersCMS extends Component {
         this.state = {
             loaded: false,
             activePage: 1,
-            currentPage:1,
+            currentPage: 1,
             searchList: [],
             totalItems: 0,
             totalPage: 1,
-            
+
             txtFirstName: '',
             txtLastName: '',
             txtMail: '',
             txtPhoneNumber: '',
             drbRole: 0,
             drbLimit: 10,
-            
+
             paramBody: {
                 firstName: '',
                 lastName: '',
@@ -77,7 +77,7 @@ class UsersCMS extends Component {
         axios.get(URL.API_URL + '/user/searchMul',
             {
                 headers: {
-                    Authorization: "Token "+ JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
                 },
                 params: {
                     firstName: paramBody.firstName,
@@ -239,8 +239,8 @@ class UsersCMS extends Component {
                 limit: this.state.drbLimit,
             }
         }, () => {
-            this.receivedData(this.state.paramBody)   
-            this.state.currentPage = number     
+            this.receivedData(this.state.paramBody)
+            this.state.currentPage = number
         })
     }
 
@@ -249,7 +249,10 @@ class UsersCMS extends Component {
         var { onDeleteUser } = this.props;
         if (users.length > 0) {
             result = users.map((users, index) => {
-                return <UserItem users={users} key={index} index={index} onDeleteUser={onDeleteUser} />
+                return <UserItem users={users} key={index} index={index}
+                    onDeleteUser={onDeleteUser}
+                    limit={this.state.drbLimit}
+                    currentPage={this.state.currentPage} />
             });
         }
         return result;
@@ -283,7 +286,7 @@ const mapDispatchToProps = (dispatch, props) => {
             dispatch(actFetchRolesRequest());
         },
         onDeleteUser: (id) => {
-            dispatch(actDeleteUserRequest(id));           
+            dispatch(actDeleteUserRequest(id));
         },
     }
 }

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddCityRequest, actUpdateCityRequest, actGetCityRequest } from '../../../actions/indexCities';
+import { actAddTicketTypeRequest, actUpdateTicketTypeRequest, actGetTicketTypeRequest } from '../../../actions/indexTicketTypes';
 import { Form } from 'react-bootstrap'
 
-class CitiesActionCMS extends Component {
+class TicketTypesActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +20,7 @@ class CitiesActionCMS extends Component {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditCity(id)
+            this.props.onEditTicketType(id)
         } // else => add
     }
 
@@ -56,9 +56,9 @@ class CitiesActionCMS extends Component {
             detailDescription: txtDetailDescription
         };
         if (id) {
-            this.props.onUpdateCity(city);
+            this.props.onUpdateTicketType(city);
         } else {
-            this.props.onAddCity(city);
+            this.props.onAddTicketType(city);
         }
         this.props.history.goBack();
     }
@@ -107,16 +107,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddCity: (city) => {
-            dispatch(actAddCityRequest(city, props.history));
+        onAddTicketType: (city) => {
+            dispatch(actAddTicketTypeRequest(city, props.history));
         },
-        onUpdateCity: (city) => {
-            dispatch(actUpdateCityRequest(city, props.history));
+        onUpdateTicketType: (city) => {
+            dispatch(actUpdateTicketTypeRequest(city, props.history));
         },
-        onEditCity: (id) => {
-            dispatch(actGetCityRequest(id));
+        onGetTicketType: (id) => {
+            dispatch(actGetTicketTypeRequest(id));
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CitiesActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(TicketTypesActionCMS);

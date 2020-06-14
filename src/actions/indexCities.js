@@ -73,9 +73,9 @@ export const actGetCityRequest = (id) => {
     }
 }
 
-export const actGetCity = (game) => {
+export const actGetCity = (city) => {
     return {
-        type: Types.EDIT_CITIES,
-        game
+        type: Types.EDIT_CITY,
+        city
     }
 }

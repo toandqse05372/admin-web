@@ -1,17 +1,23 @@
 import { combineReducers } from 'redux';
-import parks from './parks';
+import places from './places';
 import users from './users';
 import roles from './roles';
 import cities from './cities';
-import parktypes from './parktypes';
+import games from './games';
+import paymentMethods from './paymentMethods';
+import placeTypes from './placeTypes';
 import itemEditing from './itemEditing';
+import ticketTypes from './ticketTypes';
 
 const appReducers = combineReducers({
     users,
-    parks,
+    places,
     roles,
-    parktypes,
+    placeTypes,
     cities,
+    ticketTypes,
+    games,
+    paymentMethods,
     itemEditing
 });
 

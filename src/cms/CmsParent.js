@@ -22,7 +22,6 @@ class CmsParent extends Component {
         var jwtDecode = require('jwt-decode')
         var token = localStorage.getItem('tokenLogin')
         var decoded = jwtDecode(token)
-        debugger
         this.setState({
             username: decoded.user.lastName + " " +decoded.user.firstName
         })
@@ -47,19 +46,16 @@ class CmsParent extends Component {
                                 <ul className="nav pull-right">
                                     {/* start: User Dropdown */}
                                     <li className="dropdown">
-                                        <a className="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <a className="btn dropdown-toggle" data-toggle="dropdown">
                                             <i className="halflings-icon white user" /> {username}
                                             <span className="caret" />
                                         </a>
 
                                         <ul className="dropdown-menu">
 
-                                            <li onClick={this.logOut}>
+                                            <li onClick={this.logOut} className='pointer'>
                                                 <a>
-                                                    <i
-                                                        type="button"
-                                                        onClick={this.logOut}
-                                                        className="halflings-icon off"
+                                                    <i type="button" onClick={this.logOut} className="halflings-icon off"
                                                     />
                                                     Đăng xuất
                                                 </a>

@@ -63,7 +63,7 @@ export const actUpdateGame = (game) => {
 
 export const actDeleteGameRequest = (id) => {
     return (dispatch) => {
-        return callApi(`Game/${id}`, 'DELETE', null).then(res => {
+        return callApi(`game/${id}`, 'DELETE', null).then(res => {
             dispatch(actDeleteGame(id));
         });
     }
@@ -78,7 +78,7 @@ export const actDeleteGame = (id) => {
 
 export const actGetGameRequest = (id) => {
     return dispatch => {
-        return callApi(`Game/${id}`, 'GET', null).then(res => {
+        return callApi(`game/${id}`, 'GET', null).then(res => {
             dispatch(actGetGame(res.data))
         });
     }

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddParkRequest, actUpdateParkRequest, actGetParkRequest, actFetchParkTypesRequest } from '../../../actions/indexParks';
-import { Form } from 'react-bootstrap'
+import { actAddGameRequest, actUpdateGameRequest, actGetGameRequest } from '../../../actions/indexGames';
 import Select from 'react-select'
 
 class GamesActionCMS extends Component {
@@ -12,24 +11,16 @@ class GamesActionCMS extends Component {
         this.state = {
             id: '',
             txtName: '',
-            txtCity: '',
-            txtOpenHours: '',
-            txtPhoneNumber: '',
             txtDescription: '',
-            drbCity: '',
-            drbParkType: ''
+            drbGameId: ''
         };
-    }
-
-    componentDidMount() {
-        this.props.fetchAllParkTypes();
     }
 
     componentWillMount() {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditPark(id)
+            this.props.onEditGame(id)
         } // else => add
     }
 
@@ -38,11 +29,9 @@ class GamesActionCMS extends Component {
             var { itemEditing } = nextProps;
             this.setState({
                 id: itemEditing.id,
-                txtName: itemEditing.name,
-                txtDescription: itemEditing.description,
-                txtPhoneNumber: itemEditing.phoneNumber,
-                txtOpenHours: itemEditing.openHours,
-                txtCity: itemEditing.cityId
+                txtName: itemEditing.gameName,
+                txtDescription: itemEditing.gameDescription,
+                drbPlaceId: itemEditing.placeId
             })
         }
     }
@@ -59,19 +48,17 @@ class GamesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber, drbParkType } = this.state;
-        var park = {
+        var { id, txtName, txtDescription, drbPlaceId } = this.state;
+        var game = {
             id: id,
-            name: txtName,
-            cityName: txtCity,
-            shortDescription: txtDescription,
-            openHours: txtOpenHours,
-            phoneNumber: txtPhoneNumber
+            gameName: txtName,
+            gameDescription: txtDescription,
+            PlaceId: drbPlaceId
         };
         if (id) {
-            this.props.onUpdatePark(park);
+            this.props.onUpdateGame(game);
         } else {
-            this.props.onAddPark(park);
+            this.props.onAddGame(game);
         }
         this.props.history.goBack();
     }
@@ -82,8 +69,7 @@ class GamesActionCMS extends Component {
             { value: 'strawberry', label: 'Strawberry' },
             { value: 'vanilla', label: 'Vanilla' }
         ]
-        var { txtName, txtDescription, drbCity, txtOpenHours, txtPhoneNumber, drbCity, drbParkType } = this.state;
-        var { cities, parktypes } = this.props
+        var { txtName, txtDescription, drbPlaceId } = this.state;
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
@@ -93,7 +79,7 @@ class GamesActionCMS extends Component {
                         <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="myDiv">
-                        <label>Công viên </label>
+                        <label>Địa điểm </label>
                         <div >
                         <Select options={options}/>
                         </div>
@@ -120,26 +106,21 @@ class GamesActionCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        itemEditing: state.itemEditing,
-        cities: state.cities,
-        parktypes: state.parktypes,
+        itemEditing: state.itemEditing
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddPark: (park) => {
-            dispatch(actAddParkRequest(park, props.history));
+        onAddGame: (game) => {
+            dispatch(actAddGameRequest(game, props.history));
         },
-        onUpdatePark: (park) => {
-            dispatch(actUpdateParkRequest(park, props.history));
+        onUpdateGame: (game) => {
+            dispatch(actUpdateGameRequest(game, props.history));
         },
-        onEditPark: (id) => {
-            dispatch(actGetParkRequest(id));
-        },
-        fetchAllParkTypes: () => {
-            dispatch(actFetchParkTypesRequest());
-        },
+        onEditGame: (id) => {
+            dispatch(actGetGameRequest(id));
+        }
     }
 }
 

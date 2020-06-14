@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import { connect } from 'react-redux';
-import ParkItem from './components/ParkItem';
-import ParkList from './components/ParkList';
-import { actFetchParksRequest, actDeleteParkRequest, actFetchParkTypesRequest } from '../../../actions/indexParks';
+import PlaceItem from './components/PlaceItem';
+import PlaceList from './components/PlaceList';
+import { actFetchPlacesRequest, actDeletePlaceRequest, actFetchPlaceTypesRequest } from '../../../actions/indexPlaces';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
 
-class ParksCMS extends Component {
+class PlacesCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,18 +21,18 @@ class ParksCMS extends Component {
             totalPage: 1,
             currentPage: 1,
 
-            txtParkName: '',
+            txtPlaceName: '',
             drBCity: 0,
             txtMail: '',
             txtPhoneNumber: '',
-            drbParkType: 0,
+            drbPlaceType: 0,
             txtAddress: '',
 
             paramBody: {
                 name: '',
                 address: '',
                 cityId: '',
-                parkTypeId: '',
+                PlaceTypeId: '',
                 role: 0,
                 page: 1,
                 limit: 10,
@@ -42,7 +42,7 @@ class ParksCMS extends Component {
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
         this.receivedData(this.state.paramBody);
         this.props.fetchAllCities();
-        this.props.fetchAllParkTypes();
+        this.props.fetchAllPlaceTypes();
     }
 
     onChange = (e) => {
@@ -66,7 +66,7 @@ class ParksCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/park/searchMUL',
+        axios.get(URL.API_URL + '/place/searchMUL',
             {
                 headers: {
                     Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
@@ -74,7 +74,7 @@ class ParksCMS extends Component {
                 params: {
                     name: paramBody.name,
                     address: paramBody.address,
-                    parkTypeId: paramBody.parkTypeId,
+                    place: paramBody.placeTypeId,
                     cityId: paramBody.cityId,
                     limit: paramBody.limit,
                     page: paramBody.page
@@ -97,8 +97,8 @@ class ParksCMS extends Component {
     render() {    
         if (this.state.loaded) {
             const pageList = []
-            const { txtParkName, txtAddress, drBCity, drbLimit, drbParkType, currentPage } = this.state;
-            var { cities, parktypes } = this.props;
+            const { txtPlaceName, txtAddress, drBCity, drbLimit, drbPlaceType, currentPage } = this.state;
+            var { cities, placeTypes } = this.props;
              for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }
@@ -119,16 +119,16 @@ class ParksCMS extends Component {
             return (
                 <div className="container span14">
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Quản lý công viên</h1>
+                        <h1>Quản lý địa điểm</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">Tên công viên </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Tên địa điểm</Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Tên công viên"
-                                            name="txtParkName"
-                                            value={txtParkName}
+                                            placeholder="Tên địa điểm"
+                                            name="txtPlaceName"
+                                            value={txtPlaceName}
                                             onChange={this.onChange}
                                         />
                                     </th>
@@ -153,11 +153,11 @@ class ParksCMS extends Component {
                                     <td>
                                         <Form.Label id="basic-addon1">Loại</Form.Label>
                                         <Form.Control as="select"
-                                            name="drbParkType"
-                                            value={drbParkType}
+                                            name="drbPlaceType"
+                                            value={drbPlaceType}
                                             onChange={this.onChange}>
                                             <option key={0} index={0} value={0}>-- Chọn loại--</option>
-                                            {this.showParkTypes(parktypes)}
+                                            {this.showPlaceTypes(placeTypes)}
                                         </Form.Control>
                                     </td>
                                     <td>
@@ -187,12 +187,12 @@ class ParksCMS extends Component {
                             </thead>
                         </Table>
                     </Form>
-                    <Link to="/parks/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Thêm công viên
+                    <Link to="/Places/add" className="btn btn-success mb-5 ">
+                        <i className="glyphicon glyphicon-plus"></i> Thêm địa điểm
                 </Link>
-                    <ParkList>
-                        {this.showParks(this.state.searchList)}
-                    </ParkList>
+                    <PlaceList>
+                        {this.showPlaces(this.state.searchList)}
+                    </PlaceList>
                     <div className="dataTables_paginate paging_bootstrap pagination">
                         <ul>
                             {renderPageNumbers}
@@ -208,10 +208,10 @@ class ParksCMS extends Component {
         this.setState({
             activePage: number,
             paramBody: {
-                name: this.state.txtParkName,
+                name: this.state.txtPlaceName,
                 address: this.state.txtAddress,
                 cityId: this.state.drBCity,
-                parkTypeId: this.state.drbParkType,
+                PlaceTypeId: this.state.drbPlaceType,
                 page: 1,
                 limit: 10,
             }
@@ -221,12 +221,16 @@ class ParksCMS extends Component {
         })
     }
 
-    showParks(parks) {
+    showPlaces(Places) {
         var result = null;
-        var { onDeletePark } = this.props;
-        if (parks.length > 0) {
-            result = parks.map((parks, index) => {
-                return <ParkItem parks={parks} key={index} index={index} onDeletePark={onDeletePark} />
+        var { onDeletePlace } = this.props;
+        if (Places.length > 0) {
+            result = Places.map((Places, index) => {
+                return <PlaceItem Places={Places} key={index}
+                 index={index} onDeletePlace={onDeletePlace}
+                  limit={this.state.drbLimit}
+                  currentPage = {this.state.currentPage}
+                  />
             });
         }
         return result;
@@ -242,11 +246,11 @@ class ParksCMS extends Component {
         return result;
     }
 
-    showParkTypes(parktypes) {
+    showPlaceTypes(Placetypes) {
         var result = null;
-        if (parktypes.length > 0) {
-            result = parktypes.map((parktypes, index) => {
-                return <option key={index} index={index} value={parktypes.id}>{parktypes.parkTypeName}</option>
+        if (Placetypes.length > 0) {
+            result = Placetypes.map((Placetypes, index) => {
+                return <option key={index} index={index} value={Placetypes.id}>{Placetypes.PlaceTypeName}</option>
             });
         }
         return result;
@@ -256,27 +260,27 @@ class ParksCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        parks: state.parks,
+        Places: state.Places,
         cities: state.cities,
-        parktypes: state.parktypes,
+        Placetypes: state.Placetypes,
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        fetchAllParks: (paramBody) => {
-            dispatch(actFetchParksRequest(paramBody));
+        fetchAllPlaces: (paramBody) => {
+            dispatch(actFetchPlacesRequest(paramBody));
         },
-        onDeletePark: (id) => {
-            dispatch(actDeleteParkRequest(id));
+        onDeletePlace: (id) => {
+            dispatch(actDeletePlaceRequest(id));
         },
         fetchAllCities: () => {
             dispatch(actFetchCitiesRequest());
         },
-        fetchAllParkTypes: () => {
-            dispatch(actFetchParkTypesRequest());
+        fetchAllPlaceTypes: () => {
+            dispatch(actFetchPlaceTypesRequest());
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParksCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(PlacesCMS);

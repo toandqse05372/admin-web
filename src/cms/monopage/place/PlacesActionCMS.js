@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddParkRequest, actUpdateParkRequest, actGetParkRequest, actFetchParkTypesRequest } from '../../../actions/indexParks';
+import { actAddPlaceRequest, actUpdatePlaceRequest, actGetPlaceRequest, actFetchPlaceTypesRequest } from '../../../actions/indexPlaces';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
 import { Form, FormControl } from 'react-bootstrap'
-import Select from 'react-select';
 
-class ParksActionCMS extends Component {
+class PlacesActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -14,8 +13,7 @@ class ParksActionCMS extends Component {
             id: '',
             txtName: '',
             drbCity: '',
-            drbParkType: '',
-            
+            drbPlaceType: '', 
             txtPhoneNumber: '',
             txtDescription: '',
             txtOpenHours: '',
@@ -24,14 +22,14 @@ class ParksActionCMS extends Component {
 
     componentDidMount() {
         this.props.fetchAllCities();
-        this.props.fetchAllParkTypes();
+        this.props.fetchAllPlaceTypes();
     }
 
     componentWillMount() {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditPark(id)
+            this.props.onEditPlace(id)
         } // else => add
     }
 
@@ -42,7 +40,7 @@ class ParksActionCMS extends Component {
                 id: itemEditing.id,
                 txtName: itemEditing.name,
                 drbCity: itemEditing.city == null ? "" :itemEditing.city.id,
-                drbParkType: itemEditing.parkType == null ? "" :itemEditing.parkType[0].id,
+                drbPlaceType: itemEditing.PlaceType == null ? "" :itemEditing.PlaceType[0].id,
                 txtDescription: itemEditing.description,
                 txtPhoneNumber: itemEditing.phoneNumber,
                 txtOpenHours: itemEditing.openHours,  
@@ -62,8 +60,8 @@ class ParksActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber, drbParkType } = this.state;
-        var park = {
+        var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber, drbPlaceType } = this.state;
+        var Place = {
             id: id,
             name: txtName,
             cityName: txtCity,
@@ -72,22 +70,22 @@ class ParksActionCMS extends Component {
             phoneNumber: txtPhoneNumber
         };
         if (id) {
-            this.props.onUpdatePark(park);
+            this.props.onUpdatePlace(Place);
         } else {
-            this.props.onAddPark(park);
+            this.props.onAddPlace(Place);
         }
         this.props.history.goBack();
     }
 
     render() {
-        var { txtName, txtDescription, drbCity, txtOpenHours, txtPhoneNumber, drbCity, drbParkType } = this.state;
-        var { cities, parktypes } = this.props
+        var { txtName, txtDescription, drbCity, txtOpenHours, txtPhoneNumber, drbCity, drbPlaceType } = this.state;
+        var { cities, placeTypes } = this.props
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
                     <legend>* Vui lòng nhập đầy đủ thông tin</legend>
                     <div className="form-group">
-                        <label>Tên công viên </label>
+                        <label>Tên địa điểm </label>
                         <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
@@ -103,11 +101,11 @@ class ParksActionCMS extends Component {
                     <div>
                         <label>Loại </label>
                         <Form.Control as="select"
-                            name="drbParkType"
-                            value={drbParkType}
+                            name="drbPlaceType"
+                            value={drbPlaceType}
                             onChange={this.onChange}>
                             <option key={0} index={0} value={0}>-- Chọn loại --</option>
-                            {this.showParkTypes(parktypes)}
+                            {this.showPlaceTypes(placeTypes)}
                         </Form.Control>
                         
                     </div>
@@ -132,11 +130,11 @@ class ParksActionCMS extends Component {
                             label="File" />
                     </div>
                     <br/>
-                    <Link to="/parks" className="btn btn-danger mr-5">
+                    <Link to="/Places" className="btn btn-danger mr-5">
                         <i className="glyphicon glyphicon-arrow-left"></i> Trở lại
                     </Link>
                     <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu công viên
+                        <i className="glyphicon glyphicon-save"></i> Lưu địa điểm
                             </button>
                 </form>
             </div>
@@ -153,11 +151,11 @@ class ParksActionCMS extends Component {
         return result;
     }
 
-    showParkTypes(parktypes) {
+    showPlaceTypes(placeTypes) {
         var result = null;
-        if (parktypes.length > 0) {
-            result = parktypes.map((parktypes, index) => {
-                return <option key={index} index={index} value={parktypes.id}>{parktypes.parkTypeName}</option>
+        if (placeTypes.length > 0) {
+            result = placeTypes.map((placeTypes, index) => {
+                return <option key={index} index={index} value={placeTypes.id}>{placeTypes.placeTypeName}</option>
             });
         }
         return result;
@@ -168,28 +166,28 @@ const mapStateToProps = state => {
     return {
         itemEditing: state.itemEditing,
         cities: state.cities,
-        parktypes: state.parktypes,
+        placeTypes: state.placeTypes,
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddPark: (park) => {
-            dispatch(actAddParkRequest(park, props.history));
+        onAddPlace: (place) => {
+            dispatch(actAddPlaceRequest(place, props.history));
         },
-        onUpdatePark: (park) => {
-            dispatch(actUpdateParkRequest(park, props.history));
+        onUpdatePlace: (place) => {
+            dispatch(actUpdatePlaceRequest(place, props.history));
         },
-        onEditPark: (id) => {
-            dispatch(actGetParkRequest(id));
+        onEditPlace: (id) => {
+            dispatch(actGetPlaceRequest(id));
         },
         fetchAllCities: () => {
             dispatch(actFetchCitiesRequest());
         },
-        fetchAllParkTypes: () => {
-            dispatch(actFetchParkTypesRequest());
+        fetchAllPlaceTypes: () => {
+            dispatch(actFetchPlaceTypesRequest());
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParksActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(PlacesActionCMS);

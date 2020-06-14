@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import { connect } from 'react-redux';
-import GameItem from './components/GameItem';
-import GameList from './components/GameList';
-import { actDeleteGameRequest } from '../../../actions/indexGames';
+import PaymentMethodItem from './components/PaymentMethodItem';
+import PaymentMethodList from './components/PaymentMethodList';
+import { actDeletePaymentMethodRequest } from '../../../actions/indexPaymentMethod';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
+import PaymentMethods from './PaymentMethods';
 
-class GamesCMS extends Component {
+class CitiesCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,19 +21,12 @@ class GamesCMS extends Component {
             totalPage: 1,
             currentPage: 1,
 
-            txtGameName: '',
-            drBCity: 0,
-            txtMail: '',
-            txtPhoneNumber: '',
-            drbPlaceType: 0,
-            txtAddress: '',
+            txtCityName: '',
 
             paramBody: {
                 name: '',
-                address: '',
-                cityId: '',
-                placeTypeId: '',
-                role: 0,
+                detailDescription: '',
+                shortDescription: '',
                 page: 1,
                 limit: 10,
             }
@@ -49,9 +43,9 @@ class GamesCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                name: value,
-                page: 1,
-                limit: 10,
+                name: (name === "txtCityName") ? value : this.state.txtCityName,
+                page: this.state.activePage,
+                limit: (name === "drbLimit") ? value : this.state.drbLimit,
             }
         })
 
@@ -63,16 +57,13 @@ class GamesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/game/searchMul',
+        axios.get(URL.API_URL + '/city/searchByName',
             {
                 headers: {
                     Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
                 },
                 params: {
                     name: paramBody.name,
-                    address: paramBody.address,
-                    placeTypeId: paramBody.placeTypeId,
-                    cityId: paramBody.cityId,
                     limit: paramBody.limit,
                     page: paramBody.page
                 }
@@ -94,8 +85,8 @@ class GamesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtPlaceName, txtAddress, drBCity, drbLimit, drbPlaceType, currentPage } = this.state;
-            var { cities, Placetypes } = this.props;
+            const { txtCityName, drbLimit, currentPage } = this.state;
+            var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }
@@ -116,29 +107,20 @@ class GamesCMS extends Component {
             return (
                 <div className="container span14">
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Quản lý trò chơi</h1>
+                        <h1>Quản lý tỉnh / thành</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">Tên trò chơi </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Tên tỉnh / thành </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Tên trò chơi"
-                                            name="txtPlaceName"
-                                            value={txtPlaceName}
+                                            placeholder="Tên tỉnh / thành"
+                                            name="txtCityName"
+                                            value={txtCityName}
                                             onChange={this.onChange}
                                         />
                                     </th>
-                                    <th><Form.Label id="basic-addon1">Địa điểm </Form.Label>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="Tên địa điểm"
-                                            name="txtPlaceName"
-                                            value={txtPlaceName}
-                                            onChange={this.onChange}
-                                        />
-                                    </th>
-                                    <td>
+                                    <th>
                                         <Form.Label>Hiển thị</Form.Label>
                                         <Form.Control as="select"
                                             name="drbLimit"
@@ -148,7 +130,7 @@ class GamesCMS extends Component {
                                             <option key={1} index={1} value={15}>15 / trang</option>
                                             <option key={2} index={2} value={20}>20 / trang</option>
                                         </Form.Control>
-                                    </td>
+                                    </th>
 
                                 </tr>
                                 <tr>
@@ -159,19 +141,16 @@ class GamesCMS extends Component {
                                             Tìm kiếm
                                         </Button>
                                     </td>
-                                    <td>
-
-                                    </td>
                                 </tr>
                             </thead>
                         </Table>
                     </Form>
-                    <Link to="/games/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Thêm trò chơi
+                    <Link to="/cities/add" className="btn btn-success mb-5 ">
+                        <i className="glyphicon glyphicon-plus"></i> Thêm tỉnh / thành
                 </Link>
-                    <GameList>
-                        {this.showGames(this.state.searchList)}
-                    </GameList>
+                    <PaymentMethodList>
+                        {this.showCities(this.state.searchList)}
+                    </PaymentMethodList>
                     <div className="dataTables_paginate paging_bootstrap pagination">
                         <ul>
                             {renderPageNumbers}
@@ -187,12 +166,9 @@ class GamesCMS extends Component {
         this.setState({
             activePage: number,
             paramBody: {
-                name: this.state.txtPlaceName,
-                address: this.state.txtAddress,
-                cityId: this.state.drBCity,
-                placeTypeId: this.state.drbPlaceType,
-                page: 1,
-                limit: 10,
+                name: this.state.txtCityName,
+                page: number,
+                limit: this.state.drbLimit,
             }
         }, () => {
             this.receivedData(this.state.paramBody)
@@ -200,14 +176,15 @@ class GamesCMS extends Component {
         })
     }
 
-    showGames(games) {
+    showCities(cities) {
         var result = null;
-        var { onDeleteGame } = this.props;
-        if (games.length > 0) {
-            result = games.map((games, index) => {
-                return <GameItem games={games} key={index} index={index} onDeleteGame={onDeleteGame} 
+        var { onDeletePaymentMethod } = this.props;
+        if (cities.length > 0) {
+            result = cities.map((cities, index) => {
+                return <PaymentMethodItem cities={cities} key={index} index={index} 
+                onDeletePaymentMethod={onDeletePaymentMethod}
                 limit={this.state.drbLimit}
-                currentPage = {this.state.currentPage}/>
+                    currentPage={this.state.currentPage} />
             });
         }
         return result;
@@ -217,16 +194,16 @@ class GamesCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        games: state.games
+        cities: state.cities
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onDeleteGame: (id) => {
-            dispatch(actDeleteGameRequest(id));
+        onDeletePaymentMethod: (id) => {
+            dispatch(actDeletePaymentMethodRequest(id));
         }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GamesCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(CitiesCMS);

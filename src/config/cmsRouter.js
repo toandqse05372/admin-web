@@ -1,19 +1,22 @@
 import React from 'react';
-import Park from '../cms/monopage/park/Parks';
-import User from '../cms/monopage/user/Users';
+import Places from '../cms/monopage/place/Places';
+import Users from '../cms/monopage/user/Users';
 import Games from '../cms/monopage/game/Games';
-import TransactionCMS from '../cms/monopage/transaction/TransactionCMS';
+import Cities from '../cms/monopage/city/Cities';
+import TicketTypes from '../cms/monopage/ticketType/TicketTypes';
+import PlaceTypes from '../cms/monopage/placeType/PlaceTypes';
+import PaymentMethods from '../cms/monopage/paymentMethod/PaymentMethods';
 
 const cmsRouters = [
     {
         path :'/users',
         exact: false,
-        main: ({history}) => <User history={history}/>
+        main: ({history}) => <Users history={history}/>
     },
     {
-        path :'/parks',
+        path :'/places',
         exact: false,
-        main: ({history}) => <Park history={history}/>
+        main: ({history}) => <Places history={history}/>
     },
     {
         path :'/games',
@@ -21,10 +24,25 @@ const cmsRouters = [
         main: ({history}) => <Games history={history}/>
     },
     {
-        path :'/transaction',
+        path :'/cities',
         exact: false,
-        main: ({history}) => <TransactionCMS history={history}/>
-    }
+        main: ({history}) => <Cities history={history}/>
+    },
+    {
+        path :'/ticketTypes',
+        exact: false,
+        main: ({history}) => <TicketTypes history={history}/>
+    },
+    {
+        path :'/placeTypes',
+        exact: false,
+        main: ({history}) => <PlaceTypes history={history}/>
+    },
+    {
+        path :'/paymentMethods',
+        exact: false,
+        main: ({history}) => <PaymentMethods history={history}/>
+    },
     
 ];
 export default cmsRouters;

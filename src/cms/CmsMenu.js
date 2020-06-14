@@ -9,8 +9,8 @@ const cmsMenus = [
         exact: true
     },
     {
-        name: 'Quản lý công viên',
-        to: '/parks',
+        name: 'Quản lý địa điểm',
+        to: '/places',
         exact: true
     },
     {
@@ -21,6 +21,21 @@ const cmsMenus = [
     {
         name: 'Quản lý tỉnh / thành',
         to: '/cities',
+        exact: true
+    },
+    {
+        name: 'Quản lý vé',
+        to: '/ticketTypes',
+        exact: true
+    },
+    {
+        name: 'Quản lý loại địa điểm',
+        to: '/placeTypes',
+        exact: true
+    },
+    {
+        name: 'Phương thức thanh toán',
+        to: '/paymentMethods',
         exact: true
     },
 ];

@@ -9,7 +9,7 @@ const games = (state = initialState, action) => {
         case Types.FETCH_GAMES:
             return action.games;
         case Types.ADD_GAME:
-            state.push(games);
+            state.push(game);
             return [...state];
         case Types.UPDATE_GAME:
             index = findIndex(state, game.id);

@@ -1,24 +1,21 @@
 import React, { Component } from 'react';
 
-class ParkList extends Component {
+class TicketTypeList extends Component {
 
     render() {
         return (
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Danh sách công viên</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Quản lý vé</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Tên công viên</th>
-                                <th>Tỉnh / Thành</th>
-                                <th>Mail</th>
-                                <th>Số điện thoại</th>
-                                <th>Giới thiệu</th>
+                                <th>ID</th>
+                                <th>Loại vé</th>
+                                <th>Số lượng còn lại</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -26,7 +23,7 @@ class ParkList extends Component {
                         </tbody>
                     </table>
                 </div>
-            </div>{/*/span*/}
+            </div>
         </div>
 
       
@@ -35,4 +32,4 @@ class ParkList extends Component {
 
 }
 
-export default ParkList;
+export default TicketTypeList;

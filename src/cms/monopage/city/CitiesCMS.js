@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import { connect } from 'react-redux';
-import GameItem from './components/CityItem';
-import GameList from './components/CityList';
-import { actDeleteGameRequest } from '../../../actions/indexGames';
+import CityItem from './components/CityItem';
+import CityList from './components/CityList';
+import { actDeleteCityRequest } from '../../../actions/indexCities';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
 
@@ -20,19 +20,12 @@ class CitiesCMS extends Component {
             totalPage: 1,
             currentPage: 1,
 
-            txtGameName: '',
-            drBCity: 0,
-            txtMail: '',
-            txtPhoneNumber: '',
-            drbParkType: 0,
-            txtAddress: '',
+            txtCityName: '',
 
             paramBody: {
                 name: '',
-                address: '',
-                cityId: '',
-                parkTypeId: '',
-                role: 0,
+                detailDescription: '',
+                shortDescription: '',
                 page: 1,
                 limit: 10,
             }
@@ -49,9 +42,9 @@ class CitiesCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                name: value,
-                page: 1,
-                limit: 10,
+                name: (name === "txtCityName") ? value : this.state.txtCityName,
+                page: this.state.activePage,
+                limit: (name === "drbLimit") ? value : this.state.drbLimit,
             }
         })
 
@@ -63,16 +56,13 @@ class CitiesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/game/searchMul',
+        axios.get(URL.API_URL + '/city/searchByName',
             {
                 headers: {
                     Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
                 },
                 params: {
                     name: paramBody.name,
-                    address: paramBody.address,
-                    parkTypeId: paramBody.parkTypeId,
-                    cityId: paramBody.cityId,
                     limit: paramBody.limit,
                     page: paramBody.page
                 }
@@ -94,8 +84,8 @@ class CitiesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtParkName, txtAddress, drBCity, drbLimit, drbParkType, currentPage } = this.state;
-            var { cities, parktypes } = this.props;
+            const { txtCityName, drbLimit, currentPage } = this.state;
+            var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }
@@ -116,27 +106,20 @@ class CitiesCMS extends Component {
             return (
                 <div className="container span14">
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Quản lý trò chơi</h1>
+                        <h1>Quản lý tỉnh / thành</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">Tên trò chơi </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Tên tỉnh / thành </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Park Name"
-                                            name="txtParkName"
-                                            value={txtParkName}
+                                            placeholder="Tên tỉnh / thành"
+                                            name="txtCityName"
+                                            value={txtCityName}
                                             onChange={this.onChange}
                                         />
                                     </th>
-                                    <th><Form.Label id="basic-addon1">Công viên </Form.Label>
-                                        <Form.Control as="select"
-                                            name="drBCity"
-                                            value={drBCity}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={0}>-- Chọn Công viên --</option>
-                                        </Form.Control></th>
-                                    <td>
+                                    <th>
                                         <Form.Label>Hiển thị</Form.Label>
                                         <Form.Control as="select"
                                             name="drbLimit"
@@ -146,7 +129,7 @@ class CitiesCMS extends Component {
                                             <option key={1} index={1} value={15}>15 / trang</option>
                                             <option key={2} index={2} value={20}>20 / trang</option>
                                         </Form.Control>
-                                    </td>
+                                    </th>
 
                                 </tr>
                                 <tr>
@@ -157,19 +140,16 @@ class CitiesCMS extends Component {
                                             Tìm kiếm
                                         </Button>
                                     </td>
-                                    <td>
-
-                                    </td>
                                 </tr>
                             </thead>
                         </Table>
                     </Form>
-                    <Link to="/games/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Thêm trò chơi
+                    <Link to="/cities/add" className="btn btn-success mb-5 ">
+                        <i className="glyphicon glyphicon-plus"></i> Thêm tỉnh / thành
                 </Link>
-                    <GameList>
-                        {this.showGames(this.state.searchList)}
-                    </GameList>
+                    <CityList>
+                        {this.showCities(this.state.searchList)}
+                    </CityList>
                     <div className="dataTables_paginate paging_bootstrap pagination">
                         <ul>
                             {renderPageNumbers}
@@ -185,12 +165,9 @@ class CitiesCMS extends Component {
         this.setState({
             activePage: number,
             paramBody: {
-                name: this.state.txtParkName,
-                address: this.state.txtAddress,
-                cityId: this.state.drBCity,
-                parkTypeId: this.state.drbParkType,
-                page: 1,
-                limit: 10,
+                name: this.state.txtCityName,
+                page: number,
+                limit: this.state.drbLimit,
             }
         }, () => {
             this.receivedData(this.state.paramBody)
@@ -198,12 +175,14 @@ class CitiesCMS extends Component {
         })
     }
 
-    showGames(games) {
+    showCities(cities) {
         var result = null;
-        var { onDeleteGame } = this.props;
-        if (games.length > 0) {
-            result = games.map((games, index) => {
-                return <GameItem games={games} key={index} index={index} onDeleteGame={onDeleteGame} />
+        var { onDeleteCity } = this.props;
+        if (cities.length > 0) {
+            result = cities.map((cities, index) => {
+                return <CityItem cities={cities} key={index} index={index} onDeleteCity={onDeleteCity}
+                limit={this.state.drbLimit}
+                    currentPage={this.state.currentPage} />
             });
         }
         return result;
@@ -213,14 +192,14 @@ class CitiesCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        games: state.games
+        cities: state.cities
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onDeleteGame: (id) => {
-            dispatch(actDeleteGameRequest(id));
+        onDeleteCity: (id) => {
+            dispatch(actDeleteCityRequest(id));
         }
     }
 }

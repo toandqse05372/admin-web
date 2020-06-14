@@ -13,7 +13,7 @@ class CityList extends Component {
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Tỉnh / thành</th>
                                 <th>Giới thiệu ngắn</th>
                             </tr>
@@ -23,7 +23,7 @@ class CityList extends Component {
                         </tbody>
                     </table>
                 </div>
-            </div>{/*/span*/}
+            </div>
         </div>
 
       

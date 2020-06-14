@@ -6,7 +6,7 @@ export default function callApi(endpoint, method = 'GET', body) {
         method,
         url: `${Config.API_URL}/${endpoint}`,
         headers: {
-            Authorization: localStorage.getItem('tokenLogin')
+            Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
         },
         data: body
     });

@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 
-class GameList extends Component {
+class PlaceList extends Component {
 
     render() {
         return (
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Danh sách trò chơi</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Danh sách địa điểm</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tên trò chơi</th>
+                                <th>Tên địa điểm</th>
+                                <th>Tỉnh / Thành</th>
+                                <th>Mail</th>
+                                <th>Số điện thoại</th>
                                 <th>Giới thiệu</th>
-                                <th>Ticket Type</th>
-                                <th>Địa điểm</th>
-                                <th>Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,4 +35,4 @@ class GameList extends Component {
 
 }
 
-export default GameList;
+export default PlaceList;

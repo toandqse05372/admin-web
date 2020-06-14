@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddCityRequest, actUpdateCityRequest, actGetCityRequest } from '../../../actions/indexCities';
+import { actAddPlaceTypeRequest, actUpdatePlaceTypeRequest, actGetPlaceTypeRequest } from '../../../actions/indexPlaceTypes';
 import { Form } from 'react-bootstrap'
 
-class CitiesActionCMS extends Component {
+class PlaceTypesActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +20,7 @@ class CitiesActionCMS extends Component {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditCity(id)
+            this.props.onGetPlaceType(id)
         } // else => add
     }
 
@@ -56,9 +56,9 @@ class CitiesActionCMS extends Component {
             detailDescription: txtDetailDescription
         };
         if (id) {
-            this.props.onUpdateCity(city);
+            this.props.onUpdatePlaceType(city);
         } else {
-            this.props.onAddCity(city);
+            this.props.onAddPlaceType(city);
         }
         this.props.history.goBack();
     }
@@ -90,7 +90,7 @@ class CitiesActionCMS extends Component {
                         <i className="glyphicon glyphicon-arrow-left"></i> Trở lại
                     </Link>
                     <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu tỉnh / thành
+                        <i className="glyphicon glyphicon-save"></i> Lưu loại địa điểm
                             </button>
                 </form>
             </div>
@@ -107,16 +107,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddCity: (city) => {
-            dispatch(actAddCityRequest(city, props.history));
+        onAddPlaceType: (city) => {
+            dispatch(actAddPlaceTypeRequest(city, props.history));
         },
-        onUpdateCity: (city) => {
-            dispatch(actUpdateCityRequest(city, props.history));
+        onUpdatePlaceType: (city) => {
+            dispatch(actUpdatePlaceTypeRequest(city, props.history));
         },
-        onEditCity: (id) => {
-            dispatch(actGetCityRequest(id));
+        onGetPlaceType: (id) => {
+            dispatch(actGetPlaceTypeRequest(id));
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CitiesActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(PlaceTypesActionCMS);

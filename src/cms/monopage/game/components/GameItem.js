@@ -5,24 +5,24 @@ class GameItem extends Component {
 
     onDelete = (id) => {
         if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-            this.props.onDeletePark(id);
+            this.props.onDeleteGame(id);
             window.location.reload();
         }
     }
 
     render() {
-        var { games, index } = this.props;
+        var { games, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{games.id}</td>
+                <td>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{games.gameName}</td>
                 <td>{games.gameDescription}</td>
                 <td>{games.ticketTypeName}</td>
                 <td>{games.ticketInventoryStatus}</td>
-                <td>{games.park}</td>
+                <td>{games.place}</td>
 
                 <td className="center">
-                    <Link to={`/parks/${games.id}/edit`} className="btn btn-info">
+                    <Link to={`/games/${games.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
                     <a className="btn btn-danger" onClick={() => this.onDelete(games.id)}>

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { BrowserRouter as  Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import routes from './routers';
 
-class Parks extends Component {
+class TicketTypes extends Component {
     render() {
         return (<div>
             {this.showContentMenus(routes)}
@@ -31,4 +31,4 @@ class Parks extends Component {
 
 }
 
-export default Parks;
+export default TicketTypes;
