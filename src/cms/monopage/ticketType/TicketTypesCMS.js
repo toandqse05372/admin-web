@@ -20,7 +20,7 @@ class TicketTypesCMS extends Component {
             totalPage: 1,
             currentPage: 1,
 
-            txtCityName: '',
+            txtTicketTypeName: '',
 
             paramBody: {
                 name: '',
@@ -42,9 +42,9 @@ class TicketTypesCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                // name: (name === "txtCityName") ? value : this.state.txtCityName,
-                // page: this.state.activePage,
-                // limit: (name === "drbLimit") ? value : this.state.drbLimit,
+                typeName: (name === "txtTicketTypeName") ? value : this.state.txtTicketTypeName,
+                page: this.state.activePage,
+                limit: (name === "drbLimit") ? value : this.state.drbLimit,
             }
         })
 
@@ -56,20 +56,23 @@ class TicketTypesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/ticketType',
+        axios.get(URL.API_URL + '/ticketType/searchTypeName',
             {
                 headers: {
                     Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
                 },
-               
+                params: {
+                    typeName: paramBody.typeName,
+                    page: paramBody.page,
+                    limit: paramBody.limit,
+                }   
             }
         ).then(res => {
             //set state
             this.setState({
                 totalPage: res.data.totalPage,
-                searchList: res.data,
+                searchList: res.data.listResult,
                 totalItems: res.data.totalItems,
-                totalPage: res.data.totalPage
             })
         }).catch(function (error) {
             console.log(error.response);
@@ -80,7 +83,7 @@ class TicketTypesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtCityName, drbLimit, currentPage } = this.state;
+            const { txtTicketTypeName, drbLimit, currentPage } = this.state;
             var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
@@ -102,28 +105,28 @@ class TicketTypesCMS extends Component {
             return (
                 <div className="container span14">
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Quản lý loại vé</h1>
+                        <h1>Ticket Manager</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">Tên loại vé </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Ticket Type Name</Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Tên tỉnh / thành"
-                                            name="txtCityName"
-                                            value={txtCityName}
+                                            placeholder="Ticket Type Name"
+                                            name="txtTicketTypeName"
+                                            value={txtTicketTypeName}
                                             onChange={this.onChange}
                                         />
                                     </th>
                                     <th>
-                                        <Form.Label>Hiển thị</Form.Label>
+                                        <Form.Label>Show</Form.Label>
                                         <Form.Control as="select"
                                             name="drbLimit"
                                             value={drbLimit}
                                             onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10 / trang</option>
-                                            <option key={1} index={1} value={15}>15 / trang</option>
-                                            <option key={2} index={2} value={20}>20 / trang</option>
+                                            <option key={0} index={0} value={10}>10 / page</option>
+                                            <option key={1} index={1} value={15}>15 / page</option>
+                                            <option key={2} index={2} value={20}>20 / page</option>
                                         </Form.Control>
                                     </th>
 
@@ -133,7 +136,7 @@ class TicketTypesCMS extends Component {
                                         <Button
                                             type="Submit"
                                             className="btn btn-inverse mb-5">
-                                            Tìm kiếm
+                                            Search
                                         </Button>
                                     </td>
                                 </tr>
@@ -141,7 +144,7 @@ class TicketTypesCMS extends Component {
                         </Table>
                     </Form>
                     <Link to="/ticketTypes/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Thêm loại vé
+                        <i className="glyphicon glyphicon-plus"></i> Add Ticket Type
                 </Link>
                     <TicketTypeList>
                         {this.showTicketTypes(this.state.searchList)}
@@ -161,7 +164,7 @@ class TicketTypesCMS extends Component {
         this.setState({
             activePage: number,
             paramBody: {
-                name: this.state.txtCityName,
+                typeName: this.state.txtTicketTypeName,
                 page: number,
                 limit: this.state.drbLimit,
             }

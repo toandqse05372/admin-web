@@ -5,18 +5,20 @@ import roles from './roles';
 import cities from './cities';
 import games from './games';
 import paymentMethods from './paymentMethods';
-import placeTypes from './placeTypes';
+import categories from './categories';
 import itemEditing from './itemEditing';
 import ticketTypes from './ticketTypes';
+import orders from './orders';
 
 const appReducers = combineReducers({
     users,
     places,
     roles,
-    placeTypes,
+    categories,
     cities,
     ticketTypes,
     games,
+    orders,
     paymentMethods,
     itemEditing
 });

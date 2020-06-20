@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import routes from './routers';
 
-class PlaceTypes extends Component {
+class Categories extends Component {
     render() {
         return (<div>
             {this.showContentMenus(routes)}
@@ -31,4 +31,4 @@ class PlaceTypes extends Component {
 
 }
 
-export default PlaceTypes;
+export default Categories;

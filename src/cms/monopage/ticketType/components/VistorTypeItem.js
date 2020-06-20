@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-class PaymentMethodItem extends Component {
+class VistorTypeItem extends Component {
 
     onDelete = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
@@ -11,18 +11,18 @@ class PaymentMethodItem extends Component {
     }
 
     render() {
-        var { paymentMethods, index, limit, currentPage } = this.props;
+        var { ages, index, limit, currentPage } = this.props;
         return (
-            <tr> 
+            <tr>
                 <td>{(currentPage - 1)*limit + index + 1}</td>
-                {/* <td>{paymentMethods.name}</td>
-                <td>{paymentMethods.status}</td> */}
+                <td>{ages.name}</td>
+                <td>{ages.shortDescription}</td>
 
                 <td className="center">
-                    <Link to={`/paymentMethods/${paymentMethods.id}/edit`} className="btn btn-info">
+                    <Link to={`/ages/${ages.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDelete(paymentMethods.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDelete(ages.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
@@ -32,4 +32,4 @@ class PaymentMethodItem extends Component {
     }
 }
 
-export default PaymentMethodItem;
+export default VistorTypeItem;

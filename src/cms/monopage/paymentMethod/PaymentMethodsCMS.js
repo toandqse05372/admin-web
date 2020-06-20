@@ -13,7 +13,7 @@ class CitiesCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: false,
+            loaded: true,
             activePage: 1,
             drbLimit: 10,
             searchList: [],
@@ -21,7 +21,7 @@ class CitiesCMS extends Component {
             totalPage: 1,
             currentPage: 1,
 
-            txtCityName: '',
+            txtName: '',
 
             paramBody: {
                 name: '',
@@ -43,7 +43,7 @@ class CitiesCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                name: (name === "txtCityName") ? value : this.state.txtCityName,
+                name: (name === "txtName") ? value : this.state.txtName,
                 page: this.state.activePage,
                 limit: (name === "drbLimit") ? value : this.state.drbLimit,
             }
@@ -85,7 +85,7 @@ class CitiesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtCityName, drbLimit, currentPage } = this.state;
+            const { txtName, drbLimit, currentPage } = this.state;
             var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
@@ -107,28 +107,28 @@ class CitiesCMS extends Component {
             return (
                 <div className="container span14">
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Quản lý tỉnh / thành</h1>
+                        <h1>Payment Method Manager</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">Tên tỉnh / thành </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Payment Method Name </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Tên tỉnh / thành"
-                                            name="txtCityName"
-                                            value={txtCityName}
+                                            placeholder="Payment Method Name"
+                                            name="txtName"
+                                            value={txtName}
                                             onChange={this.onChange}
                                         />
                                     </th>
                                     <th>
-                                        <Form.Label>Hiển thị</Form.Label>
+                                        <Form.Label>Show</Form.Label>
                                         <Form.Control as="select"
                                             name="drbLimit"
                                             value={drbLimit}
                                             onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10 / trang</option>
-                                            <option key={1} index={1} value={15}>15 / trang</option>
-                                            <option key={2} index={2} value={20}>20 / trang</option>
+                                            <option key={0} index={0} value={10}>10 / page</option>
+                                            <option key={1} index={1} value={15}>15 / page</option>
+                                            <option key={2} index={2} value={20}>20 / page</option>
                                         </Form.Control>
                                     </th>
 
@@ -138,18 +138,18 @@ class CitiesCMS extends Component {
                                         <Button
                                             type="Submit"
                                             className="btn btn-inverse mb-5">
-                                            Tìm kiếm
+                                            Search
                                         </Button>
                                     </td>
                                 </tr>
                             </thead>
                         </Table>
                     </Form>
-                    <Link to="/cities/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Thêm tỉnh / thành
+                    <Link to="/paymentMethods/add" className="btn btn-success mb-5 ">
+                        <i className="glyphicon glyphicon-plus"></i> Add payment method
                 </Link>
                     <PaymentMethodList>
-                        {this.showCities(this.state.searchList)}
+                        {/* {this.showCities(this.state.searchList)} */}
                     </PaymentMethodList>
                     <div className="dataTables_paginate paging_bootstrap pagination">
                         <ul>
@@ -166,7 +166,7 @@ class CitiesCMS extends Component {
         this.setState({
             activePage: number,
             paramBody: {
-                name: this.state.txtCityName,
+                name: this.state.txtName,
                 page: number,
                 limit: this.state.drbLimit,
             }
@@ -176,12 +176,12 @@ class CitiesCMS extends Component {
         })
     }
 
-    showCities(cities) {
+    showPaymentMethods(methods) {
         var result = null;
         var { onDeletePaymentMethod } = this.props;
-        if (cities.length > 0) {
-            result = cities.map((cities, index) => {
-                return <PaymentMethodItem cities={cities} key={index} index={index} 
+        if (methods.length > 0) {
+            result = methods.map((method, index) => {
+                return <PaymentMethodItem method={method} key={index} index={index} 
                 onDeletePaymentMethod={onDeletePaymentMethod}
                 limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />

@@ -15,6 +15,10 @@ const games = (state = initialState, action) => {
             index = findIndex(state, game.id);
             state[index] = game;
             return [...state];
+        case Types.CHANGE_STATUS_GAME:
+            index = findIndex(state, game.id);
+            state[index] = game;
+            return [...state];
         case Types.DELETE_GAME:
             index = findIndex(state, id);
             state.splice(index, 1);

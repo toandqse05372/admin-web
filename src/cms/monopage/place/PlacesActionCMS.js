@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddPlaceRequest, actUpdatePlaceRequest, actGetPlaceRequest, actFetchPlaceTypesRequest } from '../../../actions/indexPlaces';
+import { actAddPlaceRequest, actUpdatePlaceRequest, actGetPlaceRequest } from '../../../actions/indexPlaces';
+import { actFetchCategoriesRequest } from '../../../actions/indexCategories';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
 import { Form, FormControl } from 'react-bootstrap'
+import Select from 'react-select'
 
 class PlacesActionCMS extends Component {
 
@@ -12,17 +14,25 @@ class PlacesActionCMS extends Component {
         this.state = {
             id: '',
             txtName: '',
-            drbCity: '',
-            drbPlaceType: '', 
+            txtAddress: '',
+            txtShortDescription: '',
+            txtDetailDescription: '',
+            txtMail: '',
             txtPhoneNumber: '',
+            fileImage: [],
+            drbCityId: '',
+            drbCategory: [],
             txtDescription: '',
             txtOpenHours: '',
+            txtStatus: '',
+            loaded: false,
+            fetched: false
         };
     }
 
     componentDidMount() {
         this.props.fetchAllCities();
-        this.props.fetchAllPlaceTypes();
+        this.props.fetchAlCategories();
     }
 
     componentWillMount() {
@@ -36,15 +46,24 @@ class PlacesActionCMS extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.match && nextProps.itemEditing) {
             var { itemEditing } = nextProps;
-            this.setState({
-                id: itemEditing.id,
-                txtName: itemEditing.name,
-                drbCity: itemEditing.city == null ? "" :itemEditing.city.id,
-                drbPlaceType: itemEditing.PlaceType == null ? "" :itemEditing.PlaceType[0].id,
-                txtDescription: itemEditing.description,
-                txtPhoneNumber: itemEditing.phoneNumber,
-                txtOpenHours: itemEditing.openHours,  
-            })
+            if (typeof itemEditing.id !== "undefined") {
+                this.setState({
+                    id: itemEditing.id,
+                    txtName: itemEditing.name,
+                    txtShortDescription: itemEditing.shortDescription,
+                    txtDetailDescription: itemEditing.detailDescription,
+                    txtMail: itemEditing.mail,
+                    txtPhoneNumber: itemEditing.phoneNumber,
+                    fileImage: itemEditing.placeImageLink,
+                    drbCityId: itemEditing.cityId,
+                    drbCategory: itemEditing.categoryId,
+                    txtStatus: itemEditing.status,
+                    txtPhoneNumber: itemEditing.phoneNumber,
+                    txtOpenHours: itemEditing.openHours,
+                    txtAddress: itemEditing.address,
+                    fetched: true
+                })
+            }
         }
     }
 
@@ -60,85 +79,138 @@ class PlacesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtDescription, txtCity, txtOpenHours, txtPhoneNumber, drbPlaceType } = this.state;
-        var Place = {
+        var { id, txtName, txtShortDescription, txtDetailDescription, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory } = this.state;
+        var place = {
             id: id,
             name: txtName,
-            cityName: txtCity,
-            shortDescription: txtDescription,
-            openHours: txtOpenHours,
-            phoneNumber: txtPhoneNumber
+            address: txtAddress,
+            shortDescription: txtShortDescription,
+            detailDescription: txtDetailDescription,
+            mail: txtMail,
+            cityId: drbCityId,
+            phoneNumber: txtPhoneNumber,
+            categoryId: [drbCategory]
         };
         if (id) {
-            this.props.onUpdatePlace(Place);
+            this.props.onUpdatePlace(place);
         } else {
-            this.props.onAddPlace(Place);
+            this.props.onAddPlace(place);
         }
-        this.props.history.goBack();
     }
 
+    // onChangeCategory = (selectedOption) => {
+    //     var selectedKey = []
+    //     for (let i = 0; i < selectedOption.length; i++) {
+    //         selectedKey.push(selectedOption[i].value)
+    //     }
+    //     this.setState({
+    //         drbCategory: selectedKey
+    //     })
+    // }
+
     render() {
-        var { txtName, txtDescription, drbCity, txtOpenHours, txtPhoneNumber, drbCity, drbPlaceType } = this.state;
-        var { cities, placeTypes } = this.props
-        return (
-            <div className="container">
-                <form onSubmit={this.onSubmit}>
-                    <legend>* Vui lòng nhập đầy đủ thông tin</legend>
-                    <div className="form-group">
-                        <label>Tên địa điểm </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Tỉnh / Thành </label>
-                        <Form.Control as="select"
-                            name="drbCity"
-                            value={drbCity}
-                            onChange={this.onChange}>
-                            <option key={0} index={0} value={0}>-- Chọn Tỉnh / Thành --</option>
-                            {this.showCities(cities)}
-                        </Form.Control>
-                    </div>
-                    <div>
-                        <label>Loại </label>
-                        <Form.Control as="select"
-                            name="drbPlaceType"
-                            value={drbPlaceType}
-                            onChange={this.onChange}>
-                            <option key={0} index={0} value={0}>-- Chọn loại --</option>
-                            {this.showPlaceTypes(placeTypes)}
-                        </Form.Control>
-                        
-                    </div>
-                    {/* <div className="form-group">
-                        <label>Open hours </label>
-                        <TimePicker/>
-                    </div> */}
-                    <div className="form-group">
-                        <label>Số điện thoại </label>
-                        <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Giới thiệu </label>
-                        <textarea onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <div className="form-group">
-                        <label>Chọn file ảnh </label>
-                        <FormControl id="formControlsFile"
-                            type="file"
-                            multiple
-                            label="File" />
-                    </div>
-                    <br/>
-                    <Link to="/Places" className="btn btn-danger mr-5">
-                        <i className="glyphicon glyphicon-arrow-left"></i> Trở lại
-                    </Link>
-                    <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu địa điểm
-                            </button>
-                </form>
-            </div>
-        );
+        var { txtName, txtShortDescription, txtDetailDescription, drbCityId, txtAddress, txtPhoneNumber, txtMail, drbCategory, loaded } = this.state;
+        var { cities, categories } = this.props
+        var options = []
+        var renderOpt = []
+        if (categories.length > 0 && this.state.fetched && typeof drbCategory !== "undefined") {
+            for (let i = 0; i < categories.length; i++) {
+                var option = { value: categories[i].id, label: categories[i].categoryName }
+                options.push(option);
+                if (drbCategory.includes(option.value)) {
+                    renderOpt.push(option)
+                }
+            }
+            loaded = true;
+        }
+        if(loaded){
+            return (
+                <div className="container">
+                    <form onSubmit={this.onSubmit}>
+                        <legend>* Please enter full information</legend>
+                        <div className="form-group">
+                            <label>Place Name </label>
+                            <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        </div>
+                        {/* <div>
+                            <label>Category </label>
+                            <Form.Control as="select"
+                                name="drbCategory"
+                                value={drbCategory}
+                                onChange={this.onChange}>
+                                <option key={0} index={0} value={0}>-- Choose Category --</option>
+                                {this.showCategories(categories)}
+                            </Form.Control>
+                        </div> */}
+                        <div className="myDiv">
+                            <label>Category </label>
+                            <div >
+                                <Select
+                                    defaultValue={options[0]}
+                                    isMulti
+                                    options={options}
+                                    // onChange={this.onChangeCategory}
+                                />
+                            </div>
+    
+                        </div>
+                        <div className="form-group">
+                            <label>City </label>
+                            <Form.Control as="select"
+                                name="drbCityId"
+                                value={drbCityId}
+                                onChange={this.onChange}>
+                                <option key={0} index={0} value={0}>-- Choose City --</option>
+                                {this.showCities(cities)}
+                            </Form.Control>
+                        </div>
+    
+                        {/* <div className="form-group">
+                            <label>Open hours </label>
+                            <TimePicker/>
+                        </div> */}
+                        <div className="form-group">
+                            <label>Address </label>
+                            <input onChange={this.onChange} value={txtAddress} name="txtAddress" type="text" className="form-control" />
+                        </div>
+                        <div className="form-group">
+                            <label>Phone Number </label>
+                            <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
+                        </div>
+                        <div className="form-group">
+                            <label>Mail </label>
+                            <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                        </div>
+                        <div className="form-group">
+                            <label>Short Description </label>
+                            <textarea onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
+                            </textarea>
+                        </div>
+                        <div className="form-group">
+                            <label>Detail Description </label>
+                            <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
+                            </textarea>
+                        </div>
+                        <div className="form-group">
+                            <label>Choose image file </label>
+                            <FormControl id="formControlsFile"
+                                type="file"
+                                multiple
+                                label="File" />
+                        </div>
+                        <br />
+                        <Link to="/Places" className="btn btn-danger mr-5">
+                            <i className="glyphicon glyphicon-arrow-left"></i> Back
+                        </Link>
+                        <button type="submit" className="btn btn-primary">
+                            <i className="glyphicon glyphicon-save"></i> Save Place
+                                </button>
+                    </form>
+                </div>
+            );
+        }else{
+            return ""
+        }
     }
 
     showCities(cities) {
@@ -151,11 +223,11 @@ class PlacesActionCMS extends Component {
         return result;
     }
 
-    showPlaceTypes(placeTypes) {
+    showCategories(categories) {
         var result = null;
-        if (placeTypes.length > 0) {
-            result = placeTypes.map((placeTypes, index) => {
-                return <option key={index} index={index} value={placeTypes.id}>{placeTypes.placeTypeName}</option>
+        if (categories.length > 0) {
+            result = categories.map((categories, index) => {
+                return <option key={index} index={index} value={categories.id}>{categories.categoryName}</option>
             });
         }
         return result;
@@ -166,7 +238,7 @@ const mapStateToProps = state => {
     return {
         itemEditing: state.itemEditing,
         cities: state.cities,
-        placeTypes: state.placeTypes,
+        categories: state.categories,
     }
 }
 
@@ -184,8 +256,8 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchAllCities: () => {
             dispatch(actFetchCitiesRequest());
         },
-        fetchAllPlaceTypes: () => {
-            dispatch(actFetchPlaceTypesRequest());
+        fetchAlCategories: () => {
+            dispatch(actFetchCategoriesRequest());
         },
     }
 }

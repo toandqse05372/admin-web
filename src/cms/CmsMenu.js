@@ -4,39 +4,52 @@ import './cmsMenu.css';
 
 const cmsMenus = [
     {
-        name: 'Quản lý người dùng',
+        name: 'User Manager',
         to: '/users',
-        exact: true
+        exact: true,
+        role: ["ADMIN", "STAFF"]
     },
     {
-        name: 'Quản lý địa điểm',
+        name: 'Place Manager',
         to: '/places',
-        exact: true
+        exact: true,
+        role: ["ADMIN"]
     },
     {
-        name: 'Quản lý trò chơi',
+        name: 'Category Manager',
+        to: '/categories',
+        exact: true,
+        role: ["ADMIN"]
+    },
+    {
+        name: 'Game Manager',
         to: '/games',
-        exact: true
+        exact: true,
+        role: ["ADMIN"]
     },
     {
-        name: 'Quản lý tỉnh / thành',
-        to: '/cities',
-        exact: true
-    },
-    {
-        name: 'Quản lý vé',
+        name: 'Ticket Manager',
         to: '/ticketTypes',
-        exact: true
+        exact: true,
+        role: ["ADMIN"]
     },
     {
-        name: 'Quản lý loại địa điểm',
-        to: '/placeTypes',
-        exact: true
+        name: 'City Manager',
+        to: '/cities',
+        exact: true,
+        role: ["ADMIN"]
     },
     {
-        name: 'Phương thức thanh toán',
+        name: 'Payment Methods',
         to: '/paymentMethods',
-        exact: true
+        exact: true,
+        role: ["ADMIN"]
+    },
+    {
+        name: 'Order Manager',
+        to: '/orders',
+        exact: true,
+        role: ["ADMIN"]
     },
 ];
 
@@ -75,16 +88,23 @@ class CmsMenu extends Component {
 
     showCmsMenus = (cmsMenus) => {
         var result = null;
+        var { roles } = this.props
         if (cmsMenus.length > 0) {
             result = cmsMenus.map((menu, index) => {
-                return (
-                    <CmsMenuLink
-                        key={index}
-                        label={menu.name}
-                        to={menu.to}
-                        activeOnlyWhenExact={menu.exact}
-                    />
-                );
+                for (let i = 0; i < menu.role.length; i++) {
+                    if (roles.includes(menu.role[i])) {
+                        return (
+                            <CmsMenuLink
+                                key={index}
+                                label={menu.name}
+                                to={menu.to}
+                                activeOnlyWhenExact={menu.exact}
+                            />
+                        );
+                    }
+                }
+               
+
             });
         }
         return result;

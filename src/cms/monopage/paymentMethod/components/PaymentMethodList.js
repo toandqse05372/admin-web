@@ -7,15 +7,15 @@ class PaymentMethodList extends Component {
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Quản lý phương thức thanh toán</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Payment Method List</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Phương thức thanh toán</th>
-                                <th>trạng thái</th>
+                                <th>Payment Method Name</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -7,7 +7,7 @@ const cities = (state = initialState, action) => {
     var index = -1;
     switch (action.type) {
         case Types.FETCH_CITIES:
-            return [...action.cities];
+            return (action.cities.length < 1) ? action.cities : [...action.cities];
         case Types.ADD_CITIES:
             state.push(city);
             return [...state];

@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import { connect } from 'react-redux';
-import CityItem from './components/CityItem';
-import CityList from './components/CityList';
-import { actDeleteCityRequest } from '../../../actions/indexCities';
+import OrderItem from './components/OrderItem';
+import OrderList from './components/OrderList';
+import { actDeleteOrderRequest } from '../../../actions/indexOrders';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
 
-class CitiesCMS extends Component {
+class OrdersCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: false,
+            loaded: true,
             activePage: 1,
             drbLimit: 10,
             searchList: [],
@@ -106,18 +106,19 @@ class CitiesCMS extends Component {
             return (
                 <div className="container span14">
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>City Manager</h1>
+                        <h1>Order manager</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">City Name </Form.Label>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="City Name"
-                                            name="txtCityName"
-                                            value={txtCityName}
-                                            onChange={this.onChange}
-                                        />
+                                    <th>
+                                        <Form.Label>Sort by</Form.Label>
+                                        <Form.Control as="select"
+                                            name="drbLimit"
+                                            value={drbLimit}
+                                            onChange={this.onChange}>
+                                            <option key={0} index={0} value={"purchase_day"}>Newest</option>
+                                            <option key={1} index={1} value={"total_payment"}>Amount</option>
+                                        </Form.Control>
                                     </th>
                                     <th>
                                         <Form.Label>Show</Form.Label>
@@ -137,19 +138,16 @@ class CitiesCMS extends Component {
                                         <Button
                                             type="Submit"
                                             className="btn btn-inverse mb-5">
-                                            Search
+                                            Apply
                                         </Button>
                                     </td>
                                 </tr>
                             </thead>
                         </Table>
                     </Form>
-                    <Link to="/cities/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Add New City
-                </Link>
-                    <CityList>
-                        {this.showCities(this.state.searchList)}
-                    </CityList>
+                    <OrderList>
+                        {/* {this.showCities(this.state.searchList)} */}
+                    </OrderList>
                     <div className="dataTables_paginate paging_bootstrap pagination">
                         <ul>
                             {renderPageNumbers}
@@ -180,8 +178,8 @@ class CitiesCMS extends Component {
         var { onDeleteCity } = this.props;
         if (cities.length > 0) {
             result = cities.map((cities, index) => {
-                return <CityItem cities={cities} key={index} index={index} onDeleteCity={onDeleteCity}
-                limit={this.state.drbLimit}
+                return <OrderItem cities={cities} key={index} index={index} onDeleteCity={onDeleteCity}
+                    limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />
             });
         }
@@ -192,16 +190,16 @@ class CitiesCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        cities: state.cities
+        orders: state.orders
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onDeleteCity: (id) => {
-            dispatch(actDeleteCityRequest(id));
+        onDeleteOrder: (id) => {
+            dispatch(actDeleteOrderRequest(id));
         }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CitiesCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersCMS);

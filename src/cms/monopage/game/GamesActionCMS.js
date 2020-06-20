@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actAddGameRequest, actUpdateGameRequest, actGetGameRequest } from '../../../actions/indexGames';
+import { actFetchPlacesRequest } from '../../../actions/indexPlaces';
 import Select from 'react-select'
 
 class GamesActionCMS extends Component {
@@ -12,7 +13,10 @@ class GamesActionCMS extends Component {
             id: '',
             txtName: '',
             txtDescription: '',
-            drbGameId: ''
+            drbGameId: '',
+            drbPlaceId: '',
+            loaded: false,
+            fetched: false,
         };
     }
 
@@ -22,6 +26,7 @@ class GamesActionCMS extends Component {
             var id = match.params.id;
             this.props.onEditGame(id)
         } // else => add
+        this.props.fetchAllPlaces();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -31,7 +36,12 @@ class GamesActionCMS extends Component {
                 id: itemEditing.id,
                 txtName: itemEditing.gameName,
                 txtDescription: itemEditing.gameDescription,
-                drbPlaceId: itemEditing.placeId
+                drbPlaceId: itemEditing.placeId,
+                fetched: true
+            })
+        }else{
+            this.setState({
+                fetched: true
             })
         }
     }
@@ -53,60 +63,82 @@ class GamesActionCMS extends Component {
             id: id,
             gameName: txtName,
             gameDescription: txtDescription,
-            PlaceId: drbPlaceId
+            placeId: drbPlaceId
         };
         if (id) {
             this.props.onUpdateGame(game);
         } else {
             this.props.onAddGame(game);
         }
-        this.props.history.goBack();
+    }
+
+    onChangePlace = (e) => {
+        this.setState({
+            drbPlaceId: e.value
+        });
+        console.log(this.state.drbPlaceId)
     }
 
     render() {
-        const options = [
-            { value: 'chocolate', label: 'Chocolate' },
-            { value: 'strawberry', label: 'Strawberry' },
-            { value: 'vanilla', label: 'Vanilla' }
-        ]
-        var { txtName, txtDescription, drbPlaceId } = this.state;
-        return (
-            <div className="container">
-                <form onSubmit={this.onSubmit}>
-                    <legend>* Vui lòng nhập đầy đủ thông tin</legend>
-                    <div className="form-group">
-                        <label>Tên trò chơi </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
-                    </div>
-                    <div className="myDiv">
-                        <label>Địa điểm </label>
-                        <div >
-                        <Select options={options}/>
+        var { places } = this.props;
+        var { txtName, txtDescription, drbPlaceId, loaded } = this.state;
+        var options = []
+        var renderOpt = drbPlaceId
+        if (places.length > 0 && this.state.fetched) {
+            for (let i = 0; i < places.length; i++) {
+                var option = { value: places[i].id, label: places[i].name }
+                options.push(option);
+                if(drbPlaceId === places[i].id){
+                    renderOpt = i
+                }
+            }
+            loaded = true;
+        }  
+        if(loaded){
+            return (
+                <div className="container">
+                    <form onSubmit={this.onSubmit}>
+                        <legend>* Please enter full information</legend>
+                        <div className="form-group">
+                            <label>Game Name </label>
+                            <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                         </div>
-                        
-                    </div>
-
-                    <div className="form-group">
-                        <label>Giới thiệu </label>
-                        <textarea onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <Link to="/games" className="btn btn-danger mr-5">
-                        <i className="glyphicon glyphicon-arrow-left"></i> Trở lại
-                    </Link>
-                    <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu trò chơi
-                            </button>
-                </form>
-            </div>
-        );
+                        <div className="myDiv">
+                            <label>Place Name </label>
+                            <div >
+                                <Select options={options}
+                                    defaultValue={options[renderOpt]}
+                                    onChange={this.onChangePlace} />
+                            </div>
+    
+                        </div>
+    
+                        <div className="form-group">
+                            <label>Description </label>
+                            <textarea onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
+                            </textarea>
+                        </div>
+                        <Link to="/games" className="btn btn-danger mr-5">
+                            <i className="glyphicon glyphicon-arrow-left"></i>Back
+                        </Link>
+                        <button type="submit" className="btn btn-primary">
+                            <i className="glyphicon glyphicon-save"></i> Save Game
+                                </button>
+                    </form>
+                </div>
+            );
+        }else{
+            return ""
+        }
+        
     }
 
 }
 
 const mapStateToProps = state => {
     return {
-        itemEditing: state.itemEditing
+        itemEditing: state.itemEditing,
+        places: state.places,
     }
 }
 
@@ -120,6 +152,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         onEditGame: (id) => {
             dispatch(actGetGameRequest(id));
+        },
+        fetchAllPlaces: () => {
+            dispatch(actFetchPlacesRequest());
         }
     }
 }

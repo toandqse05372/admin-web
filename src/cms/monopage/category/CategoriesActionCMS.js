@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddPaymentMethodRequest, actUpdatePaymentMethodRequest, actGetPaymentMethodRequest } from '../../../actions/indexPaymentMethod';
+import { actAddCategoryRequest, actUpdateCategoryRequest, actGetCategoryRequest } from '../../../actions/indexCategories';
 import { Form } from 'react-bootstrap'
 
-class CitiesActionCMS extends Component {
+class CategoryActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -19,7 +19,7 @@ class CitiesActionCMS extends Component {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditPaymentMethod(id)
+            this.props.onGetCategory(id)
         } // else => add
     }
 
@@ -28,8 +28,8 @@ class CitiesActionCMS extends Component {
             var { itemEditing } = nextProps;
             this.setState({
                 id: itemEditing.id,
-                txtName: itemEditing.methodName,
-                txtKey: itemEditing
+                txtName: itemEditing.categoryName,
+                txtKey: itemEditing.typeKey,
             })
         }
     }
@@ -46,39 +46,39 @@ class CitiesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtKey, txtName } = this.state;
-        var method = {
+        var { id, txtName, txtKey } = this.state;
+        var city = {
             id: id,
-            methodKey: txtKey,
-            methodName: txtName
+            categoryName: txtName,
+            typeKey: txtKey
         };
         if (id) {
-            this.props.onUpdatePaymentMethod(method);
+            this.props.onUpdateCategory(city);
         } else {
-            this.props.onAddPaymentMethod(method);
+            this.props.onAddCategory(city);
         }
     }
 
     render() {
-        var { txtKey, txtName } = this.state;
+        var { txtName, txtKey } = this.state;
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">
-                        <label>Payment Method Key </label>
-                        <input onChange={this.onChange} value={txtKey} name="txtKey" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Payment Method Name </label>
+                        <label>Category Name </label>
                         <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
-                    <Link to="/paymentMethods" className="btn btn-danger mr-5">
+                    <div className="form-group">
+                        <label>Category Key </label>
+                        <input onChange={this.onChange} value={txtKey} name="txtKey" type="text" className="form-control" />
+                    </div>
+                    <Link to="/Category" className="btn btn-danger mr-5">
                         <i className="glyphicon glyphicon-arrow-left"></i> Back
                     </Link>
                     <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Save Payment Method
-                            </button>
+                        <i className="glyphicon glyphicon-save"></i> Save Category
+                    </button>
                 </form>
             </div>
         );
@@ -94,16 +94,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddPaymentMethod: (method) => {
-            dispatch(actAddPaymentMethodRequest(method, props.history));
+        onAddCategory: (city) => {
+            dispatch(actAddCategoryRequest(city, props.history));
         },
-        onUpdatePaymentMethod: (method) => {
-            dispatch(actUpdatePaymentMethodRequest(method, props.history));
+        onUpdateCategory: (city) => {
+            dispatch(actUpdateCategoryRequest(city, props.history));
         },
-        onEditPaymentMethod: (id) => {
-            dispatch(actGetPaymentMethodRequest(id));
+        onGetCategory: (id) => {
+            dispatch(actGetCategoryRequest(id));
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CitiesActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryActionCMS);

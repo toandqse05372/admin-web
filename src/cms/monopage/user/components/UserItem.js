@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 class UserItem extends Component {
 
     onDelete = (id) => {
-        if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
+        if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteUser(id);
             window.location.reload();
         }
@@ -12,6 +12,15 @@ class UserItem extends Component {
 
     render() {
         var { users, index, limit, currentPage } = this.props;
+        var roleList = '';
+        for (let i = 0; i < users.roleKey.length; i++) {
+            var role = users.roleKey[i]
+            roleList = roleList + role;
+            debugger
+            if (i < users.roleKey.length - 1) {
+                roleList = roleList + ', '
+            }
+        }
         return (
             <tr>
                 <td>{(currentPage - 1)*limit + index + 1}</td>
@@ -19,7 +28,7 @@ class UserItem extends Component {
                 <td>{users.lastName}</td>
                 <td>{users.mail}</td>
                 <td>{users.phoneNumber}</td>
-                <td>{users.roleKey}</td>
+                <td>{roleList}</td>
 
                 <td className="center">
                     <Link to={`/users/${users.id}/edit`} className="btn btn-info">

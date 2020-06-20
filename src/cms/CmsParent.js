@@ -8,8 +8,8 @@ class CmsParent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: false,
-            username:''
+            username:'',
+            roles: [],
         }
     }
 
@@ -23,7 +23,8 @@ class CmsParent extends Component {
         var token = localStorage.getItem('tokenLogin')
         var decoded = jwtDecode(token)
         this.setState({
-            username: decoded.user.lastName + " " +decoded.user.firstName
+            username: decoded.user.lastName + " " +decoded.user.firstName,
+            roles: decoded.user.authorities
         })
     }
 
@@ -39,7 +40,7 @@ class CmsParent extends Component {
                                 <span className="icon-bar" />
                                 <span className="icon-bar" />
                             </a>
-                            <a className="brand" href="index.html"><span>GOBOKI</span></a>
+                            <a className="brand" href="/"><span>GOBOKI</span></a>
 
                             {/* start: Header Menu */}
                             <div className="nav-no-collapse header-nav">
@@ -57,7 +58,7 @@ class CmsParent extends Component {
                                                 <a>
                                                     <i type="button" onClick={this.logOut} className="halflings-icon off"
                                                     />
-                                                    Đăng xuất
+                                                    Log out
                                                 </a>
                                             </li>
 
@@ -72,7 +73,7 @@ class CmsParent extends Component {
                 </div>
                 <div className="container-fluid-full">
                     <div className="row-fluid">
-                        <CmsMenu />
+                        <CmsMenu roles={this.state.roles}/>
                         <div id="content" className="span10">
                             {this.showContentMenus(cmsRoutes)}
                         </div>

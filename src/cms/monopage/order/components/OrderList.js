@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 
-class PlaceTypeList extends Component {
+class OrderList extends Component {
 
     render() {
         return (
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Danh sách loại địa điểm</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Order List</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Tên loại địa điểm</th>
-                                <th>Mã loại địa điểm</th>
+                                <th>Order Code</th>
+                                <th>Purchase Day</th>
+                                <th>Total Payment</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,4 +33,4 @@ class PlaceTypeList extends Component {
 
 }
 
-export default PlaceTypeList;
+export default OrderList;

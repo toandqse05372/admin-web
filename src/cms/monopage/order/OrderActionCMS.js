@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddPlaceTypeRequest, actUpdatePlaceTypeRequest, actGetPlaceTypeRequest } from '../../../actions/indexPlaceTypes';
+import { actAddCityRequest, actUpdateCityRequest, actGetCityRequest } from '../../../actions/indexCities';
 import { Form } from 'react-bootstrap'
 
-class PlaceTypesActionCMS extends Component {
+class OrderActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +20,7 @@ class PlaceTypesActionCMS extends Component {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onGetPlaceType(id)
+            this.props.onEditCity(id)
         } // else => add
     }
 
@@ -56,11 +56,10 @@ class PlaceTypesActionCMS extends Component {
             detailDescription: txtDetailDescription
         };
         if (id) {
-            this.props.onUpdatePlaceType(city);
+            this.props.onUpdateCity(city);
         } else {
-            this.props.onAddPlaceType(city);
+            this.props.onAddCity(city);
         }
-        this.props.history.goBack();
     }
 
     render() {
@@ -68,7 +67,7 @@ class PlaceTypesActionCMS extends Component {
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
-                    <legend>* Vui lòng nhập đầy đủ thông tin</legend>
+                    <legend>* Please enter full information</legend>
                     <div className="form-group">
                         <label>Tên tỉnh / thành </label>
                         <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
@@ -86,11 +85,11 @@ class PlaceTypesActionCMS extends Component {
                     <div className="form-group">
                         <Form.File.Input />
                     </div>
-                    <Link to="/cities" className="btn btn-danger mr-5">
-                        <i className="glyphicon glyphicon-arrow-left"></i> Trở lại
+                    <Link to="/orders" className="btn btn-danger mr-5">
+                        <i className="glyphicon glyphicon-arrow-left"></i> Back
                     </Link>
                     <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu loại địa điểm
+                        <i className="glyphicon glyphicon-save"></i> Save Order
                             </button>
                 </form>
             </div>
@@ -107,16 +106,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddPlaceType: (city) => {
-            dispatch(actAddPlaceTypeRequest(city, props.history));
+        onAddCity: (city) => {
+            dispatch(actAddCityRequest(city, props.history));
         },
-        onUpdatePlaceType: (city) => {
-            dispatch(actUpdatePlaceTypeRequest(city, props.history));
+        onUpdateCity: (city) => {
+            dispatch(actUpdateCityRequest(city, props.history));
         },
-        onGetPlaceType: (id) => {
-            dispatch(actGetPlaceTypeRequest(id));
+        onEditCity: (id) => {
+            dispatch(actGetCityRequest(id));
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlaceTypesActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderActionCMS);

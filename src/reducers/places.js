@@ -15,6 +15,10 @@ const places = (state = initialState, action) => {
             index = findIndex(state, place.id);
             state[index] = place;
             return [...state];
+        case Types.CHANGE_STATUS_PLACE:
+            index = findIndex(state, place.id);
+            state[index] = place;
+            return [...state];
         case Types.DELETE_PLACE:
             index = findIndex(state, id);
             state.splice(index, 1);

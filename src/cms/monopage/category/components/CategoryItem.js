@@ -3,26 +3,26 @@ import { Link } from 'react-router-dom';
 
 class PlaceTypeItem extends Component {
 
-    onDeletePlaceType = (id) => {
-        if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-            this.props.onDeletePlaceType(id);
+    onDeleteCategory = (id) => {
+        if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
+            this.props.onDeleteCategory(id);
             window.location.reload();
         }
     }
 
     render() {
-        var { placeTypes, index, currentPage, limit } = this.props;
+        var { category, index, currentPage, limit } = this.props;
         return (
             <tr>
                  <td>{(currentPage - 1)*limit + index + 1}</td>
-                <td>{placeTypes.placeTypeName}</td>
-                <td>{placeTypes.typeKry}</td>
+                <td>{category.categoryName}</td>
+                <td>{category.typeKey}</td>
 
                 <td className="center">
-                    <Link to={`/placeTypes/${placeTypes.id}/edit`} className="btn btn-info">
+                    <Link to={`/categories/${category.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDeletePlaceType(placeTypes.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDeleteCategory(category.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>

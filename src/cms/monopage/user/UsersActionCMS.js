@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Form, FormControl } from 'react-bootstrap'
 import { actAddUserRequest, actUpdateUserRequest, actGetUserRequest, actFetchRolesRequest } from '../../../actions/indexUsers';
-// import DateTimePicker from 'react-datetime-picker'
-// import TimePicker from 'rc-time-picker';
-// import ReactDOM from 'react-dom';
+import Select from 'react-select'
 import 'rc-time-picker/assets/index.css';
 
 class UsersActionCMS extends Component {
@@ -13,6 +11,7 @@ class UsersActionCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loaded: false,
             id: '',
             txtName: '',
             txtCity: '',
@@ -20,7 +19,8 @@ class UsersActionCMS extends Component {
             txtPhoneNumber: '',
             txtDescription: '',
             txtPassword: '',
-            txtRole: ''
+            drbRole: [],
+            fetched: false
         };
     }
 
@@ -39,14 +39,21 @@ class UsersActionCMS extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.match && nextProps.itemEditing) {
             var { itemEditing } = nextProps;
+            if (typeof itemEditing.id !== "undefined") {
+                this.setState({
+                    id: itemEditing.id,
+                    txtFirstName: itemEditing.firstName,
+                    txtLastName: itemEditing.lastName,
+                    txtMail: itemEditing.mail,
+                    drbRole: itemEditing.roleKey,
+                    txtPhoneNumber: itemEditing.phoneNumber,
+                    txtPassword: itemEditing.password,
+                    fetched: true
+                })
+            }
+        }else{
             this.setState({
-                id: itemEditing.id,
-                txtFirstName: itemEditing.firstName,
-                txtLastName: itemEditing.lastName,
-                txtMail: itemEditing.mail,
-                txtRole: itemEditing.roleKey,
-                txtPhoneNumber: itemEditing.phoneNumber,
-                txtPassword: itemEditing.password
+                fetched: true
             })
         }
     }
@@ -63,14 +70,14 @@ class UsersActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber, txtPassword } = this.state;
+        var { id, txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword } = this.state;
         var user = {
             id: id,
             firstName: txtFirstName,
             lastName: txtLastName,
             password: txtPassword,
             mail: txtMail,
-            roleKey: Array.isArray(txtRole) ? txtRole: [txtRole],
+            roleKey: Array.isArray(drbRole) ? drbRole : [drbRole],
             phoneNumber: txtPhoneNumber
         };
         if (id) {
@@ -78,7 +85,7 @@ class UsersActionCMS extends Component {
         } else {
             this.props.onAddUser(user);
         }
-        
+
     }
 
     showRoles(roles) {
@@ -91,56 +98,93 @@ class UsersActionCMS extends Component {
         return result;
     }
 
+    onChangeRole = (selectedOption) => {
+        var selectedKey = []
+        for(let i = 0; i < selectedOption.length; i++){
+            selectedKey.push(selectedOption[i].value)
+        }
+        this.setState({
+            drbRole: selectedKey
+        })
+    }
+
     render() {
-        var { txtFirstName, txtLastName, txtMail, txtRole, txtPhoneNumber, txtPassword } = this.state;
+        var { txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, loaded } = this.state;
         var { roles } = this.props
-        return (
-            <div className="container">
-                <form onSubmit={this.onSubmit}>
-                    <legend>* Vui lòng nhập đầy đủ thông tin</legend>
-                    <div className="form-group">
-                        <label>Họ </label>
-                        <input onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Tên </label>
-                        <input onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Mail </label>
-                        <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Mật khẩu </label>
-                        <input onChange={this.onChange} value={txtPassword} name="txtPassword" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Số điện thoại </label>
-                        <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
-                    </div>
-                    {/* <div className="form-group">
-                        <label>Role </label>
-                        <textarea onChange={this.onChange} value={txtRole} name="txtRole" className="form-control" rows="3">
-                        </textarea>
-                    </div> */}
-                    <label>Role </label>
-                    <Form.Control as="select"
-                        name="txtRole"
-                        value={txtRole}
-                        onChange={this.onChange}>
-                        <option key={0} index={0} value={0}>--Chọn Role--</option>
-                        {this.showRoles(roles)}
-                    </Form.Control>
-                    <br />
-                    <Link to="/users" className="btn btn-danger mr-5">
-                        <i className="glyphicon glyphicon-arrow-left"></i> Trở Lại
-                    </Link>
-                    <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Lưu người dùng
-                            </button>
-                </form>
-            </div>
-        );
+        var options = []
+        var renderOpt = []
+        if (roles.length > 0 && this.state.fetched && typeof drbRole !== "undefined") {
+            for (let i = 0; i < roles.length; i++) {
+                var option = { value: roles[i].roleKey, label: roles[i].roleKey }
+                options.push(option);
+                if(drbRole.includes(option.label)){
+                    renderOpt.push(option)
+                }
+            }
+            debugger
+            loaded = true;
+        }  
+        if (loaded) {
+            return (
+                <div className="container">
+                    <form onSubmit={this.onSubmit}>
+                        <legend>* Please enter full information</legend>
+                        <div className="form-group">
+                            <label>First Name </label>
+                            <input onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
+                        </div>
+                        <div className="form-group">
+                            <label>Last Name </label>
+                            <input onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
+                        </div>
+                        <div className="form-group">
+                            <label>Mail </label>
+                            <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                        </div>
+                        <div className="form-group">
+                            <label>Password </label>
+                            <input onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control" />
+                        </div>
+                        <div className="form-group">
+                            <label>Phone number </label>
+                            <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
+                        </div>
+                        {/* <div className="form-group">
+                            <label>Role </label>
+                            <textarea onChange={this.onChange} value={txtRole} name="txtRole" className="form-control" rows="3">
+                            </textarea>
+                        </div> */}
+                        {/* <label>Role </label>
+                        <Form.Control as="select"
+                            name="txtRole"
+                            value={txtRole}
+                            onChange={this.onChange}>
+                            <option key={0} index={0} value={0}>-- Choose Role --</option>
+                            {this.showRoles(roles)}
+                        </Form.Control> */}
+                        <div className="myDiv">
+                            <label>Role</label>
+                            <div >
+                                <Select
+                                    defaultValue={renderOpt}
+                                    isMulti
+                                    options={options}
+                                    onChange={this.onChangeRole}
+                                />
+                            </div>
+                        </div>
+                        <br />
+                        <Link to="/users" className="btn btn-danger mr-5">
+                            <i className="glyphicon glyphicon-arrow-left"></i> Back
+                        </Link>
+                        <button type="submit" className="btn btn-primary">
+                            <i className="glyphicon glyphicon-save"></i> Save User
+                                </button>
+                    </form>
+                </div>
+            );
+        } else
+            return ""
     }
 }
 

@@ -3,18 +3,11 @@ import axios from 'axios';
 import * as URL from '../constants/ConfigURL';
 import callApi from '../utils/apiCaller';
 
-export const actFetchPlacesRequest = (paramBody) => {
+export const actFetchPlacesRequest = () => {
     return (dispatch) => {
-        axios.get(URL.API_URL + '/place/searchName', {
-            params: {
-                name: paramBody.name,
-                page: paramBody.page,
-                limit: paramBody.limit
-            }
-        })
-            .then(res => {
-                dispatch(actFetchPlaces(res.data.listResult));
-            });
+        return callApi('places', 'GET', null).then(res => {
+            dispatch(actFetchPlaces(res.data));
+        });
     }
 }
 
@@ -59,6 +52,23 @@ export const actUpdatePlace = (place) => {
     }
 }
 
+export const actChangeStatusPlaceRequest = (id) => {
+    return (dispatch) => {
+        return callApi(`changePlace/${id}`, 'PUT', null).then(res => {
+            if (res) {
+                dispatch(actChangeStatusPlace(res.data));
+            }
+        });
+    }
+}
+
+export const actChangeStatusPlace = (place) => {
+    return {
+        type: Types.CHANGE_STATUS_PLACE,
+        place
+    }
+}
+
 export const actDeletePlaceRequest = (id) => {
     return (dispatch) => {
         return callApi(`place/${id}`, 'DELETE', null).then(res => {
@@ -86,20 +96,5 @@ export const actGetPlace = (place) => {
     return {
         type: Types.EDIT_PLACE,
         place
-    }
-}
-
-export const actFetchPlaceTypesRequest = () => {
-    return dispatch => {
-        return callApi(`place/placetypes`, 'GET', null).then(res => {
-            dispatch(actFetchPlaceTypes(res.data))
-        });
-    }
-}
-
-export const actFetchPlaceTypes = (placetypes) => {
-    return {
-        type: Types.FETCH_PLACE_TYPES,
-        placetypes
     }
 }

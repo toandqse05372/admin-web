@@ -4,7 +4,7 @@ import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import { connect } from 'react-redux';
 import GameItem from './components/GameItem';
 import GameList from './components/GameList';
-import { actDeleteGameRequest } from '../../../actions/indexGames';
+import { actDeleteGameRequest, actChangeStatusGameRequest } from '../../../actions/indexGames';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
 
@@ -21,17 +21,14 @@ class GamesCMS extends Component {
             currentPage: 1,
 
             txtGameName: '',
-            drBCity: 0,
-            txtMail: '',
-            txtPhoneNumber: '',
-            drbPlaceType: 0,
-            txtAddress: '',
+            txtPlaceName: '',
+            drbCategory: '',
 
             paramBody: {
                 name: '',
                 address: '',
                 cityId: '',
-                placeTypeId: '',
+                categoryId: '',
                 role: 0,
                 page: 1,
                 limit: 10,
@@ -71,7 +68,6 @@ class GamesCMS extends Component {
                 params: {
                     name: paramBody.name,
                     address: paramBody.address,
-                    placeTypeId: paramBody.placeTypeId,
                     cityId: paramBody.cityId,
                     limit: paramBody.limit,
                     page: paramBody.page
@@ -94,8 +90,7 @@ class GamesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtPlaceName, txtAddress, drBCity, drbLimit, drbPlaceType, currentPage } = this.state;
-            var { cities, Placetypes } = this.props;
+            const { txtGameName, txtPlaceName,drbLimit, currentPage } = this.state;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }
@@ -116,37 +111,37 @@ class GamesCMS extends Component {
             return (
                 <div className="container span14">
                     <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Quản lý trò chơi</h1>
+                        <h1>Game Manager</h1>
                         <Table>
                             <thead>
                                 <tr>
-                                    <th><Form.Label id="basic-addon1">Tên trò chơi </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Game Name </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Tên trò chơi"
-                                            name="txtPlaceName"
-                                            value={txtPlaceName}
+                                            placeholder="Game Name"
+                                            name="txtGameName"
+                                            value={txtGameName}
                                             onChange={this.onChange}
                                         />
                                     </th>
-                                    <th><Form.Label id="basic-addon1">Địa điểm </Form.Label>
+                                    <th><Form.Label id="basic-addon1">Place Name </Form.Label>
                                         <FormControl
                                             type="text"
-                                            placeholder="Tên địa điểm"
+                                            placeholder="Place Name"
                                             name="txtPlaceName"
                                             value={txtPlaceName}
                                             onChange={this.onChange}
                                         />
                                     </th>
                                     <td>
-                                        <Form.Label>Hiển thị</Form.Label>
+                                        <Form.Label>Show</Form.Label>
                                         <Form.Control as="select"
                                             name="drbLimit"
                                             value={drbLimit}
                                             onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10 / trang</option>
-                                            <option key={1} index={1} value={15}>15 / trang</option>
-                                            <option key={2} index={2} value={20}>20 / trang</option>
+                                            <option key={0} index={0} value={10}>10 / page</option>
+                                            <option key={1} index={1} value={15}>15 / page</option>
+                                            <option key={2} index={2} value={20}>20 / page</option>
                                         </Form.Control>
                                     </td>
 
@@ -156,7 +151,7 @@ class GamesCMS extends Component {
                                         <Button
                                             type="Submit"
                                             className="btn btn-inverse mb-5">
-                                            Tìm kiếm
+                                            Search
                                         </Button>
                                     </td>
                                     <td>
@@ -167,7 +162,7 @@ class GamesCMS extends Component {
                         </Table>
                     </Form>
                     <Link to="/games/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Thêm trò chơi
+                        <i className="glyphicon glyphicon-plus"></i> Add New Game
                 </Link>
                     <GameList>
                         {this.showGames(this.state.searchList)}
@@ -190,7 +185,6 @@ class GamesCMS extends Component {
                 name: this.state.txtPlaceName,
                 address: this.state.txtAddress,
                 cityId: this.state.drBCity,
-                placeTypeId: this.state.drbPlaceType,
                 page: 1,
                 limit: 10,
             }
@@ -202,10 +196,12 @@ class GamesCMS extends Component {
 
     showGames(games) {
         var result = null;
-        var { onDeleteGame } = this.props;
+        var { onDeleteGame, onChangeStatusGame } = this.props;
         if (games.length > 0) {
             result = games.map((games, index) => {
-                return <GameItem games={games} key={index} index={index} onDeleteGame={onDeleteGame} 
+                return <GameItem games={games} key={index} index={index} 
+                onDeleteGame={onDeleteGame} 
+                onChangeStatusGame={onChangeStatusGame} 
                 limit={this.state.drbLimit}
                 currentPage = {this.state.currentPage}/>
             });
@@ -225,7 +221,10 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         onDeleteGame: (id) => {
             dispatch(actDeleteGameRequest(id));
-        }
+        },
+        onChangeStatusGame: (id) => {
+            dispatch(actChangeStatusGameRequest(id));
+        },
     }
 }
 

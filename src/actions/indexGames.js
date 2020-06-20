@@ -61,6 +61,23 @@ export const actUpdateGame = (game) => {
     }
 }
 
+export const actChangeStatusGameRequest = (id) => {
+    return (dispatch) => {
+        return callApi(`changeGame/${id}`, 'PUT', null).then(res => {
+            if (res) {
+                dispatch(actChangeStatusGame(res.data));
+            }
+        });
+    }
+}
+
+export const actChangeStatusGame = (game) => {
+    return {
+        type: Types.CHANGE_STATUS_GAME,
+        game
+    }
+}
+
 export const actDeleteGameRequest = (id) => {
     return (dispatch) => {
         return callApi(`game/${id}`, 'DELETE', null).then(res => {

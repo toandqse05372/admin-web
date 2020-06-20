@@ -33,9 +33,18 @@ class LoginCMS extends Component {
             mail: txtMail,
             password: txtPassword,
         };
-        callApi('login', 'POST', user).then(res => {
+
+        axios.post(URL.API_URL + '/login',user,
+            {            
+                params: {
+                    page: 'CMS'
+                }
+            }
+        ).then(res => {
             localStorage.setItem('tokenLogin', JSON.stringify(res.data));
             window.location.reload();
+        }).catch(function (error) {
+            console.log(error)
         });
 
 
@@ -50,7 +59,7 @@ class LoginCMS extends Component {
                 <div className="row-fluid">
                     <div className="login-box">
                         <div className="icons">
-                            <a href="index.html"><i className="halflings-icon home" /></a>
+                            <a href="/"><i className="halflings-icon home" /></a>
                             <a href="#"><i className="halflings-icon cog" /></a>
                         </div>
                         <h2>Login to your account</h2>

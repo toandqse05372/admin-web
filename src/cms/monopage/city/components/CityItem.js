@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 class CityItem extends Component {
 
     onDelete = (id) => {
-        if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
+        if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteCity(id);
             window.location.reload();
         }
