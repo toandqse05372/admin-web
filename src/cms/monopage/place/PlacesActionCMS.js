@@ -63,7 +63,11 @@ class PlacesActionCMS extends Component {
                     txtAddress: itemEditing.address,
                     fetched: true
                 })
-            }
+            } 
+        }else {
+            this.setState({
+                fetched: true
+            })
         }
     }
 
@@ -123,7 +127,7 @@ class PlacesActionCMS extends Component {
             }
             loaded = true;
         }
-        if(loaded){
+        if (loaded) {
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
@@ -146,13 +150,13 @@ class PlacesActionCMS extends Component {
                             <label>Category </label>
                             <div >
                                 <Select
-                                    defaultValue={options[0]}
+                                    defaultValue={renderOpt}
                                     isMulti
                                     options={options}
-                                    // onChange={this.onChangeCategory}
+                                // onChange={this.onChangeCategory}
                                 />
                             </div>
-    
+
                         </div>
                         <div className="form-group">
                             <label>City </label>
@@ -164,7 +168,7 @@ class PlacesActionCMS extends Component {
                                 {this.showCities(cities)}
                             </Form.Control>
                         </div>
-    
+
                         {/* <div className="form-group">
                             <label>Open hours </label>
                             <TimePicker/>
@@ -208,7 +212,7 @@ class PlacesActionCMS extends Component {
                     </form>
                 </div>
             );
-        }else{
+        } else {
             return ""
         }
     }
