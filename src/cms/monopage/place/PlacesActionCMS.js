@@ -171,16 +171,6 @@ class PlacesActionCMS extends Component {
                             <label>Place Name </label>
                             <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                         </div>
-                        {/* <div>
-                            <label>Category </label>
-                            <Form.Control as="select"
-                                name="drbCategory"
-                                value={drbCategory}
-                                onChange={this.onChange}>
-                                <option key={0} index={0} value={0}>-- Choose Category --</option>
-                                {this.showCategories(categories)}
-                            </Form.Control>
-                        </div> */}
                         <div className="myDiv">
                             <label>Category </label>
                             <div >
