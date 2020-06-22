@@ -57,13 +57,13 @@ class CitiesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/city/searchByName',
+        axios.get(URL.API_URL + '/method/searchByName',
             {
                 headers: {
                     Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
                 },
                 params: {
-                    name: paramBody.name,
+                    methodName: paramBody.name,
                     limit: paramBody.limit,
                     page: paramBody.page
                 }
@@ -85,7 +85,7 @@ class CitiesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtName, drbLimit, currentPage } = this.state;
+            const { txtName, drbLimit, currentPage, searchList } = this.state;
             var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
@@ -149,7 +149,7 @@ class CitiesCMS extends Component {
                         <i className="glyphicon glyphicon-plus"></i> Add payment method
                 </Link>
                     <PaymentMethodList>
-                        {/* {this.showCities(this.state.searchList)} */}
+                        {this.showPaymentMethods(searchList)}
                     </PaymentMethodList>
                     <div className="dataTables_paginate paging_bootstrap pagination">
                         <ul>

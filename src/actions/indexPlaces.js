@@ -2,7 +2,7 @@ import * as Types from '../constants/PlacesActionType';
 import axios from 'axios';
 import * as URL from '../constants/ConfigURL';
 import callApi from '../utils/apiCaller';
-
+import Axios from 'axios';
 export const actFetchPlacesRequest = () => {
     return (dispatch) => {
         return callApi('places', 'GET', null).then(res => {
@@ -18,11 +18,12 @@ export const actFetchPlaces = (places) => {
     }
 }
 
-export const actAddPlaceRequest = (places, child) => {
+export const actAddPlaceRequest = (place, child) => {
     return (dispatch) => {
-        return callApi('place', 'POST', places).then(res => {
+        return callApi('place', 'POST', place).then(res => {
             dispatch(actAddPlace(res.data));
-            child.goBack();
+            debugger
+            child.goBack()
         });
     }
 }
@@ -34,12 +35,12 @@ export const actAddPlace = (places) => {
     }
 }
 
-export const actUpdatePlaceRequest = (place, child) => {
+export const actUpdatePlaceRequest = (place, child, id) => {
     return (dispatch) => {
-        return callApi(`place/${place.id}`, 'PUT', place).then(res => {
+        return callApi(`place/${id}`, 'PUT', place).then(res => {
             if (res) {
                 dispatch(actUpdatePlace(res.data));
-                child.goBack();
+                child.goBack()
             }
         });
     }

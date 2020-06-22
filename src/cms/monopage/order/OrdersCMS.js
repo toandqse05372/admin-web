@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, Table } from 'react-bootstrap'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { connect } from 'react-redux';
 import OrderItem from './components/OrderItem';
 import OrderList from './components/OrderList';
 import { actDeleteOrderRequest } from '../../../actions/indexOrders';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
+import 'react-tabs/style/react-tabs.css';
 
 class OrdersCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: true,
+            loaded: false,
             activePage: 1,
             drbLimit: 10,
-            searchList: [],
+            searchListPaid: [],
+            searchListWaiting: [],
+            searchListSent: [],
             totalItems: 0,
             totalPage: 1,
             currentPage: 1,
@@ -104,56 +108,39 @@ class OrdersCMS extends Component {
                     );
             });
             return (
-                <div className="container span14">
-                    <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Order manager</h1>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <Form.Label>Sort by</Form.Label>
-                                        <Form.Control as="select"
-                                            name="drbLimit"
-                                            value={drbLimit}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={"purchase_day"}>Newest</option>
-                                            <option key={1} index={1} value={"total_payment"}>Amount</option>
-                                        </Form.Control>
-                                    </th>
-                                    <th>
-                                        <Form.Label>Show</Form.Label>
-                                        <Form.Control as="select"
-                                            name="drbLimit"
-                                            value={drbLimit}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10 / page</option>
-                                            <option key={1} index={1} value={15}>15 / page</option>
-                                            <option key={2} index={2} value={20}>20 / page</option>
-                                        </Form.Control>
-                                    </th>
+                <Tabs>
+                    <h1>Order Manager</h1>
+                    <br />
+                    <TabList>
+                        <Tab>Show paid orders</Tab>
+                        <Tab>Show waiting orders</Tab>
+                    </TabList>
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Button
-                                            type="Submit"
-                                            className="btn btn-inverse mb-5">
-                                            Apply
-                                        </Button>
-                                    </td>
-                                </tr>
-                            </thead>
-                        </Table>
-                    </Form>
-                    <OrderList>
-                        {/* {this.showCities(this.state.searchList)} */}
-                    </OrderList>
-                    <div className="dataTables_paginate paging_bootstrap pagination">
-                        <ul>
-                            {renderPageNumbers}
-                        </ul>
-                    </div>
-                </div>
+                    <Form.Label id="basic-addon1">Order Code </Form.Label>
+                        <FormControl
+                            type="text"
+                            placeholder="Order code"
+                            name="txtCityName"
+                            value={txtCityName}
+                            onChange={this.onChange}
+                        />
+                        <Button
+                            type="Submit"
+                            className="btn btn-inverse mb-5">
+                            Search
+                        </Button>
+                    <TabPanel>
+                        
+                        <OrderList>
+                            {this.showCities(this.state.searchList)}
+                        </OrderList>
+                    </TabPanel>
+                    <TabPanel>
+                        <OrderList>
+                            {this.showCities(this.state.searchList)}
+                        </OrderList>
+                    </TabPanel>
+                </Tabs>
             );
         } else
             return ""
@@ -173,12 +160,12 @@ class OrdersCMS extends Component {
         })
     }
 
-    showCities(cities) {
+    showCities(orders) {
         var result = null;
-        var { onDeleteCity } = this.props;
-        if (cities.length > 0) {
-            result = cities.map((cities, index) => {
-                return <OrderItem cities={cities} key={index} index={index} onDeleteCity={onDeleteCity}
+        var { onDeleteOrder } = this.props;
+        if (orders.length > 0) {
+            result = orders.map((order, index) => {
+                return <OrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
                     limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />
             });

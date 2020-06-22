@@ -3,26 +3,26 @@ import { Link } from 'react-router-dom';
 
 class PaymentMethodItem extends Component {
 
-    onDelete = (id) => {
+    onDeletePaymentMethod = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
-            this.props.onDeleteCity(id);
+            this.props.onDeletePaymentMethod(id);
             window.location.reload();
         }
     }
 
     render() {
-        var { paymentMethods, index, limit, currentPage } = this.props;
+        var { method, index, limit, currentPage } = this.props;
         return (
             <tr> 
                 <td>{(currentPage - 1)*limit + index + 1}</td>
-                {/* <td>{paymentMethods.name}</td>
-                <td>{paymentMethods.status}</td> */}
+                <td>{method.methodName}</td>
+                <td>{method.status}</td>
 
                 <td className="center">
-                    <Link to={`/paymentMethods/${paymentMethods.id}/edit`} className="btn btn-info">
+                    <Link to={`/paymentMethods/${method.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDelete(paymentMethods.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDeletePaymentMethod(method.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
