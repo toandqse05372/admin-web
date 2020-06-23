@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { actAddCityRequest, actUpdateCityRequest, actGetCityRequest } from '../../../actions/indexCities';
 import { Form } from 'react-bootstrap'
 
-class CitiesActionCMS extends Component {
+class VistorTypesActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -115,4 +115,4 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CitiesActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(VistorTypesActionCMS);

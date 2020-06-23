@@ -88,10 +88,10 @@ class VistorTypesCMS extends Component {
             var { ages } = this.props;
             return (
                 <div className="container span14">
-                    <h1>Distribute ticket by ages</h1>
-                    <h2>Ticket type: </h2>
-                    <Link to="/ages/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Add Age
+                    <h1>Distribute ticket by visitor types</h1>
+                    <h2>Ticket type: Vé vào cổng công viên mặt trời</h2>
+                    <Link to="/vistors/add" className="btn btn-success mb-5 ">
+                        <i className="glyphicon glyphicon-plus"></i> Add visitor type
                     </Link>
                     <VistorTypeList>
                         {this.showAges(this.state.searchList)}
@@ -102,12 +102,12 @@ class VistorTypesCMS extends Component {
             return ""
     }
 
-    showAges(ages) {
+    showAges(vistors) {
         var result = null;
         var { onDeleteCity } = this.props;
-        if (ages.length > 0) {
-            result = ages.map((ages, index) => {
-                return <VistorTypeItem ages={ages} key={index} index={index} onDeleteCity={onDeleteCity}
+        if (vistors.length > 0) {
+            result = vistors.map((vistors, index) => {
+                return <VistorTypeItem vistors={vistors} key={index} index={index} onDeleteCity={onDeleteCity}
                     limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />
             });

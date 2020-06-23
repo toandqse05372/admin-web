@@ -14,20 +14,22 @@ class OrderItem extends Component {
         var { order, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{(currentPage - 1)*limit + index + 1}</td>
+                <td>{(currentPage - 1) * limit + index + 1}</td>
                 <td>{order.name}</td>
                 <td>{order.shortDescription}</td>
+                <td>{order.detailDescription}</td>
 
                 <td className="center">
+                    <a className="btn btn-primary" > Resend ticket </a>
                     <Link to={`/orders/${order.id}/edit`} className="btn btn-info">
-                        <i className="halflings-icon white edit"></i> 
+                        <i className="halflings-icon white edit"></i>
                     </Link>
                     <a className="btn btn-danger" onClick={() => this.onDeleteOrder(order.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
             </tr>
-           
+
         );
     }
 }

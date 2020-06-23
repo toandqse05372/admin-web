@@ -16,12 +16,12 @@ class TicketTypeItem extends Component {
 
             <tr>
                 <td>{ticketTypes.id}</td>
-                <td>{ticketTypes.typeName}</td>
+                <td>Vé vào cổng công viên mặt trời</td>
                 <td>{ticketTypes.shortDescription}</td>
                 <td></td>
                 <td className="center">
-                    <Link to={`/ticketTypes/ages/${ticketTypes.id}`} className="btn btn-success">
-                        Show ages
+                    <Link to={`/ticketTypes/vistors/${ticketTypes.id}`} className="btn btn-success">
+                        Show visitor type
                     </Link>
                     <Link to={`/ticketTypes/${ticketTypes.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i>

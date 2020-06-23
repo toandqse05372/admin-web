@@ -11,23 +11,27 @@ class VistorTypeItem extends Component {
     }
 
     render() {
-        var { ages, index, limit, currentPage } = this.props;
+        var { vistors, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{(currentPage - 1)*limit + index + 1}</td>
-                <td>{ages.name}</td>
-                <td>{ages.shortDescription}</td>
+                <td>{(currentPage - 1) * limit + index + 1}</td>
+                <td>Trẻ em</td>
+                <td>100.000 VNĐ</td>
+                <td>KID100</td>
 
                 <td className="center">
-                    <Link to={`/ages/${ages.id}/edit`} className="btn btn-info">
-                        <i className="halflings-icon white edit"></i> 
+                    <a className="btn btn-success mb-5" onClick={() => this.onDelete(vistors.id)}>
+                        Import code from excel
+                    </a>
+                    <Link to={`/vistors/${vistors.id}/edit`} className="btn btn-info">
+                        <i className="halflings-icon white edit"></i>
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDelete(ages.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDelete(vistors.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
             </tr>
-           
+
         );
     }
 }
