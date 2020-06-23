@@ -7,7 +7,7 @@ class OrderList extends Component {
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Order List</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Paid Order List</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">

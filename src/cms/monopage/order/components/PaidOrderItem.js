@@ -1,28 +1,29 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-class PaymentMethodItem extends Component {
+class OrderItem extends Component {
 
-    onDeletePaymentMethod = (id) => {
+    onDeleteOrder = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
-            this.props.onDeletePaymentMethod(id);
+            this.props.onDeleteOrder(id);
             window.location.reload();
         }
     }
 
     render() {
-        var { method, index, limit, currentPage } = this.props;
+        var { order, index, limit, currentPage } = this.props;
         return (
-            <tr> 
+            <tr>
                 <td>{(currentPage - 1)*limit + index + 1}</td>
-                <td>{method.methodName}</td>
-                <td>{method.status}</td>
+                <td>SE05372</td>
+                <td>23/08/1998</td>
+                <td>999 Roses</td>
 
                 <td className="center">
-                    <Link to={`/paymentMethods/${method.id}/edit`} className="btn btn-info">
+                    <Link to={`/orders/${order.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDeletePaymentMethod(method.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDeleteOrder(order.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
@@ -32,4 +33,4 @@ class PaymentMethodItem extends Component {
     }
 }
 
-export default PaymentMethodItem;
+export default OrderItem;

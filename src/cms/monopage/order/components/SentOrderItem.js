@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 class OrderItem extends Component {
 
-    onDelete = (id) => {
+    onDeleteOrder = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteOrder(id);
             window.location.reload();
@@ -11,18 +11,18 @@ class OrderItem extends Component {
     }
 
     render() {
-        var { orders, index, limit, currentPage } = this.props;
+        var { order, index, limit, currentPage } = this.props;
         return (
             <tr>
                 <td>{(currentPage - 1)*limit + index + 1}</td>
-                <td>{orders.name}</td>
-                <td>{orders.shortDescription}</td>
+                <td>{order.name}</td>
+                <td>{order.shortDescription}</td>
 
                 <td className="center">
-                    <Link to={`/orders/${orders.id}/edit`} className="btn btn-info">
+                    <Link to={`/orders/${order.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDelete(orders.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDeleteOrder(order.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>

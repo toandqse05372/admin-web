@@ -3,7 +3,7 @@ import callApi from '../utils/apiCaller';
 
 export const actFetchPaymentMethodsRequest = () => {
     return dispatch => {
-        return callApi(`paymentMethod`, 'GET', null).then(res => {
+        return callApi(`method`, 'GET', null).then(res => {
             dispatch(actFetchPaymentMethods(res.data))
         });
     }
@@ -18,7 +18,7 @@ export const actFetchPaymentMethods = (paymentMethods) => {
 
 export const actAddPaymentMethodRequest = (paymentMethod, child) => {
     return (dispatch) => {
-        return callApi('paymentMethod', 'POST', paymentMethod).then(res => {
+        return callApi('method', 'POST', paymentMethod).then(res => {
             dispatch(actAddPaymentMethod(res.data));
             child.goBack();
         });
@@ -34,7 +34,7 @@ export const actAddPaymentMethod = (paymentMethod) => {
 
 export const actUpdatePaymentMethodRequest = (paymentMethod, child) => {
     return (dispatch) => {
-        return callApi(`paymentMethod/${paymentMethod.id}`, 'PUT', paymentMethod).then(res => {
+        return callApi(`method/${paymentMethod.id}`, 'PUT', paymentMethod).then(res => {
             if (res) {
                 dispatch(actUpdatePaymentMethod(res.data));
             }
@@ -52,7 +52,7 @@ export const actUpdatePaymentMethod = (paymentMethod) => {
 
 export const actDeletePaymentMethodRequest = (id) => {
     return (dispatch) => {
-        return callApi(`paymentMethod/${id}`, 'DELETE', null).then(res => {
+        return callApi(`method/${id}`, 'DELETE', null).then(res => {
             dispatch(actDeletePaymentMethod(id));
         });
     }
@@ -67,7 +67,7 @@ export const actDeletePaymentMethod = (id) => {
 
 export const actGetPaymentMethodRequest = (id) => {
     return dispatch => {
-        return callApi(`paymentMethod/${id}`, 'GET', null).then(res => {
+        return callApi(`method/${id}`, 'GET', null).then(res => {
             dispatch(actGetPaymentMethod(res.data))
         });
     }

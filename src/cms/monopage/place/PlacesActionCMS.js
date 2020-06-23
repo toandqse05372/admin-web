@@ -7,6 +7,15 @@ import { actFetchCitiesRequest } from '../../../actions/indexCities';
 import { Form, FormControl } from 'react-bootstrap'
 import Select from 'react-select'
 
+const weekDays = [
+    { value: 1, label: 'Mon' },
+    { value: 2, label: 'Tue' },
+    { value: 3, label: 'Wed' },
+    { value: 4, label: 'Thu' },
+    { value: 5, label: 'Fri' },
+    { value: 6, label: 'Sat' },
+    { value: 7, label: 'Sun' }]
+
 class PlacesActionCMS extends Component {
 
     constructor(props) {
@@ -25,9 +34,12 @@ class PlacesActionCMS extends Component {
             txtDescription: '',
             txtOpenHours: '',
             txtStatus: '',
-            loaded: false,
-            fetched: false
+            loaded: 0,
+            fetched: false,
+            fileImage: [],
+            txtImageLink: []
         };
+        this.onChange = this.onChange.bind(this);
     }
 
     componentDidMount() {
@@ -61,10 +73,11 @@ class PlacesActionCMS extends Component {
                     txtPhoneNumber: itemEditing.phoneNumber,
                     txtOpenHours: itemEditing.openHours,
                     txtAddress: itemEditing.address,
+                    txtImageLink: itemEditing.placeImageLink,
                     fetched: true
                 })
-            } 
-        }else {
+            }
+        } else {
             this.setState({
                 fetched: true
             })
@@ -75,7 +88,17 @@ class PlacesActionCMS extends Component {
     onChange = (e) => {
         var target = e.target;
         var name = target.name;
-        var value = target.type === 'checkbox' ? target.checked : target.value;
+        var fileList = []
+        if (name === 'fileImage') {
+            for (let i = 0; i < target.files.length; i++) {
+                // let data = new FormData();
+                // console.log(target.files[0])
+                // data.append('file', target.files[i], target.files[i],name);
+                // fileList.push(data)
+                fileList.push(target.files[i])
+            }
+        }
+        var value = name === 'fileImage' ? fileList : target.value;
         this.setState({
             [name]: value
         });
@@ -83,7 +106,7 @@ class PlacesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtShortDescription, txtDetailDescription, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory } = this.state;
+        var { id, fileImage, txtName, txtShortDescription, txtDetailDescription, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory } = this.state;
         var place = {
             id: id,
             name: txtName,
@@ -93,24 +116,36 @@ class PlacesActionCMS extends Component {
             mail: txtMail,
             cityId: drbCityId,
             phoneNumber: txtPhoneNumber,
-            categoryId: [drbCategory]
+            categoryId: drbCategory,
         };
-        if (id) {
-            this.props.onUpdatePlace(place);
-        } else {
-            this.props.onAddPlace(place);
+        let data = new FormData();
+        if (fileImage !== null) {
+            for (let i = 0; i < fileImage.length; i++) {
+                data.append('file', fileImage[i], fileImage[i].name);
+            }
         }
+        data.append('place', JSON.stringify(place));
+        if (id) {
+            this.props.onUpdatePlace(data, id);
+
+        } else {
+            this.props.onAddPlace(data);
+        }
+
     }
 
-    // onChangeCategory = (selectedOption) => {
-    //     var selectedKey = []
-    //     for (let i = 0; i < selectedOption.length; i++) {
-    //         selectedKey.push(selectedOption[i].value)
-    //     }
-    //     this.setState({
-    //         drbCategory: selectedKey
-    //     })
-    // }
+    onChangeCategory = (selectedOption) => {
+        var selectedKey = []
+        if (selectedOption !== null) {
+            for (let i = 0; i < selectedOption.length; i++) {
+                selectedKey.push(selectedOption[i].value)
+            }
+        }
+
+        this.setState({
+            drbCategory: selectedKey
+        })
+    }
 
     render() {
         var { txtName, txtShortDescription, txtDetailDescription, drbCityId, txtAddress, txtPhoneNumber, txtMail, drbCategory, loaded } = this.state;
@@ -125,9 +160,9 @@ class PlacesActionCMS extends Component {
                     renderOpt.push(option)
                 }
             }
-            loaded = true;
+            loaded = loaded + 1;
         }
-        if (loaded) {
+        if (loaded === 1) {
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
@@ -136,16 +171,6 @@ class PlacesActionCMS extends Component {
                             <label>Place Name </label>
                             <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                         </div>
-                        {/* <div>
-                            <label>Category </label>
-                            <Form.Control as="select"
-                                name="drbCategory"
-                                value={drbCategory}
-                                onChange={this.onChange}>
-                                <option key={0} index={0} value={0}>-- Choose Category --</option>
-                                {this.showCategories(categories)}
-                            </Form.Control>
-                        </div> */}
                         <div className="myDiv">
                             <label>Category </label>
                             <div >
@@ -153,7 +178,7 @@ class PlacesActionCMS extends Component {
                                     defaultValue={renderOpt}
                                     isMulti
                                     options={options}
-                                // onChange={this.onChangeCategory}
+                                    onChange={this.onChangeCategory}
                                 />
                             </div>
 
@@ -185,6 +210,18 @@ class PlacesActionCMS extends Component {
                             <label>Mail </label>
                             <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                         </div>
+                        <div className="myDiv">
+                            <label>Open days </label>
+                            <div >
+                                <Select
+                                    defaultValue={renderOpt}
+                                    isMulti
+                                    options={weekDays}
+                                    onChange={this.onChangeCategory}
+                                />
+                            </div>
+
+                        </div>
                         <div className="form-group">
                             <label>Short Description </label>
                             <textarea onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
@@ -200,7 +237,9 @@ class PlacesActionCMS extends Component {
                             <FormControl id="formControlsFile"
                                 type="file"
                                 multiple
-                                label="File" />
+                                label="File"
+                                name="fileImage"
+                                onChange={this.onChange} />
                         </div>
                         <br />
                         <Link to="/Places" className="btn btn-danger mr-5">
@@ -251,8 +290,8 @@ const mapDispatchToProps = (dispatch, props) => {
         onAddPlace: (place) => {
             dispatch(actAddPlaceRequest(place, props.history));
         },
-        onUpdatePlace: (place) => {
-            dispatch(actUpdatePlaceRequest(place, props.history));
+        onUpdatePlace: (place, id) => {
+            dispatch(actUpdatePlaceRequest(place, props.history, id));
         },
         onEditPlace: (id) => {
             dispatch(actGetPlaceRequest(id));

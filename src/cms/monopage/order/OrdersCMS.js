@@ -1,26 +1,34 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, Table } from 'react-bootstrap'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { connect } from 'react-redux';
-import OrderItem from './components/OrderItem';
-import OrderList from './components/OrderList';
+import UnpaidOrderItem from './components/UnpaidOrderItem';
+import UnpaidOrderList from './components/UnpaidOrderList';
+import PaidOrderItem from './components/PaidOrderItem';
+import PaidOrderList from './components/PaidOrderList';
+import SentOrderItem from './components/SentOrderItem';
+import SentOrderList from './components/SentOrderList';
 import { actDeleteOrderRequest } from '../../../actions/indexOrders';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
+import 'react-tabs/style/react-tabs.css';
 
 class OrdersCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: true,
+            loaded: false,
             activePage: 1,
             drbLimit: 10,
-            searchList: [],
+            searchListPaid: [],
+            searchListUnpaid: [],
+            searchListSent: [],
             totalItems: 0,
             totalPage: 1,
             currentPage: 1,
 
-            txtCityName: '',
+            txtOrderCode: '',
 
             paramBody: {
                 name: '',
@@ -42,7 +50,7 @@ class OrdersCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                name: (name === "txtCityName") ? value : this.state.txtCityName,
+                name: (name === "txtOrderCode") ? value : this.state.txtOrderCode,
                 page: this.state.activePage,
                 limit: (name === "drbLimit") ? value : this.state.drbLimit,
             }
@@ -84,7 +92,7 @@ class OrdersCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtCityName, drbLimit, currentPage } = this.state;
+            const { txtOrderCode, drbLimit, currentPage } = this.state;
             var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
@@ -104,56 +112,45 @@ class OrdersCMS extends Component {
                     );
             });
             return (
-                <div className="container span14">
-                    <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Order manager</h1>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <Form.Label>Sort by</Form.Label>
-                                        <Form.Control as="select"
-                                            name="drbLimit"
-                                            value={drbLimit}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={"purchase_day"}>Newest</option>
-                                            <option key={1} index={1} value={"total_payment"}>Amount</option>
-                                        </Form.Control>
-                                    </th>
-                                    <th>
-                                        <Form.Label>Show</Form.Label>
-                                        <Form.Control as="select"
-                                            name="drbLimit"
-                                            value={drbLimit}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10 / page</option>
-                                            <option key={1} index={1} value={15}>15 / page</option>
-                                            <option key={2} index={2} value={20}>20 / page</option>
-                                        </Form.Control>
-                                    </th>
-
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Button
-                                            type="Submit"
-                                            className="btn btn-inverse mb-5">
-                                            Apply
-                                        </Button>
-                                    </td>
-                                </tr>
-                            </thead>
-                        </Table>
-                    </Form>
-                    <OrderList>
-                        {/* {this.showCities(this.state.searchList)} */}
-                    </OrderList>
-                    <div className="dataTables_paginate paging_bootstrap pagination">
-                        <ul>
-                            {renderPageNumbers}
-                        </ul>
-                    </div>
-                </div>
+                <Tabs defaultIndex={0}>
+                    <h1>Order Manager</h1>
+                    <br></br>
+                    <Form.Label id="basic-addon1">Order Code </Form.Label>
+                    <FormControl
+                        type="text"
+                        placeholder="Order code"
+                        name="txtOrderCode"
+                        value={txtOrderCode}
+                        onChange={this.onChange}
+                    />
+                    <Button
+                        type="Submit"
+                        className="btn btn-inverse mb-5">
+                        Search
+                        </Button>
+                     <br></br>
+                     <br></br>
+                    <TabList>
+                        <Tab>Show paid orders</Tab>
+                        <Tab>Show unpaid orders</Tab>
+                        <Tab>Show sent orders</Tab>
+                    </TabList>
+                    <TabPanel>
+                        <PaidOrderList>
+                            {this.showPaid(this.state.searchList)}
+                        </PaidOrderList>
+                    </TabPanel>
+                    <TabPanel>
+                        <UnpaidOrderList>
+                            {this.showUnpaid(this.state.searchList)}
+                        </UnpaidOrderList>
+                    </TabPanel>
+                    <TabPanel>
+                        <SentOrderList>
+                            {this.showSent(this.state.searchList)}
+                        </SentOrderList>
+                    </TabPanel>
+                </Tabs>
             );
         } else
             return ""
@@ -173,12 +170,38 @@ class OrdersCMS extends Component {
         })
     }
 
-    showCities(cities) {
+    showPaid(orders) {
         var result = null;
-        var { onDeleteCity } = this.props;
-        if (cities.length > 0) {
-            result = cities.map((cities, index) => {
-                return <OrderItem cities={cities} key={index} index={index} onDeleteCity={onDeleteCity}
+        var { onDeleteOrder } = this.props;
+        if (orders.length > 0) {
+            result = orders.map((order, index) => {
+                return <PaidOrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
+                    limit={this.state.drbLimit}
+                    currentPage={this.state.currentPage} />
+            });
+        }
+        return result;
+    }
+
+    showUnpaid(orders) {
+        var result = null;
+        var { onDeleteOrder } = this.props;
+        if (orders.length > 0) {
+            result = orders.map((order, index) => {
+                return <UnpaidOrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
+                    limit={this.state.drbLimit}
+                    currentPage={this.state.currentPage} />
+            });
+        }
+        return result;
+    }
+
+    showSent(orders) {
+        var result = null;
+        var { onDeleteOrder } = this.props;
+        if (orders.length > 0) {
+            result = orders.map((order, index) => {
+                return <SentOrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
                     limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />
             });
