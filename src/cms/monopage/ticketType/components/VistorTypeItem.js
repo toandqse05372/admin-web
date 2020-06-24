@@ -23,7 +23,7 @@ class VistorTypeItem extends Component {
                     <a className="btn btn-success mb-5" onClick={() => this.onDelete(vistors.id)}>
                         Import code from excel
                     </a>
-                    <Link to={`/vistors/${vistors.id}/edit`} className="btn btn-info">
+                    <Link to={`/vistors/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i>
                     </Link>
                     <a className="btn btn-danger" onClick={() => this.onDelete(vistors.id)}>

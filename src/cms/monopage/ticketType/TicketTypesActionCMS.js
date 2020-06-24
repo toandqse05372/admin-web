@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actAddTicketTypeRequest, actUpdateTicketTypeRequest, actGetTicketTypeRequest } from '../../../actions/indexTicketTypes';
 import { actFetchPlacesRequest } from '../../../actions/indexPlaces';
+import { actFetchGamesRequest } from '../../../actions/indexGames';
 import { Form } from 'react-bootstrap';
 import Select from 'react-select'
 
@@ -17,7 +18,8 @@ class TicketTypesActionCMS extends Component {
             txtDetailDescription: '',
             drbPlaceId: '',
             loaded: false,
-            fetched: false,
+            fetchedPlace: false,
+            fetchedPlace: false,
             customCheck: '',
         };
     }
@@ -62,7 +64,7 @@ class TicketTypesActionCMS extends Component {
         this.setState({
             drbPlaceId: e.value
         });
-        console.log(drbPlaceId);
+        this.props.fetchAllGames();
     }
 
     onChangePlace2 = (e) => {
@@ -90,11 +92,11 @@ class TicketTypesActionCMS extends Component {
 
     render() {
         var { txtName, txtShortDescription, txtDetailDescription } = this.state;
-        var { places } = this.props;
+        var { places, games } = this.props;
         var { drbPlaceId, customCheck, loaded } = this.state;
         var options = []
         var renderOpt = drbPlaceId
-        if (places.length > 0 && this.state.fetched) {
+        if (places.length > 0 && !this.state.fetchedPlace) {
             for (let i = 0; i < places.length; i++) {
                 var option = { value: places[i].id, label: places[i].name }
                 options.push(option);
@@ -103,6 +105,16 @@ class TicketTypesActionCMS extends Component {
                 }
             }
             loaded = true;
+            if (games.length > 0 && this.state.fetchedPlace) {
+                for (let i = 0; i < places.length; i++) {
+                    var option = { value: places[i].id, label: places[i].name }
+                    options.push(option);
+                    if (drbPlaceId === places[i].id) {
+                        renderOpt = i
+                    }
+                }
+                loaded = true;
+            }
         }
         if (loaded) {
             return (
@@ -203,6 +215,7 @@ const mapStateToProps = state => {
     return {
         itemEditing: state.itemEditing,
         places: state.places,
+        games: state.games
     }
 }
 
@@ -219,6 +232,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         fetchAllPlaces: () => {
             dispatch(actFetchPlacesRequest());
+        },
+        fetchAllGames: () => {
+            dispatch(actFetchGamesRequest());
         }
     }
 }

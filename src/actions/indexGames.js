@@ -1,31 +1,27 @@
 import * as Types from '../constants/GamesActionType';
 import callApi from '../utils/apiCaller';
+import axios from 'axios';
+import * as Config from '../constants/ConfigURL';
 
-// export const actFetchGamesRequest = (paramBody) => {
-//     return (dispatch) => {
-//         axios.get(URL.API_URL + '/Game/searchMul', {
-//             params: {
-//                 firstName: paramBody.firstName,
-//                 lastName: paramBody.lastName,
-//                 mail: paramBody.mail,
-//                 phoneNumber: paramBody.phoneNumber,
-//                 role: paramBody.role,
-//                 limit: paramBody.limit,
-//                 page: paramBody.page
-//             }
-//         })
-//             .then(res => {
-//                 dispatch(actFetchGames(res.data));
-//             });
-//     }
-// }
+export const actFetchGamesRequest = (paramBody) => {
+    return (dispatch) => {
+        axios.get(URL.API_URL + '/game/listOption', {
+            params: {
+                placeId: paramBody.placeId
+            }
+        })
+            .then(res => {
+                dispatch(actFetchGames(res.data));
+            });
+    }
+}
 
-// export const actFetchGames = (Games) => {
-//     return {
-//         type: Types.FETCH_GameS,
-//         Games
-//     }
-// }
+export const actFetchGames = (games) => {
+    return {
+        type: Types.FETCH_GAMES,
+        games
+    }
+}
 
 export const actAddGameRequest = (games, child) => {
     return (dispatch) => {
