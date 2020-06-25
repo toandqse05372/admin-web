@@ -80,21 +80,21 @@ class PlacesActionCMS extends Component {
                 this.setState({
                     id: itemEditing.id,
                     vn: {
-                        txtName: itemEditing.name.vietnamese,
-                        txtShortDescription: itemEditing.shortDescription.vietnamese,
-                        txtDetailDescription: itemEditing.detailDescription.vietnamese,
+                        txtName: itemEditing.placeTrans[2].name,
+                        txtShortDescription: itemEditing.placeTrans[2].shortDescription,
+                        txtDetailDescription: itemEditing.placeTrans[2].detailDescription,
                     },
         
                     en: {
-                        txtName: itemEditing.name.english,
-                        txtShortDescription: itemEditing.shortDescription.english,
-                        txtDetailDescription: itemEditing.detailDescription.english,
+                        txtName: itemEditing.placeTrans[1].name,
+                        txtShortDescription: itemEditing.placeTrans[1].shortDescription,
+                        txtDetailDescription: itemEditing.placeTrans[1].detailDescription,
                     },
         
                     jp: {
-                        txtName: itemEditing.name.japanese,
-                        txtShortDescription: itemEditing.shortDescription.japanese,
-                        txtDetailDescription: itemEditing.detailDescription.japanese,
+                        txtName: itemEditing.placeTrans[0].name,
+                        txtShortDescription: itemEditing.placeTrans[0].shortDescription,
+                        txtDetailDescription: itemEditing.placeTrans[0].detailDescription,
                     },
                     txtMail: itemEditing.mail,
                     txtPhoneNumber: itemEditing.phoneNumber,
@@ -139,25 +139,29 @@ class PlacesActionCMS extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         var { id, fileImage, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, vn, en, jp } = this.state;
-        debugger
         var place = {
             id: id,
-            name: {
-                vietnamese: vn.txtName,
-                english: en.txtName,
-                japanese: jp.txtName
-            },
+            placeTrans:[
+                {
+                    name: vn.txtName,
+                    shortDescription: vn.txtShortDescription,
+                    detailDescription: vn.txtDetailDescription,
+                    langId: 1
+                },
+                {
+                    name: en.txtName,
+                    shortDescription: en.txtShortDescription,
+                    detailDescription: en.txtDetailDescription,
+                    langId: 2
+                },
+                {
+                    name: jp.txtName,
+                    shortDescription: jp.txtShortDescription,
+                    detailDescription: jp.txtDetailDescription,
+                    langId: 3
+                },
+            ],
             address: txtAddress,
-            shortDescription: {
-                vietnamese: vn.txtShortDescription,
-                english: en.txtShortDescription,
-                japanese: jp.txtShortDescription
-            },
-            detailDescription: {
-                vietnamese: vn.txtDetailDescription,
-                english: en.txtDetailDescription,
-                japanese: jp.txtDetailDescription
-            },
             mail: txtMail,
             cityId: drbCityId,
             phoneNumber: txtPhoneNumber,
@@ -187,7 +191,6 @@ class PlacesActionCMS extends Component {
                 selectedKey.push(selectedOption[i].value)
             }
         }
-        debugger
         this.setState({
             drbCategory: selectedKey
         })
