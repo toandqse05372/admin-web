@@ -90,11 +90,13 @@ class GamesActionCMS extends Component {
                 options.push(option);
                 if(drbPlaceId === places[i].id){
                     renderOpt = i
+                    debugger
                 }
             }
             loaded = true;
         }  
         if(loaded){
+            debugger
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>

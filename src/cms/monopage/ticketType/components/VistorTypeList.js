@@ -14,8 +14,9 @@ class VistorTypeList extends Component {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>City Name</th>
-                                <th>Short Description</th>
+                                <th>Vistor type</th>
+                                <th>Price</th>
+                                <th>Product ID</th>
                             </tr>
                         </thead>
                         <tbody>

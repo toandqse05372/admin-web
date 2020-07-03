@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import * as URL from '../../../../constants/ConfigURL';
+import callApi from '../../../../utils/apiCaller';
 
 class VistorTypeItem extends Component {
 
@@ -10,24 +13,54 @@ class VistorTypeItem extends Component {
         }
     }
 
+    onImportExcel() {
+        document.getElementById('hiddenFileInput').click();
+
+    }
+
+    uploadExcel= (e) => {
+        let dataForm = new FormData();
+        dataForm.append('file', e.target.files[0]);
+        dataForm.append('codeType',this.props.vistors.typeKey);
+        callApi('upload', 'POST', dataForm).then(res => {
+            
+        });
+    }
+
     render() {
-        var { ages, index, limit, currentPage } = this.props;
+        var { vistors, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{(currentPage - 1)*limit + index + 1}</td>
-                <td>{ages.name}</td>
-                <td>{ages.shortDescription}</td>
+                <td>{index + 1}</td>
+                <td>{vistors.typeName}</td>
+                <td>{vistors.price}</td>
+                <td>{vistors.typeKey}</td>
 
                 <td className="center">
-                    <Link to={`/ages/${ages.id}/edit`} className="btn btn-info">
-                        <i className="halflings-icon white edit"></i> 
+                    {/* <FormControl id="formControlsFile"
+                    className="btn btn-success mb-5"
+                        type="file"
+                        multiple
+                        label="File"
+                        name="fileImage"
+                        onChange={this.onImportExcel()} /> */}
+                    <button className="btn btn-success mb-5" type="file"
+                        onClick={() => this.onImportExcel()}>
+                        Import code from excel
+                    </button>
+                    <input type="file"
+                        id="hiddenFileInput" style={{ display: "none" }}
+                        onChange={this.uploadExcel}
+                    />
+                    <Link to={`/ticketTypes/vistors/1/edit`} className="btn btn-info">
+                        <i className="halflings-icon white edit"></i>
                     </Link>
-                    <a className="btn btn-danger" onClick={() => this.onDelete(ages.id)}>
+                    <a className="btn btn-danger" onClick={() => this.onDelete(vistors.id)}>
                         <i className="halflings-icon white trash" />
                     </a>
                 </td>
             </tr>
-           
+
         );
     }
 }

@@ -6,6 +6,7 @@ import * as CategoriesType from '../constants/CategoriesActionType';
 import * as TicketTypes from '../constants/TicketTypesActionType';
 import * as OrdersTypes from '../constants/OrdersActionType';
 import * as PaymentMethosActionTypes from '../constants/PaymentMethosActionType';
+import * as VisitorTypeActionTypes from '../constants/VisitorTypeActionType';
 var initialState = {};
 
 const itemEditing = (state = initialState, action) => {
@@ -25,7 +26,9 @@ const itemEditing = (state = initialState, action) => {
         case OrdersTypes.EDIT_ORDER:
             return action.order
         case PaymentMethosActionTypes.EDIT_PAYMENT_METHOD_TYPE:
-            return action.paymentMethosActionType
+            return action.paymentMethod
+        case VisitorTypeActionTypes.EDIT_VISISTOR_TYPE:
+            return action.visitorType
         default:
             return state;
     }

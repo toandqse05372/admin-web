@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actAddTicketTypeRequest, actUpdateTicketTypeRequest, actGetTicketTypeRequest } from '../../../actions/indexTicketTypes';
 import { actFetchPlacesRequest } from '../../../actions/indexPlaces';
-import { Form } from 'react-bootstrap'
+import { actFetchGamesRequest } from '../../../actions/indexGames';
+import { Form } from 'react-bootstrap';
+import Select from 'react-select'
 
 class TicketTypesActionCMS extends Component {
 
@@ -13,7 +15,12 @@ class TicketTypesActionCMS extends Component {
             id: '',
             txtName: '',
             txtShortDescription: '',
-            txtDetailDescription: ''
+            txtDetailDescription: '',
+            drbPlaceId: '',
+            drbGameId: '',
+            loaded: 0,
+            fetchedPlace: false,
+            fetchedPlace: false,
         };
     }
 
@@ -23,6 +30,7 @@ class TicketTypesActionCMS extends Component {
             var id = match.params.id;
             this.props.onEditTicketType(id)
         } // else => add
+        this.props.fetchAllPlaces();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -30,9 +38,13 @@ class TicketTypesActionCMS extends Component {
             var { itemEditing } = nextProps;
             this.setState({
                 id: itemEditing.id,
-                txtName: itemEditing.name,
-                txtShortDescription: itemEditing.shortDescription,
-                txtDetailDescription: itemEditing.detailDescription
+                txtName: itemEditing.typeName,
+                drbPlaceId: itemEditing.placeId,
+                drbGameId: itemEditing.gameId
+            })
+        } else {
+            this.setState({
+                fetched: true
             })
         }
     }
@@ -45,16 +57,37 @@ class TicketTypesActionCMS extends Component {
         this.setState({
             [name]: value
         });
+
+    }
+    onChangePlace = (e) => {
+        const { drbPlaceId } = this.state;
+        this.setState({
+            drbPlaceId: e.value
+        });
+        this.props.fetchAllGames(e.value);
     }
 
+    onChangeGame = (e) => {
+        const { drbGameId } = this.state;
+        var selectedId = []
+        if (e !== null) {
+            for (let i = 0; i < e.length; i++) {
+                selectedId.push(e[i].value)
+            }
+        }
+        this.setState({
+            drbGameId: selectedId
+        });
+        console.log(drbGameId);
+    }
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtShortDescription, txtDetailDescription } = this.state;
+        var { id, txtName, drbGameId, txtDetailDescription, drbPlaceId } = this.state;
         var city = {
             id: id,
-            name: txtName,
-            shortDescription: txtShortDescription,
-            detailDescription: txtDetailDescription
+            typeName: txtName,
+            gameId: drbGameId,
+            placeId: drbPlaceId
         };
         if (id) {
             this.props.onUpdateTicketType(city);
@@ -63,59 +96,126 @@ class TicketTypesActionCMS extends Component {
         }
     }
 
+    showGame() {
+        var { games } = this.props;
+        var { drbGameId } = this.state;
+        var optionsGame = []
+        var renderOptGame = drbGameId
+        if (games.length > 0) {
+            for (let i = 0; i < games.length; i++) {
+                var option = { value: games[i].id, label: games[i].gameName }
+                optionsGame.push(option);
+                if (drbGameId === games[i].id) {
+                    renderOptGame = i
+                }
+            }
+        }
+        return  <Select
+            isMulti
+            options={optionsGame}
+            defaultValue={optionsGame[renderOptGame]}
+            onChange={this.onChangeGame}
+        />
+    }
+
     render() {
         var { txtName, txtShortDescription, txtDetailDescription } = this.state;
-        return (
-            <div className="container">
-                <form onSubmit={this.onSubmit}>
-                    <legend>* Please enter full information</legend>
+        var { places, games } = this.props;
+        var { drbPlaceId, loaded, drbGameId } = this.state;
+        var optionsPlace = []
+        
+        var renderOptPlace = drbPlaceId
 
-                    {/* <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[colourOptions[4], colourOptions[5]]}
-                        isMulti
-                        options={colourOptions}
-                    /> */}
+        if (places.length > 0 && !this.state.fetchedPlace) {
+            for (let i = 0; i < places.length; i++) {
+                var option = { value: places[i].id, label: places[i].name }
+                optionsPlace.push(option);
+                if (drbPlaceId === places[i].id) {
+                    debugger
+                    renderOptPlace = i
+                }
+            }
+            loaded = loaded + 1;
 
-                    <div className="form-group">
-                        <label>Ticket Name </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Effective Time</label>
-                        <textarea onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <div className="form-group">
-                        <label>Description</label>
-                        <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <div className="form-group">
-                        <label>Cancel Policy</label>
-                        <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <div className="form-group">
-                        <label>Reservation Infomation</label>
-                        <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <div className="form-group">
-                        <label>Conversion Method</label>
-                        <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <Link to="/ticketTypes" className="btn btn-danger mr-5">
-                        <i className="glyphicon glyphicon-arrow-left"></i> Back
-                    </Link>
-                    <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Save Ticket Type
+        }
+        if (loaded === 1) {
+            return (
+                <div className="container">
+
+                    <form onSubmit={this.onSubmit}>
+                        <legend>* Please enter full information</legend>
+                        <div className="myDiv">
+                            <label>Place Name </label>
+                            <div >
+                                <Select
+                                    options={optionsPlace}
+                                    defaultValue={optionsPlace[renderOptPlace]}
+                                    onChange={this.onChangePlace}
+                                />
+                            </div>
+                        </div>
+                        <div style={{ display: drbPlaceId ? "" : "none" }} className="myDiv">
+                            <div  >
+                                {/* thứ mà hiện ra sau khi chọn dropdown */}
+                                <div className="myDiv">
+                                    <label>Game Name </label>
+                                    <div >
+                                        {this.showGame()}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{ display: drbGameId ? "" : "none" }}>
+                            <label>id u pick: {drbGameId} </label>
+                            <div className="form-group">
+                                <label>Ticket Name </label>
+                                <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                            </div>
+                            <div className="form-group">
+                                <label>Effective Time</label>
+                                <textarea onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
+                                </textarea>
+                            </div>
+                            <div className="form-group">
+                                <label>Description</label>
+                                <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
+                                </textarea>
+                            </div>
+                            <div className="form-group">
+                                <label>Cancel Policy</label>
+                                <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
+                                </textarea>
+                            </div>
+                            <div className="form-group">
+                                <label>Reservation Infomation</label>
+                                <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
+                                </textarea>
+                            </div>
+                            <div className="form-group">
+                                <label>Conversion Method</label>
+                                <textarea
+                                    value={txtDetailDescription}
+                                    name="txtDetailDescription"
+                                    className="form-control"
+                                    rows="3"
+                                    onBlur={this.handleBlur}
+                                >
+                                </textarea>
+                            </div>
+
+                            <Link to="/ticketTypes" className="btn btn-danger mr-5">
+                                <i className="glyphicon glyphicon-arrow-left"></i> Back
+                            </Link>
+                            <button type="submit" className="btn btn-primary">
+                                <i className="glyphicon glyphicon-save"></i> Save Ticket Type
                             </button>
-                </form>
-            </div>
-        );
+                        </div>
+                    </form>
+                </div>
+            );
+        } else {
+            return ""
+        }
     }
 
 }
@@ -124,6 +224,7 @@ const mapStateToProps = state => {
     return {
         itemEditing: state.itemEditing,
         places: state.places,
+        games: state.games
     }
 }
 
@@ -135,11 +236,14 @@ const mapDispatchToProps = (dispatch, props) => {
         onUpdateTicketType: (city) => {
             dispatch(actUpdateTicketTypeRequest(city, props.history));
         },
-        onGetTicketType: (id) => {
+        onEditTicketType: (id) => {
             dispatch(actGetTicketTypeRequest(id));
         },
         fetchAllPlaces: () => {
             dispatch(actFetchPlacesRequest());
+        },
+        fetchAllGames: (placeId) => {
+            dispatch(actFetchGamesRequest(placeId));
         }
     }
 }

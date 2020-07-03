@@ -179,7 +179,9 @@ class TicketTypesCMS extends Component {
         var { onDeleteTicketType } = this.props;
         if (ticketTypes.length > 0) {
             result = ticketTypes.map((ticketTypes, index) => {
-                return <TicketTypeItem ticketTypes={ticketTypes} key={index} index={index} onDeleteTicketType={onDeleteTicketType} />
+                return <TicketTypeItem ticketTypes={ticketTypes} limit={this.state.drbLimit}
+                currentPage = {this.state.currentPage}
+                key={index} index={index} onDeleteTicketType={onDeleteTicketType} />
             });
         }
         return result;

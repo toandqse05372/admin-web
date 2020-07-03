@@ -122,9 +122,11 @@ class PlacesActionCMS extends Component {
         if (fileImage !== null) {
             for (let i = 0; i < fileImage.length; i++) {
                 data.append('file', fileImage[i], fileImage[i].name);
+                
             }
         }
         data.append('place', JSON.stringify(place));
+        debugger
         if (id) {
             this.props.onUpdatePlace(data, id);
 
@@ -153,6 +155,7 @@ class PlacesActionCMS extends Component {
         var options = []
         var renderOpt = []
         if (categories.length > 0 && this.state.fetched && typeof drbCategory !== "undefined") {
+            
             for (let i = 0; i < categories.length; i++) {
                 var option = { value: categories[i].id, label: categories[i].categoryName }
                 options.push(option);

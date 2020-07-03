@@ -22,7 +22,6 @@ export const actAddPlaceRequest = (place, child) => {
     return (dispatch) => {
         return callApi('place', 'POST', place).then(res => {
             dispatch(actAddPlace(res.data));
-            debugger
             child.goBack()
         });
     }
