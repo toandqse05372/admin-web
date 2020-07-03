@@ -72,15 +72,15 @@ class VistorTypesActionCMS extends Component {
                     <legend>* Please enter full information</legend>
                     <div className="form-group">
                         <label>Type Name </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        <input style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
                         <label>Product Code </label>
-                        <input onChange={this.onChange} value={txtProductCode} name="txtProductCode" type="text" className="form-control" />
+                        <input style={{ width: 350 }} onChange={this.onChange} value={txtProductCode} name="txtProductCode" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
                         <label>Price </label>
-                        <input onChange={this.onChange} value={txtPrice} name="txtPrice" type="number" className="form-control" />
+                        <input style={{ width: 350 }} onChange={this.onChange} value={txtPrice} name="txtPrice" type="number" className="form-control" />
                         {`\t`}VNĐ
                     </div>
                     <Link to="/ticketTypes" className="btn btn-danger mr-5">

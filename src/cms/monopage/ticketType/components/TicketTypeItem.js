@@ -23,7 +23,6 @@ class TicketTypeItem extends Component {
     onDeleteTicketType = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteTicketType(id);
-            window.location.reload();
         }
     }
 

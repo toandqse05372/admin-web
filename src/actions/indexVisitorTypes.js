@@ -1,12 +1,19 @@
 import * as Types from '../constants/VisitorTypeActionType';
 import callApi from '../utils/apiCaller';
-
+import { NotificationManager } from 'react-notifications';
 
 export const actAddVisitorTypeRequest = (visitorType, child) => {
     return (dispatch) => {
         return callApi('visitorType', 'POST', visitorType).then(res => {
-            dispatch(actAddVisitorType(res.data));
+            if (res) {
+                dispatch(actAddVisitorType(res.data));
+                NotificationManager.success('Success message', 'Add visitor type successful');
+            }
             child.goBack();
+        }).catch(function (error) {
+            if (error.response.data === 'VISITOR_TYPE_EXISTED') {
+                NotificationManager.error('Error  message', 'Visitor type has been existed');
+            }
         });
     }
 }
@@ -23,8 +30,13 @@ export const actUpdateVisitorTypeRequest = (visitorType, child) => {
         return callApi(`visitorType/${visitorType.id}`, 'PUT', visitorType).then(res => {
             if (res) {
                 dispatch(actUpdateVisitorType(res.data));
+                NotificationManager.success('Success message', 'Update visitor type successful');
             }
             child.goBack();
+        }).catch(function (error) {
+            if (error.response.data === 'VISITOR_TYPE_EXISTED') {
+                NotificationManager.error('Error  message', 'Visitor type has been existed');
+            }
         });
     }
 }
@@ -39,7 +51,15 @@ export const actUpdateVisitorType = (visitorType) => {
 export const actDeleteVisitorTypeRequest = (id) => {
     return (dispatch) => {
         return callApi(`visitorType/${id}`, 'DELETE', null).then(res => {
-            dispatch(actDeleteVisitorType(id));
+            if (res) {
+                dispatch(actDeleteVisitorType(id));
+                window.location.reload();
+            }
+            NotificationManager.success('Success message', 'Delete visitor type successful');
+        }).catch(function(error) {
+            if(error.response.data === 'VISITOR_TYPE_NOT_FOUND'){
+                NotificationManager.error('Error  message', 'Visitor type not found');
+            }
         });
     }
 }

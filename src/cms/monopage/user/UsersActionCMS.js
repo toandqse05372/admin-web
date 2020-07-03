@@ -121,7 +121,6 @@ class UsersActionCMS extends Component {
                     renderOpt.push(option)
                 }
             }
-            debugger
             loaded = true;
         }  
         if (loaded) {
@@ -131,23 +130,23 @@ class UsersActionCMS extends Component {
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
                             <label>First Name </label>
-                            <input onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Last Name </label>
-                            <input onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Mail </label>
-                            <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Password </label>
-                            <input onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Phone number </label>
-                            <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
                         </div>
                         {/* <div className="form-group">
                             <label>Role </label>

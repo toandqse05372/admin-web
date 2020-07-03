@@ -179,10 +179,9 @@ class CitiesCMS extends Component {
         var result = null;
         var { onDeleteCity } = this.props;
         if (cities.length > 0) {
-            result = cities.map((cities, index) => {
-                return <CityItem cities={cities} key={index} index={index} onDeleteCity={onDeleteCity}
-                limit={this.state.drbLimit}
-                    currentPage={this.state.currentPage} />
+            result = cities.map((city, index) => {
+                return <CityItem city={city} key={index} index={index} onDeleteCity={onDeleteCity}
+                limit={this.state.drbLimit} currentPage={this.state.currentPage} />
             });
         }
         return result;

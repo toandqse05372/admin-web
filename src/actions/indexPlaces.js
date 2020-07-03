@@ -1,8 +1,7 @@
 import * as Types from '../constants/PlacesActionType';
-import axios from 'axios';
-import * as URL from '../constants/ConfigURL';
 import callApi from '../utils/apiCaller';
-import Axios from 'axios';
+import { NotificationManager } from 'react-notifications';
+
 export const actFetchPlacesRequest = () => {
     return (dispatch) => {
         return callApi('places', 'GET', null).then(res => {
@@ -21,8 +20,15 @@ export const actFetchPlaces = (places) => {
 export const actAddPlaceRequest = (place, child) => {
     return (dispatch) => {
         return callApi('place', 'POST', place).then(res => {
-            dispatch(actAddPlace(res.data));
-            child.goBack()
+            if (res) {
+                dispatch(actAddPlace(res.data));
+                NotificationManager.success('Success message', 'Add place successful');
+            }
+            child.goBack();
+        }).catch(function (error) {
+            if (error.response.data === 'PLACE_EXISTED') {
+                NotificationManager.error('Error  message', 'Place has been existed');
+            }
         });
     }
 }
@@ -39,7 +45,12 @@ export const actUpdatePlaceRequest = (place, child, id) => {
         return callApi(`place/${id}`, 'PUT', place).then(res => {
             if (res) {
                 dispatch(actUpdatePlace(res.data));
-                child.goBack()
+                NotificationManager.success('Success message', 'Update place successful');
+            }
+            child.goBack();
+        }).catch(function (error) {
+            if (error.response.data === 'PLACE_EXISTED') {
+                NotificationManager.error('Error  message', 'Place has been existed');
             }
         });
     }
@@ -72,7 +83,15 @@ export const actChangeStatusPlace = (place) => {
 export const actDeletePlaceRequest = (id) => {
     return (dispatch) => {
         return callApi(`place/${id}`, 'DELETE', null).then(res => {
-            dispatch(actDeletePlace(id));
+            if (res) {
+                dispatch(actDeletePlace(id));
+                window.location.reload();
+            }
+            NotificationManager.success('Success message', 'Delete place successful');
+        }).catch(function(error) {
+            if(error.response.data === 'PLACE_NOT_FOUND'){
+                NotificationManager.error('Error  message', 'Place not found');
+            }
         });
     }
 }

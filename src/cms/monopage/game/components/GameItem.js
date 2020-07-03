@@ -6,7 +6,6 @@ class GameItem extends Component {
     onDelete = (id) => {
         if (window.confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteGame(id);
-            window.location.reload();
         }
     }
 

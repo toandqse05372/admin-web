@@ -6,7 +6,6 @@ class PlaceItem extends Component {
     onDelete = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeletePlace(id);
-            window.location.reload();
         }
     }
 

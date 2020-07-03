@@ -3,6 +3,8 @@ import '../App.css';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import cmsRoutes from '../config/cmsRouter';
 import CmsMenu from './CmsMenu';
+import { NotificationContainer } from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 
 class CmsParent extends Component {
     constructor(props) {
@@ -79,7 +81,7 @@ class CmsParent extends Component {
                         </div>
                     </div>
                 </div>
-
+                <NotificationContainer />
             </div>
         );
     }

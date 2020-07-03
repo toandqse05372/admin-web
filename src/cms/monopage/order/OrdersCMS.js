@@ -123,13 +123,14 @@ class OrdersCMS extends Component {
                         value={txtOrderCode}
                         onChange={this.onChange}
                     />
-                    <Button
+                    
+                     <br></br>
+                     <Button
                         type="Submit"
                         className="btn btn-inverse mb-5">
                         Search
-                        </Button>
-                     <br></br>
-                     <br></br>
+                    </Button>
+                    <div style={{marginBottom : '11px'}}></div>
                     <TabList>
                         <Tab>Show paid orders</Tab>
                         <Tab>Show unpaid orders</Tab>

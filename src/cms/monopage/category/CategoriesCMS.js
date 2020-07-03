@@ -128,7 +128,6 @@ class CategoriesCMS extends Component {
                                             <option key={2} index={2} value={20}>20 / page</option>
                                         </Form.Control>
                                     </th>
-
                                 </tr>
                                 <tr>
                                     <td>

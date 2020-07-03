@@ -1,5 +1,6 @@
 import * as Types from '../constants/PaymentMethosActionType';
 import callApi from '../utils/apiCaller';
+import { NotificationManager } from 'react-notifications';
 
 export const actFetchPaymentMethodsRequest = () => {
     return dispatch => {
@@ -19,8 +20,15 @@ export const actFetchPaymentMethods = (paymentMethods) => {
 export const actAddPaymentMethodRequest = (paymentMethod, child) => {
     return (dispatch) => {
         return callApi('method', 'POST', paymentMethod).then(res => {
-            dispatch(actAddPaymentMethod(res.data));
+            if (res) {
+                dispatch(actAddPaymentMethod(res.data));
+                NotificationManager.success('Success message', 'Add Payment Method successful');
+            }
             child.goBack();
+        }).catch(function(error) {
+            if(error.response.data === 'PAYMENT_METHOD_EXISTED'){
+                NotificationManager.error('Error  message', 'Payment Method has been existed');
+            }
         });
     }
 }
@@ -37,8 +45,13 @@ export const actUpdatePaymentMethodRequest = (paymentMethod, child) => {
         return callApi(`method/${paymentMethod.id}`, 'PUT', paymentMethod).then(res => {
             if (res) {
                 dispatch(actUpdatePaymentMethod(res.data));
+                NotificationManager.success('Success message', 'Update Payment Method successful');
             }
             child.goBack();
+        }).catch(function(error) {
+            if(error.response.data === 'PAYMENT_METHOD_EXISTED'){
+                NotificationManager.error('Error  message', 'Payment Method has been existed');
+            }
         });
     }
 }
@@ -53,7 +66,15 @@ export const actUpdatePaymentMethod = (paymentMethod) => {
 export const actDeletePaymentMethodRequest = (id) => {
     return (dispatch) => {
         return callApi(`method/${id}`, 'DELETE', null).then(res => {
-            dispatch(actDeletePaymentMethod(id));
+            if (res) {
+                dispatch(actDeletePaymentMethod(id));
+                window.location.reload();
+            }
+            NotificationManager.success('Success message', 'Delete Payment Method successful');
+        }).catch(function(error) {
+            if(error.response.data === 'PAYMENT_METHOD_NOT_FOUND'){
+                NotificationManager.error('Error  message', 'Payment Method not found');
+            }
         });
     }
 }

@@ -1,5 +1,6 @@
 import * as Types from '../constants/CategoriesActionType';
 import callApi from '../utils/apiCaller';
+import { NotificationManager } from 'react-notifications';
 
 export const actFetchCategoriesRequest = () => {
     return dispatch => {
@@ -19,8 +20,15 @@ export const actFetchCategories = (categories) => {
 export const actAddCategoryRequest = (category, child) => {
     return (dispatch) => {
         return callApi('category', 'POST', category).then(res => {
-            dispatch(actAddCategory(res.data));
+            if (res) {
+                dispatch(actAddCategory(res.data));
+                NotificationManager.success('Success message', 'Add category successful');
+            }
             child.goBack();
+        }).catch(function(error) {
+            if(error.response.data === 'CATEGORY_EXISTED'){
+                NotificationManager.error('Error  message', 'Category has been existed');
+            }
         });
     }
 }
@@ -37,8 +45,13 @@ export const actUpdateCategoryRequest = (category, child) => {
         return callApi(`category/${category.id}`, 'PUT', category).then(res => {
             if (res) {
                 dispatch(actUpdateCategory(res.data));
+                NotificationManager.success('Success message', 'Update category successful');
             }
             child.goBack();
+        }).catch(function(error) {
+            if(error.response.data === 'CATEGORY_EXISTED'){
+                NotificationManager.error('Error  message', 'Category has been existed');
+            }
         });
     }
 }
@@ -53,7 +66,15 @@ export const actUpdateCategory = (category) => {
 export const actDeleteCategoryRequest = (id) => {
     return (dispatch) => {
         return callApi(`category/${id}`, 'DELETE', null).then(res => {
-            dispatch(actDeleteCategory(id));
+            if (res) {
+                dispatch(actDeleteCategory(id));
+                window.location.reload();
+            }
+            NotificationManager.success('Success message', 'Delete city successful');
+        }).catch(function(error) {
+            if(error.response.data === 'CATEGORY_NOT_FOUND'){
+                NotificationManager.error('Error  message', 'City not found');
+            }
         });
     }
 }

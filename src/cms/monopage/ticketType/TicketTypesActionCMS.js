@@ -165,34 +165,34 @@ class TicketTypesActionCMS extends Component {
                             </div>
                         </div>
                         <div style={{ display: drbGameId ? "" : "none" }}>
-                            <label>id u pick: {drbGameId} </label>
                             <div className="form-group">
                                 <label>Ticket Name </label>
-                                <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                                <input style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                             </div>
                             <div className="form-group">
                                 <label>Effective Time</label>
-                                <textarea onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
+                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
                                 </textarea>
                             </div>
                             <div className="form-group">
                                 <label>Description</label>
-                                <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
+                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
                                 </textarea>
                             </div>
                             <div className="form-group">
                                 <label>Cancel Policy</label>
-                                <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
+                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
                                 </textarea>
                             </div>
                             <div className="form-group">
                                 <label>Reservation Infomation</label>
-                                <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
+                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
                                 </textarea>
                             </div>
                             <div className="form-group">
                                 <label>Conversion Method</label>
                                 <textarea
+                                style={{ width: 350 }}
                                     value={txtDetailDescription}
                                     name="txtDetailDescription"
                                     className="form-control"

@@ -2,6 +2,7 @@ import * as Types from '../constants/GamesActionType';
 import callApi from '../utils/apiCaller';
 import axios from 'axios';
 import * as Config from '../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
 
 export const actFetchGamesRequest = (placeId) => {
     return (dispatch) => {
@@ -26,8 +27,15 @@ export const actFetchGames = (games) => {
 export const actAddGameRequest = (games, child) => {
     return (dispatch) => {
         return callApi('game', 'POST', games).then(res => {
-            dispatch(actAddGame(res.data));
+            if (res) {
+                dispatch(actAddGame(res.data));
+                NotificationManager.success('Success message', 'Add game successful');
+            }
             child.goBack();
+        }).catch(function(error) {
+            if(error.response.data === 'GAME_EXISTED'){
+                NotificationManager.error('Error  message', 'Game has been existed');
+            }
         });
     }
 }
@@ -44,8 +52,13 @@ export const actUpdateGameRequest = (game, child) => {
         return callApi(`game/${game.id}`, 'PUT', game).then(res => {
             if (res) {
                 dispatch(actUpdateGame(res.data));
+                NotificationManager.success('Success message', 'Update game successful');
             }
             child.goBack();
+        }).catch(function(error) {
+            if(error.response.data === 'GAME_EXISTED'){
+                NotificationManager.error('Error  message', 'Game has been existed');
+            }
         });
     }
 }
@@ -77,7 +90,15 @@ export const actChangeStatusGame = (game) => {
 export const actDeleteGameRequest = (id) => {
     return (dispatch) => {
         return callApi(`game/${id}`, 'DELETE', null).then(res => {
-            dispatch(actDeleteGame(id));
+            if (res) {
+                dispatch(actDeleteGame(id));
+                window.location.reload();
+            }
+            NotificationManager.success('Success message', 'Delete game successful');
+        }).catch(function(error) {
+            if(error.response.data === 'GAME_NOT_FOUND'){
+                NotificationManager.error('Error  message', 'Game not found');
+            }
         });
     }
 }

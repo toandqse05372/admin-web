@@ -9,7 +9,6 @@ class VistorTypeItem extends Component {
     onDelete = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteCity(id);
-            window.location.reload();
         }
     }
 

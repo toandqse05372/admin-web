@@ -6,7 +6,6 @@ class UserItem extends Component {
     onDelete = (id) => {
         if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteUser(id);
-            window.location.reload();
         }
     }
 
@@ -16,7 +15,6 @@ class UserItem extends Component {
         for (let i = 0; i < users.roleKey.length; i++) {
             var role = users.roleKey[i]
             roleList = roleList + role;
-            debugger
             if (i < users.roleKey.length - 1) {
                 roleList = roleList + ', '
             }
