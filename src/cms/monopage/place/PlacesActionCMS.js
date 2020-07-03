@@ -6,6 +6,8 @@ import { actFetchCategoriesRequest } from '../../../actions/indexCategories';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
 import { Form, FormControl } from 'react-bootstrap'
 import Select from 'react-select'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import PlaceMultiLangItem from './components/PlaceMultiLangItem'
 
 const weekDays = [
     { value: 1, label: 'Mon' },
@@ -22,10 +24,8 @@ class PlacesActionCMS extends Component {
         super(props);
         this.state = {
             id: '',
-            txtName: '',
+
             txtAddress: '',
-            txtShortDescription: '',
-            txtDetailDescription: '',
             txtMail: '',
             txtPhoneNumber: '',
             fileImage: [],
@@ -37,7 +37,25 @@ class PlacesActionCMS extends Component {
             loaded: 0,
             fetched: false,
             fileImage: [],
-            txtImageLink: []
+            txtImageLink: [],
+
+            vn: {
+                txtName: '',
+                txtShortDescription: '',
+                txtDetailDescription: '',
+            },
+
+            en: {
+                txtName: '',
+                txtShortDescription: '',
+                txtDetailDescription: '',
+            },
+
+            jp: {
+                txtName: '',
+                txtShortDescription: '',
+                txtDetailDescription: '',
+            },
         };
         this.onChange = this.onChange.bind(this);
     }
@@ -61,9 +79,23 @@ class PlacesActionCMS extends Component {
             if (typeof itemEditing.id !== "undefined") {
                 this.setState({
                     id: itemEditing.id,
-                    txtName: itemEditing.name,
-                    txtShortDescription: itemEditing.shortDescription,
-                    txtDetailDescription: itemEditing.detailDescription,
+                    vn: {
+                        txtName: itemEditing.placeTrans[2].name,
+                        txtShortDescription: itemEditing.placeTrans[2].shortDescription,
+                        txtDetailDescription: itemEditing.placeTrans[2].detailDescription,
+                    },
+        
+                    en: {
+                        txtName: itemEditing.placeTrans[1].name,
+                        txtShortDescription: itemEditing.placeTrans[1].shortDescription,
+                        txtDetailDescription: itemEditing.placeTrans[1].detailDescription,
+                    },
+        
+                    jp: {
+                        txtName: itemEditing.placeTrans[0].name,
+                        txtShortDescription: itemEditing.placeTrans[0].shortDescription,
+                        txtDetailDescription: itemEditing.placeTrans[0].detailDescription,
+                    },
                     txtMail: itemEditing.mail,
                     txtPhoneNumber: itemEditing.phoneNumber,
                     fileImage: itemEditing.placeImageLink,
@@ -106,20 +138,38 @@ class PlacesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, fileImage, txtName, txtShortDescription, txtDetailDescription, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory } = this.state;
+        var { id, fileImage, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, vn, en, jp } = this.state;
         var place = {
             id: id,
-            name: txtName,
+            placeTrans:[
+                {
+                    name: vn.txtName,
+                    shortDescription: vn.txtShortDescription,
+                    detailDescription: vn.txtDetailDescription,
+                    langId: 1
+                },
+                {
+                    name: en.txtName,
+                    shortDescription: en.txtShortDescription,
+                    detailDescription: en.txtDetailDescription,
+                    langId: 2
+                },
+                {
+                    name: jp.txtName,
+                    shortDescription: jp.txtShortDescription,
+                    detailDescription: jp.txtDetailDescription,
+                    langId: 3
+                },
+            ],
             address: txtAddress,
-            shortDescription: txtShortDescription,
-            detailDescription: txtDetailDescription,
             mail: txtMail,
             cityId: drbCityId,
             phoneNumber: txtPhoneNumber,
             categoryId: drbCategory,
         };
         let data = new FormData();
-        if (fileImage !== null) {
+        if (fileImage !== null && typeof fileImage !== "undefined") {
+            debugger
             for (let i = 0; i < fileImage.length; i++) {
                 data.append('file', fileImage[i], fileImage[i].name);
                 
@@ -143,14 +193,25 @@ class PlacesActionCMS extends Component {
                 selectedKey.push(selectedOption[i].value)
             }
         }
-
         this.setState({
             drbCategory: selectedKey
         })
     }
 
+    onChangeChild(field, value, lang) {
+        // parent class change handler is always called with field name and value
+        this.setState(
+            {
+                [lang]: {
+                    ...this.state[lang],
+                    [field]: value
+                }
+            }
+        );
+    }
+
     render() {
-        var { txtName, txtShortDescription, txtDetailDescription, drbCityId, txtAddress, txtPhoneNumber, txtMail, drbCategory, loaded } = this.state;
+        var { drbCityId, txtAddress, txtPhoneNumber, txtMail, drbCategory, loaded } = this.state;
         var { cities, categories } = this.props
         var options = []
         var renderOpt = []
@@ -170,10 +231,7 @@ class PlacesActionCMS extends Component {
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
-                        <div className="form-group">
-                            <label>Place Name </label>
-                            <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
-                        </div>
+
                         <div className="myDiv">
                             <label>Category </label>
                             <div >
@@ -189,6 +247,7 @@ class PlacesActionCMS extends Component {
                         <div className="form-group">
                             <label>City </label>
                             <Form.Control as="select"
+                                style={{ width: 360 }}
                                 name="drbCityId"
                                 value={drbCityId}
                                 onChange={this.onChange}>
@@ -203,15 +262,15 @@ class PlacesActionCMS extends Component {
                         </div> */}
                         <div className="form-group">
                             <label>Address </label>
-                            <input onChange={this.onChange} value={txtAddress} name="txtAddress" type="text" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtAddress} name="txtAddress" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Phone Number </label>
-                            <input onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Mail </label>
-                            <input onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                         </div>
                         <div className="myDiv">
                             <label>Open days </label>
@@ -220,21 +279,30 @@ class PlacesActionCMS extends Component {
                                     defaultValue={renderOpt}
                                     isMulti
                                     options={weekDays}
-                                    onChange={this.onChangeCategory}
                                 />
                             </div>
 
                         </div>
-                        <div className="form-group">
-                            <label>Short Description </label>
-                            <textarea onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
-                            </textarea>
-                        </div>
-                        <div className="form-group">
-                            <label>Detail Description </label>
-                            <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                            </textarea>
-                        </div>
+
+                        <Tabs defaultIndex={0}>
+                            <TabList>
+                                <Tab>Vietnamese</Tab>
+                                <Tab>English</Tab>
+                                <Tab>Japanese</Tab>
+                            </TabList>
+                            <TabPanel>
+                                <PlaceMultiLangItem onChangeChild={this.onChangeChild.bind(this)} language="vn" {...this.state.vn}/>
+                            </TabPanel>
+                            <TabPanel>
+                                <PlaceMultiLangItem onChangeChild={this.onChangeChild.bind(this)} language="en" {...this.state.en}/>
+                            </TabPanel>
+                            <TabPanel>
+                                <PlaceMultiLangItem onChangeChild={this.onChangeChild.bind(this)} language="jp" {...this.state.jp}/>
+                              
+                            </TabPanel>
+                        </Tabs>
+
+
                         <div className="form-group">
                             <label>Choose image file </label>
                             <FormControl id="formControlsFile"

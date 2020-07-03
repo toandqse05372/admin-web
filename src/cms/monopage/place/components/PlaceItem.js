@@ -43,8 +43,8 @@ class PlaceItem extends Component {
 
                 <td className="center">
                     {places.status === 'ACTIVE'
-                        ? <a className="btn btn-danger" onClick={() => this.onChangeStatus(places.id, 'deactive')}> Deactive </a>
-                        : <a className="btn btn-primary" onClick={() => this.onChangeStatus(places.id, 'active')}> Active </a>
+                        ? <a style={{width: 50}} className="btn btn-danger" onClick={() => this.onChangeStatus(places.id, 'deactive')}> Deactive </a>
+                        : <a style={{width: 50}} className="btn btn-primary" onClick={() => this.onChangeStatus(places.id, 'active')}> Active </a>
                     }
                     <Link to={`/places/${places.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i>

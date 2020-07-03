@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actAddGameRequest, actUpdateGameRequest, actGetGameRequest } from '../../../actions/indexGames';
 import { actFetchPlacesRequest } from '../../../actions/indexPlaces';
 import Select from 'react-select'
+import { Button, Accordion, Card } from 'react-bootstrap'
+
+// const [open, setOpen] = useState(false);
 
 class GamesActionCMS extends Component {
 
@@ -18,6 +21,7 @@ class GamesActionCMS extends Component {
             loaded: false,
             fetched: false,
         };
+
     }
 
     componentWillMount() {
@@ -39,7 +43,7 @@ class GamesActionCMS extends Component {
                 drbPlaceId: itemEditing.placeId,
                 fetched: true
             })
-        }else{
+        } else {
             this.setState({
                 fetched: true
             })
@@ -73,10 +77,11 @@ class GamesActionCMS extends Component {
     }
 
     onChangePlace = (e) => {
+        const { drbPlaceId } = this.state;
         this.setState({
             drbPlaceId: e.value
         });
-        console.log(this.state.drbPlaceId)
+        console.log(drbPlaceId);
     }
 
     render() {
@@ -88,7 +93,7 @@ class GamesActionCMS extends Component {
             for (let i = 0; i < places.length; i++) {
                 var option = { value: places[i].id, label: places[i].name }
                 options.push(option);
-                if(drbPlaceId === places[i].id){
+                if (drbPlaceId === places[i].id) {
                     renderOpt = i
                     debugger
                 }
@@ -108,13 +113,38 @@ class GamesActionCMS extends Component {
                         <div className="myDiv">
                             <label>Place Name </label>
                             <div >
-                                <Select options={options}
+                                <Select
+                                    openMenuOnClick={true}
+                                    options={options}
                                     defaultValue={options[renderOpt]}
-                                    onChange={this.onChangePlace} />
+                                    onChange={this.onChangePlace}
+                                    />
                             </div>
-    
                         </div>
-    
+                        {/* <button
+                            type="button" class="btn btn-info"
+                            data-toggle="collapse" data-target={"#" + drbPlaceId}>
+                            Next Step
+                        </button> */}
+                        {/* <div id={drbPlaceId} class={drbPlaceId?"collapse in":"collapse"}>
+                            <div className="myDiv">
+                                <label>{drbPlaceId} </label>
+                                <div style={{position: "hidden"}} >
+                                    <Select options={options}
+                                        defaultValue={options[renderOpt]}
+                                        onChange={this.onChangePlace} />
+                                </div>
+                            </div>
+                        </div> */}
+
+                            <div style={{visibility: drbPlaceId?"visible":"hidden"}} className="myDiv">
+                                <label>{drbPlaceId} </label>
+                                <div  >
+                                    {/* thứ mà hiện ra sau khi chọn dropdown */}
+                                    {/* new select chọn game */}
+                                </div>
+                            </div>
+
                         <div className="form-group">
                             <label>Description </label>
                             <textarea onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
@@ -129,10 +159,10 @@ class GamesActionCMS extends Component {
                     </form>
                 </div>
             );
-        }else{
+        } else {
             return ""
         }
-        
+
     }
 
 }

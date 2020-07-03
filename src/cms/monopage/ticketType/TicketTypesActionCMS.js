@@ -20,7 +20,6 @@ class TicketTypesActionCMS extends Component {
             drbGameId: '',
             loaded: 0,
             fetchedPlace: false,
-            fetchedPlace: false,
         };
     }
 
@@ -46,7 +45,7 @@ class TicketTypesActionCMS extends Component {
             this.setState({
                 fetched: true
             })
-        }
+        } 
     }
 
 
@@ -202,7 +201,6 @@ class TicketTypesActionCMS extends Component {
                                 >
                                 </textarea>
                             </div>
-
                             <Link to="/ticketTypes" className="btn btn-danger mr-5">
                                 <i className="glyphicon glyphicon-arrow-left"></i> Back
                             </Link>

@@ -78,7 +78,8 @@ class PlacesCMS extends Component {
                     categoryId: paramBody.categoryId,
                     cityId: paramBody.cityId,
                     limit: paramBody.limit,
-                    page: paramBody.page
+                    page: paramBody.page,
+                    lang: 'jp'
                 }
             }
         ).then(res => {
