@@ -71,8 +71,7 @@ class CategoriesCMS extends Component {
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
-                totalItems: res.data.totalItems,
-                totalPage: res.data.totalPage
+                totalItems: res.data.totalItems
             })
         }).catch(function (error) {
             console.log(error.response);

@@ -84,7 +84,6 @@ class TicketTypesCMS extends Component {
         if (this.state.loaded) {
             const pageList = []
             const { txtTicketTypeName, drbLimit, currentPage } = this.state;
-            var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }

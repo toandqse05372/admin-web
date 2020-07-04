@@ -6,7 +6,6 @@ import { actFetchCategoriesRequest } from '../../../actions/indexCategories';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
 import { Form, FormControl } from 'react-bootstrap'
 import Select from 'react-select'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const weekDays = [
     { value: 1, label: 'Mon' },

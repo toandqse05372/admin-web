@@ -5,6 +5,8 @@ import cmsRoutes from '../config/cmsRouter';
 import CmsMenu from './CmsMenu';
 import { NotificationContainer } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
+import callApi from '../utils/apiCaller'
 
 class CmsParent extends Component {
     constructor(props) {
@@ -16,8 +18,15 @@ class CmsParent extends Component {
     }
 
     logOut = () => {
-        localStorage.removeItem('tokenLogin');
-        window.location.reload();
+        var token = localStorage.getItem('tokenLogin') 
+        callApi('login/logout', 'POST', null).then(res => {
+            if (res) {
+                localStorage.removeItem('tokenLogin');
+                window.location.reload()
+            }
+        }).catch(function(error) {
+                NotificationManager.error('Error  message', 'Something wrong');
+        });
     }
 
     componentWillMount(){

@@ -7,7 +7,6 @@ import PaymentMethodList from './components/PaymentMethodList';
 import { actDeletePaymentMethodRequest } from '../../../actions/indexPaymentMethod';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
-import PaymentMethods from './PaymentMethods';
 
 class CitiesCMS extends Component {
     constructor(props) {
@@ -73,8 +72,7 @@ class CitiesCMS extends Component {
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
-                totalItems: res.data.totalItems,
-                totalPage: res.data.totalPage
+                totalItems: res.data.totalItems
             })
         }).catch(function (error) {
             console.log(error.response);
@@ -86,7 +84,6 @@ class CitiesCMS extends Component {
         if (this.state.loaded) {
             const pageList = []
             const { txtName, drbLimit, currentPage, searchList } = this.state;
-            var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }

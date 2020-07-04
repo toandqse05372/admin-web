@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { actAddTicketTypeRequest, actUpdateTicketTypeRequest, actGetTicketTypeRequest } from '../../../actions/indexTicketTypes';
 import { actFetchPlacesRequest } from '../../../actions/indexPlaces';
 import { actFetchGamesRequest } from '../../../actions/indexGames';
-import { Form } from 'react-bootstrap';
 import Select from 'react-select'
 
 class TicketTypesActionCMS extends Component {
@@ -59,7 +58,6 @@ class TicketTypesActionCMS extends Component {
 
     }
     onChangePlace = (e) => {
-        const { drbPlaceId } = this.state;
         this.setState({
             drbPlaceId: e.value
         });
@@ -81,7 +79,7 @@ class TicketTypesActionCMS extends Component {
     }
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, drbGameId, txtDetailDescription, drbPlaceId } = this.state;
+        var { id, txtName, drbGameId, drbPlaceId } = this.state;
         var city = {
             id: id,
             typeName: txtName,
@@ -119,7 +117,7 @@ class TicketTypesActionCMS extends Component {
 
     render() {
         var { txtName, txtShortDescription, txtDetailDescription } = this.state;
-        var { places, games } = this.props;
+        var { places } = this.props;
         var { drbPlaceId, loaded, drbGameId } = this.state;
         var optionsPlace = []
         

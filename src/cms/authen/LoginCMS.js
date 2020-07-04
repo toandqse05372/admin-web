@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import { connect } from 'react-redux';
 import axios from 'axios';
 import * as URL from '../../constants/ConfigURL';
-import callApi from '../../utils/apiCaller';
+import { NotificationManager } from 'react-notifications';
+
 class LoginCMS extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             txtMail: '',
-            txtPassword: ''
+            txtPassword: '',
+            txtError: ''
         }
         this.onSubmitForm = this.onSubmitForm.bind(this)
     }
@@ -28,14 +28,14 @@ class LoginCMS extends Component {
 
     onSubmitForm(e) {
         e.preventDefault();
-        const { txtMail, txtPassword } = this.state;
+        const { txtMail, txtPassword, txtError } = this.state;
         var user = {
             mail: txtMail,
             password: txtPassword,
         };
-
-        axios.post(URL.API_URL + '/login',user,
-            {            
+        var self = this
+        axios.post(URL.API_URL + '/login', user,
+            {
                 params: {
                     page: 'CMS'
                 }
@@ -44,24 +44,23 @@ class LoginCMS extends Component {
             localStorage.setItem('tokenLogin', JSON.stringify(res.data));
             window.location.reload();
         }).catch(function (error) {
-            console.log(error)
-        });
+            self.setState({
+                txtError: "Wrong username or password"
+            })
+         });
 
 
     }
 
 
     render() {
-        const { txtMail, txtPassword } = this.state;
+        const { txtMail, txtPassword, txtError } = this.state;
 
         return (<div className="container-fluid-full">
             <div className="row-fluid">
                 <div className="row-fluid">
                     <div className="login-box">
-                        <div className="icons">
-                            <a href="/"><i className="halflings-icon home" /></a>
-                            <a href="#"><i className="halflings-icon cog" /></a>
-                        </div>
+                    <div className="icons"></div>
                         <h2>Login to your account</h2>
                         <form className="form-horizontal" onSubmit={this.onSubmitForm}>
                             <fieldset>
@@ -89,6 +88,7 @@ class LoginCMS extends Component {
                                 <div className="clearfix" />
                                 <div className="button-login">
                                     <button type="submit" className="btn btn-primary">Login</button>
+                                    <h3 style={{color: 'red'}}>{txtError}</h3>
                                 </div>
                                 <div className="clearfix" />
                                 <hr />

@@ -44,18 +44,25 @@ class PlacesCMS extends Component {
         this.receivedData(this.state.paramBody);
         this.props.fetchAllCities();
         this.props.fetchAllCategories();
+        this.setState({
+            activePage: 1
+        })
     }
 
     onChange = (e) => {
         var target = e.target;
         var name = target.name;
         var value = target.value;
+        debugger
         this.setState({
             [name]: value,
             paramBody: {
-                name: value,
-                page: 1,
-                limit: 10,
+                name: (name === 'txtPlaceName') ? value : this.state.txtPlaceName,
+                address: (name === "txtAddress") ? value : this.state.txtAddress,
+                categoryId: (name === "drbcategory") ? value : this.state.drbcategory,
+                cityId: (name === "drBCity") ? value : this.state.drBCity,
+                page: this.state.activePage,
+                limit: (name === "drbLimit") ? value : this.state.drbLimit,
             }
         })
 
@@ -87,7 +94,6 @@ class PlacesCMS extends Component {
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
                 totalItems: res.data.totalItems,
-                totalPage: res.data.totalPage
             })
         }).catch(function (error) {
             console.log(error.response);
