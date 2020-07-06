@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import VistorTypeItem from './VistorTypeItem'
 import VistorTypeList from './VistorTypeList'
 import axios from 'axios';
-import * as URL from '../../../../constants/ConfigURL';
+import * as Config from '../../../../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
 
 class TicketTypeItem extends Component {
 
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             showVistor: false,
             visitorTypeList: [],
@@ -33,10 +35,10 @@ class TicketTypeItem extends Component {
     }
 
     receivedData(ticketTypeId) {
-        axios.get(URL.API_URL + '/visitorType',
+        axios.get(Config.API_URL + '/visitorType',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
                     ticketTypeId: ticketTypeId,
@@ -104,6 +106,29 @@ class TicketTypeItem extends Component {
         }
     }
 
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/visitorType/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }).then(res => {
+            NotificationManager.success('Success message', 'Delete visitor type successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if(error.response){
+                if(error.response.data === 'VISITOR_TYPE_NOT_FOUND'){
+                    NotificationManager.error('Error  message', 'Visitor type not found');
+                }else{
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+            
+        });
+    }
 
     showVisitorTypes(vistorTypes) {
         var result = null;

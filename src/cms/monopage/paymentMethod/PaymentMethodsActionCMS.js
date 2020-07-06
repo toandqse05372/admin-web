@@ -29,7 +29,7 @@ class CitiesActionCMS extends Component {
             this.setState({
                 id: itemEditing.id,
                 txtName: itemEditing.methodName,
-                txtKey: itemEditing
+                txtKey: itemEditing.methodKey
             })
         }
     }

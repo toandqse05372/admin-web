@@ -6,11 +6,13 @@ import PaymentMethodItem from './components/PaymentMethodItem';
 import PaymentMethodList from './components/PaymentMethodList';
 import { actDeletePaymentMethodRequest } from '../../../actions/indexPaymentMethod';
 import axios from 'axios';
-import * as URL from '../../../constants/ConfigURL';
+import * as Config from '../../../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
 
 class CitiesCMS extends Component {
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             loaded: true,
             activePage: 1,
@@ -56,10 +58,10 @@ class CitiesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/method/searchByName',
+        axios.get(Config.API_URL + '/method/searchByName',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
                     methodName: paramBody.name,
@@ -173,13 +175,34 @@ class CitiesCMS extends Component {
         })
     }
 
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/method/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }).then(res => {
+            NotificationManager.success('Success message', 'Delete Payment Method successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if(error.response){
+                if(error.response.data === 'PAYMENT_METHOD_NOT_FOUND'){
+                    NotificationManager.error('Error  message', 'Payment Method not found');
+                }
+            }
+        });
+    }
+
     showPaymentMethods(methods) {
         var result = null;
         var { onDeletePaymentMethod } = this.props;
         if (methods.length > 0) {
             result = methods.map((method, index) => {
                 return <PaymentMethodItem method={method} key={index} index={index} 
-                onDeletePaymentMethod={onDeletePaymentMethod}
+                onDeletePaymentMethod={this.handleDelete}
                 limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />
             });

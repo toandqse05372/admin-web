@@ -108,7 +108,7 @@ class GamesActionCMS extends Component {
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
                             <label>Game Name </label>
-                            <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                            <input style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                         </div>
                         <div className="myDiv">
                             <label>Place Name </label>
@@ -147,7 +147,7 @@ class GamesActionCMS extends Component {
 
                         <div className="form-group">
                             <label>Description </label>
-                            <textarea onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
+                            <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
                             </textarea>
                         </div>
                         <Link to="/games" className="btn btn-danger mr-5">

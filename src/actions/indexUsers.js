@@ -81,7 +81,6 @@ export const actDeleteUserRequest = (id) => {
         return callApi(`user/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeleteUser(id));
-                window.location.reload();
             }
             NotificationManager.success('Success message', 'Delete user successful');
         }).catch(function(error) {

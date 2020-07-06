@@ -5,14 +5,16 @@ import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import Pagination from "react-js-pagination";
 import { connect } from 'react-redux';
 import axios from 'axios';
-import * as URL from '../../../constants/ConfigURL';
+import * as Config from '../../../constants/ConfigURL';
 import UserItem from './components/UserItem';
 import UserList from './components/UserList';
 import { actFetchUsersRequest, actDeleteUserRequest, actFetchRolesRequest } from '../../../actions/indexUsers';
+import { NotificationManager } from 'react-notifications';
 
 class UsersCMS extends Component {
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             loaded: false,
             activePage: 1,
@@ -74,10 +76,10 @@ class UsersCMS extends Component {
 
     receivedData(paramBody) {
         var props = this.props
-        axios.get(URL.API_URL + '/user/searchMul',
+        axios.get(Config.API_URL + '/user/searchMul',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
                     firstName: paramBody.firstName,
@@ -244,13 +246,34 @@ class UsersCMS extends Component {
         })
     }
 
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/user/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }
+        ).then(res => {
+            NotificationManager.success('Success message', 'Delete user successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if (error.response.data === 'USER_NOT_FOUND') {
+                NotificationManager.error('Error  message', 'User not found');
+            }else{
+                NotificationManager.error('Error  message', 'Something wrong');
+            }
+        });
+    }
+
     showUser(users) {
         var result = null;
-        var { onDeleteUser } = this.props;
         if (users.length > 0) {
             result = users.map((users, index) => {
                 return <UserItem users={users} key={index} index={index}
-                    onDeleteUser={onDeleteUser}
+                    onDeleteUser={this.handleDelete}
                     limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />
             });

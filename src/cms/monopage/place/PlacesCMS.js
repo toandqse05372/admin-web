@@ -8,11 +8,13 @@ import { actFetchPlacesRequest, actDeletePlaceRequest, actChangeStatusPlaceReque
 import { actFetchCategoriesRequest } from '../../../actions/indexCategories';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
 import axios from 'axios';
-import * as URL from '../../../constants/ConfigURL';
+import * as Config from '../../../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
 
 class PlacesCMS extends Component {
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             loaded: false,
             activePage: 1,
@@ -74,10 +76,10 @@ class PlacesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/place/searchMul',
+        axios.get(Config.API_URL + '/place/searchMul',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
                     name: paramBody.name,
@@ -95,13 +97,14 @@ class PlacesCMS extends Component {
                 searchList: res.data.listResult,
                 totalItems: res.data.totalItems,
             })
+            this.props.places = res.data.listResult
         }).catch(function (error) {
             console.log(error.response);
         });
         this.state.loaded = true
     }
 
-    render() {    
+    render() {
         if (this.state.loaded) {
             const pageList = []
             const { txtPlaceName, txtAddress, drBCity, drbLimit, drbcategory, currentPage } = this.state;
@@ -219,13 +222,37 @@ class PlacesCMS extends Component {
                 address: this.state.txtAddress,
                 cityId: this.state.drBCity,
                 categoryId: this.state.drbcategory,
-                page: 1,
-                limit: 10,
+                page: number,
+                limit: this.state.drbLimit,
             }
         }, () => {
             this.receivedData(this.state.paramBody)
             this.state.currentPage = number
         })
+    }
+
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/place/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }).then(res => {
+            NotificationManager.success('Success message', 'Delete place successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if(error.response){
+                if (error.response.data === 'PLACE_NOT_FOUND') {
+                    NotificationManager.error('Error  message', 'Place not found');
+                }else{
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+            
+        });
     }
 
     showPlaces(places) {
@@ -234,12 +261,12 @@ class PlacesCMS extends Component {
         if (places.length > 0) {
             result = places.map((places, index) => {
                 return <PlaceItem places={places} key={index}
-                 index={index} onDeletePlace={onDeletePlace}
-                 onChangeStatusPlace = {onChangeStatusPlace}
-                  limit={this.state.drbLimit}
-                  currentPage = {this.state.currentPage}
-                  categories = {categories}
-                  />
+                    index={index} onDeletePlace={this.handleDelete}
+                    onChangeStatusPlace={onChangeStatusPlace}
+                    limit={this.state.drbLimit}
+                    currentPage={this.state.currentPage}
+                    categories={categories}
+                />
             });
         }
         return result;

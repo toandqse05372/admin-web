@@ -6,11 +6,14 @@ import GameItem from './components/GameItem';
 import GameList from './components/GameList';
 import { actDeleteGameRequest, actChangeStatusGameRequest } from '../../../actions/indexGames';
 import axios from 'axios';
-import * as URL from '../../../constants/ConfigURL';
+import { actFetchPlacesRequest } from '../../../actions/indexPlaces'
+import * as Config from '../../../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
 
 class GamesCMS extends Component {
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             loaded: false,
             activePage: 1,
@@ -25,11 +28,8 @@ class GamesCMS extends Component {
             drbCategory: '',
 
             paramBody: {
-                name: '',
-                address: '',
-                cityId: '',
-                categoryId: '',
-                role: 0,
+                gameName: '',
+                placeName: '',
                 page: 1,
                 limit: 10,
             }
@@ -46,9 +46,10 @@ class GamesCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                name: value,
-                page: 1,
-                limit: 10,
+                gameName: (name === 'txtGameName') ? value : this.state.txtGameName,
+                placeName: (name === 'txtPlaceName') ? value : this.state.txtPlaceName,
+                page: this.state.activePage,
+                limit: (name === "drbLimit") ? value : this.state.drbLimit,
             }
         })
 
@@ -60,15 +61,14 @@ class GamesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/game/searchMul',
+        axios.get(Config.API_URL + '/game/searchMul',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
-                    name: paramBody.name,
-                    address: paramBody.address,
-                    cityId: paramBody.cityId,
+                    gameName: paramBody.name,
+                    placeName: paramBody.address,
                     limit: paramBody.limit,
                     page: paramBody.page
                 }
@@ -184,13 +184,36 @@ class GamesCMS extends Component {
                 name: this.state.txtPlaceName,
                 address: this.state.txtAddress,
                 cityId: this.state.drBCity,
-                page: 1,
-                limit: 10,
+                page: number,
+                limit: this.state.drbLimit,
             }
         }, () => {
             this.receivedData(this.state.paramBody)
             this.state.currentPage = number
         })
+    }
+
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/game/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }).then(res => {
+            NotificationManager.success('Success message', 'Delete game successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if(error.response){
+                if(error.response.data === 'GAME_EXISTED'){
+                    NotificationManager.error('Error  message', 'Game has been existed');
+                }else{
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+        });
     }
 
     showGames(games) {
@@ -199,7 +222,7 @@ class GamesCMS extends Component {
         if (games.length > 0) {
             result = games.map((games, index) => {
                 return <GameItem games={games} key={index} index={index} 
-                onDeleteGame={onDeleteGame} 
+                onDeleteGame={this.handleDelete} 
                 onChangeStatusGame={onChangeStatusGame} 
                 limit={this.state.drbLimit}
                 currentPage = {this.state.currentPage}/>
@@ -212,7 +235,8 @@ class GamesCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        games: state.games
+        games: state.games,
+        places: state.places
     }
 }
 
@@ -224,6 +248,9 @@ const mapDispatchToProps = (dispatch, props) => {
         onChangeStatusGame: (id) => {
             dispatch(actChangeStatusGameRequest(id));
         },
+        fetchAllPlaces: () => {
+            dispatch(actFetchPlacesRequest());
+        }
     }
 }
 

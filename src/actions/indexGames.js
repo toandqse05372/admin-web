@@ -92,7 +92,6 @@ export const actDeleteGameRequest = (id) => {
         return callApi(`game/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeleteGame(id));
-                window.location.reload();
             }
             NotificationManager.success('Success message', 'Delete game successful');
         }).catch(function(error) {

@@ -7,7 +7,7 @@ const cmsMenus = [
         name: 'User Manager',
         to: '/users',
         exact: true,
-        role: ["ADMIN", "STAFF"]
+        role: ["ADMIN"]
     },
     {
         name: 'Place Manager',
@@ -49,7 +49,7 @@ const cmsMenus = [
         name: 'Order Manager',
         to: '/orders',
         exact: true,
-        role: ["ADMIN"]
+        role: ["ADMIN","STAFF"]
     },
 ];
 

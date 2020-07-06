@@ -53,7 +53,6 @@ export const actDeleteVisitorTypeRequest = (id) => {
         return callApi(`visitorType/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeleteVisitorType(id));
-                window.location.reload();
             }
             NotificationManager.success('Success message', 'Delete visitor type successful');
         }).catch(function(error) {

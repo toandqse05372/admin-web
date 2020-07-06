@@ -2,18 +2,18 @@ import * as Types from '../constants/PaymentMethosActionType';
 
 var initialState = [];
 
-const paymentMehods = (state = initialState, action) => {
-    var { paymentMehod, id } = action;
+const paymentMethods = (state = initialState, action) => {
+    var { paymentMethod, id } = action;
     var index = -1;
     switch (action.type) {
         case Types.FETCH_PAYMENT_METHOD_TYPES:
-            return [...action.paymentMehods];
+            return [...action.paymentMethods];
         case Types.ADD_PAYMENT_METHOD_TYPES:
-            state.push(paymentMehod);
+            state.push(paymentMethod);
             return [...state];
         case Types.UPDATE_PAYMENT_METHOD_TYPES:
-            index = findIndex(state, paymentMehod.id);
-            state[index] = paymentMehod;
+            index = findIndex(state, paymentMethod.id);
+            state[index] = paymentMethod;
             return [...state];
         case Types.DELETE_PAYMENT_METHOD_TYPES:
             index = findIndex(state, id);
@@ -23,14 +23,14 @@ const paymentMehods = (state = initialState, action) => {
     }
 };
 
-var findIndex = (paymentMehods, id) => {
+var findIndex = (paymentMethods, id) => {
     var result = -1;
-    paymentMehods.forEach((paymentMehod, index) => {
-        if (paymentMehod.id === id) {
+    paymentMethods.forEach((paymentMethod, index) => {
+        if (paymentMethod.id === id) {
             result = index;
         }
     });
     return result;
 }
 
-export default paymentMehods;
+export default paymentMethods;

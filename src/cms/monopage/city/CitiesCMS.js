@@ -6,11 +6,13 @@ import CityItem from './components/CityItem';
 import CityList from './components/CityList';
 import { actDeleteCityRequest } from '../../../actions/indexCities';
 import axios from 'axios';
-import * as URL from '../../../constants/ConfigURL';
+import * as Config from '../../../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
 
 class CitiesCMS extends Component {
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             loaded: false,
             activePage: 1,
@@ -56,10 +58,10 @@ class CitiesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/city/searchByName',
+        axios.get(Config.API_URL + '/city/searchByName',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
                     name: paramBody.name,
@@ -175,12 +177,35 @@ class CitiesCMS extends Component {
         })
     }
 
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/city/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }).then(res => {
+            NotificationManager.success('Success message', 'Delete city successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if(error.response){
+                if (error.response.data === 'CITY_NOT_FOUND') {
+                    NotificationManager.error('Error  message', 'City not found');
+                }else{
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+        });
+    }
+
     showCities(cities) {
         var result = null;
         var { onDeleteCity } = this.props;
         if (cities.length > 0) {
             result = cities.map((city, index) => {
-                return <CityItem city={city} key={index} index={index} onDeleteCity={onDeleteCity}
+                return <CityItem city={city} key={index} index={index} onDeleteCity={this.handleDelete}
                 limit={this.state.drbLimit} currentPage={this.state.currentPage} />
             });
         }

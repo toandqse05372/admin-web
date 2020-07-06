@@ -5,21 +5,26 @@ import { connect } from 'react-redux';
 import TicketTypeItem from './components/TicketTypeItem';
 import TicketTypeList from './components/TicketTypeList';
 import { actDeleteTicketTypeRequest } from '../../../actions/indexTicketTypes';
+import { actFetchPlacesRequest } from '../../../actions/indexPlaces'
 import axios from 'axios';
-import * as URL from '../../../constants/ConfigURL';
+import * as Config from '../../../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
+import Select from 'react-select'
 
 class TicketTypesCMS extends Component {
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             loaded: false,
+            loadedTable: false,
             activePage: 1,
             drbLimit: 10,
             searchList: [],
             totalItems: 0,
             totalPage: 1,
             currentPage: 1,
-
+            drbPlaceId: '',
             txtTicketTypeName: '',
 
             paramBody: {
@@ -32,7 +37,8 @@ class TicketTypesCMS extends Component {
         }
     }
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
-        this.receivedData(this.state.paramBody);
+        // this.receivedData(this.state.paramBody);
+        this.props.fetchAllPlaces()
     }
 
     onChange = (e) => {
@@ -55,17 +61,24 @@ class TicketTypesCMS extends Component {
         this.receivedData(this.state.paramBody);
     }
 
+    onChangePlace = (e) => {
+        this.setState({
+            drbPlaceId: e.value
+        });
+        this.receivedData(this.state.paramBody);
+    }
+
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/ticketType/searchTypeName',
+        axios.get(Config.API_URL + '/ticketType/searchTypeName',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
                     typeName: paramBody.typeName,
                     page: paramBody.page,
                     limit: paramBody.limit,
-                }   
+                }
             }
         ).then(res => {
             //set state
@@ -77,11 +90,26 @@ class TicketTypesCMS extends Component {
         }).catch(function (error) {
             console.log(error.response);
         });
-        this.state.loaded = true
+        this.state.loadedTable = true
     }
 
     render() {
-        if (this.state.loaded) {
+        var { places } = this.props;
+        var { drbPlaceId, loaded, drbGameId } = this.state;
+        var optionsPlace = []
+        var renderOptPlace = drbPlaceId
+        if (places.length > 0 && !this.state.fetchedPlace) {
+            for (let i = 0; i < places.length; i++) {
+                var option = { value: places[i].id, label: places[i].name }
+                optionsPlace.push(option);
+                if (drbPlaceId === places[i].id) {
+                    debugger
+                    renderOptPlace = i
+                }
+            }
+            loaded = true;
+        }
+        if (loaded) {
             const pageList = []
             const { txtTicketTypeName, drbLimit, currentPage } = this.state;
             for (let i = 1; i <= this.state.totalPage; i++) {
@@ -103,55 +131,68 @@ class TicketTypesCMS extends Component {
             });
             return (
                 <div className="container span14">
-                    <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Ticket Manager</h1>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th><Form.Label id="basic-addon1">Ticket Type Name</Form.Label>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="Ticket Type Name"
-                                            name="txtTicketTypeName"
-                                            value={txtTicketTypeName}
-                                            onChange={this.onChange}
-                                        />
-                                    </th>
-                                    <th>
-                                        <Form.Label>Show</Form.Label>
-                                        <Form.Control as="select"
-                                            name="drbLimit"
-                                            value={drbLimit}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10 / page</option>
-                                            <option key={1} index={1} value={15}>15 / page</option>
-                                            <option key={2} index={2} value={20}>20 / page</option>
-                                        </Form.Control>
-                                    </th>
+                    <h1>Ticket Manager</h1>
+                    <div className="myDiv">
+                        <label>Place Name </label>
+                        <div >
+                            <Select
+                                options={optionsPlace}
+                                defaultValue={optionsPlace[renderOptPlace]}
+                                onChange={this.onChangePlace}
+                            />
+                        </div>
+                    </div>
+                    <div style={{ display: drbPlaceId ? "" : "none" }}>
+                        <Form onSubmit={this.onSubmitSearch} >
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th><Form.Label id="basic-addon1">Ticket Type Name</Form.Label>
+                                            <FormControl
+                                                type="text"
+                                                placeholder="Ticket Type Name"
+                                                name="txtTicketTypeName"
+                                                value={txtTicketTypeName}
+                                                onChange={this.onChange}
+                                            />
+                                        </th>
+                                        <th>
+                                            <Form.Label>Show</Form.Label>
+                                            <Form.Control as="select"
+                                                name="drbLimit"
+                                                value={drbLimit}
+                                                onChange={this.onChange}>
+                                                <option key={0} index={0} value={10}>10 / page</option>
+                                                <option key={1} index={1} value={15}>15 / page</option>
+                                                <option key={2} index={2} value={20}>20 / page</option>
+                                            </Form.Control>
+                                        </th>
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Button
-                                            type="Submit"
-                                            className="btn btn-inverse mb-5">
-                                            Search
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Button
+                                                type="Submit"
+                                                className="btn btn-inverse mb-5">
+                                                Search
                                         </Button>
-                                    </td>
-                                </tr>
-                            </thead>
-                        </Table>
-                    </Form>
-                    <Link to="/ticketTypes/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Add Ticket Type
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </Table>
+                        </Form>
+                        <Link to="/ticketTypes/add" className="btn btn-success mb-5 ">
+                            <i className="glyphicon glyphicon-plus"></i> Add Ticket Type
                 </Link>
-                    <TicketTypeList>
-                        {this.showTicketTypes(this.state.searchList)}
-                    </TicketTypeList>
-                    <div className="dataTables_paginate paging_bootstrap pagination">
-                        <ul>
-                            {renderPageNumbers}
-                        </ul>
+                        <TicketTypeList>
+                            {this.showTicketTypes(this.state.searchList)}
+                        </TicketTypeList>
+                        <div className="dataTables_paginate paging_bootstrap pagination">
+                            <ul>
+                                {renderPageNumbers}
+                            </ul>
+                        </div>
+
                     </div>
                 </div>
             );
@@ -173,14 +214,38 @@ class TicketTypesCMS extends Component {
         })
     }
 
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/ticketType/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }).then(res => {
+            NotificationManager.success('Success message', 'Delete ticket type successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if(error.response){
+                if (error.response.data === 'TICKET_TYPE_NOT_FOUND') {
+                    NotificationManager.error('Error  message', 'Ticket type not found');
+                }else{
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+            
+        });
+    }
+
     showTicketTypes(ticketTypes) {
         var result = null;
         var { onDeleteTicketType } = this.props;
         if (ticketTypes.length > 0) {
             result = ticketTypes.map((ticketTypes, index) => {
                 return <TicketTypeItem ticketTypes={ticketTypes} limit={this.state.drbLimit}
-                currentPage = {this.state.currentPage}
-                key={index} index={index} onDeleteTicketType={onDeleteTicketType} />
+                    currentPage={this.state.currentPage}
+                    key={index} index={index} onDeleteTicketType={this.handleDelete} />
             });
         }
         return result;
@@ -190,7 +255,8 @@ class TicketTypesCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        ticketTypes: state.ticketTypes
+        ticketTypes: state.ticketTypes,
+        places: state.places
     }
 }
 
@@ -198,6 +264,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         onDeleteTicketType: (id) => {
             dispatch(actDeleteTicketTypeRequest(id));
+        },
+        fetchAllPlaces: () => {
+            dispatch(actFetchPlacesRequest());
         }
     }
 }

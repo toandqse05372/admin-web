@@ -68,7 +68,6 @@ export const actDeleteCityRequest = (id) => {
         return callApi(`city/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeleteCity(id));
-                window.location.reload();
             }
             NotificationManager.success('Success message', 'Delete city successful');
         }).catch(function(error) {

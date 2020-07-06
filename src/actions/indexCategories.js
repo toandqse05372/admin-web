@@ -68,12 +68,11 @@ export const actDeleteCategoryRequest = (id) => {
         return callApi(`category/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeleteCategory(id));
-                window.location.reload();
             }
             NotificationManager.success('Success message', 'Delete city successful');
         }).catch(function(error) {
             if(error.response.data === 'CATEGORY_NOT_FOUND'){
-                NotificationManager.error('Error  message', 'City not found');
+                NotificationManager.error('Error  message', 'Category not found');
             }
         });
     }

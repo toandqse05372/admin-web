@@ -68,7 +68,6 @@ export const actDeleteTicketTypeRequest = (id) => {
         return callApi(`ticketType/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeleteTicketType(id));
-                window.location.reload();
             }
             NotificationManager.success('Success message', 'Delete Ticket type successful');
         }).catch(function(error) {

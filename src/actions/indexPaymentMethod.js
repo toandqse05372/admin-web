@@ -26,8 +26,10 @@ export const actAddPaymentMethodRequest = (paymentMethod, child) => {
             }
             child.goBack();
         }).catch(function(error) {
-            if(error.response.data === 'PAYMENT_METHOD_EXISTED'){
-                NotificationManager.error('Error  message', 'Payment Method has been existed');
+            if(error){
+                if(error.response.data === 'PAYMENT_METHOD_EXISTED'){
+                    NotificationManager.error('Error  message', 'Payment Method has been existed');
+                }
             }
         });
     }
@@ -49,8 +51,11 @@ export const actUpdatePaymentMethodRequest = (paymentMethod, child) => {
             }
             child.goBack();
         }).catch(function(error) {
-            if(error.response.data === 'PAYMENT_METHOD_EXISTED'){
-                NotificationManager.error('Error  message', 'Payment Method has been existed');
+            debugger
+            if(error.response){
+                if(error.response.data === 'PAYMENT_METHOD_EXISTED'){
+                    NotificationManager.error('Error  message', 'Payment Method has been existed');
+                }
             }
         });
     }
@@ -68,7 +73,6 @@ export const actDeletePaymentMethodRequest = (id) => {
         return callApi(`method/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeletePaymentMethod(id));
-                window.location.reload();
             }
             NotificationManager.success('Success message', 'Delete Payment Method successful');
         }).catch(function(error) {

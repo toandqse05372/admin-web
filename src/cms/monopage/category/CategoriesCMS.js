@@ -6,11 +6,13 @@ import CategorieItem from './components/CategoryItem';
 import CategorieList from './components/CategoryList';
 import { actDeleteCategoryRequest } from '../../../actions/indexCategories';
 import axios from 'axios';
-import * as URL from '../../../constants/ConfigURL';
+import * as Config from '../../../constants/ConfigURL';
+import { NotificationManager } from 'react-notifications';
 
 class CategoriesCMS extends Component {
     constructor(props) {
         super(props);
+        this.handleDelete = this.handleDelete.bind(this)
         this.state = {
             loaded: false,
             activePage: 1,
@@ -54,10 +56,10 @@ class CategoriesCMS extends Component {
     }
 
     receivedData(paramBody) {
-        axios.get(URL.API_URL + '/category/searchByName',
+        axios.get(Config.API_URL + '/category/searchByName',
             {
                 headers: {
-                    Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
+                    Authorization: Config.Token
                 },
                 params: {
                     categoryName: paramBody.categoryName,
@@ -171,12 +173,35 @@ class CategoriesCMS extends Component {
         })
     }
 
+    handleDelete(itemId) {
+        const { searchList } = this.state;
+        axios.delete(Config.API_URL + `/category/${itemId}`,{
+            headers: {
+                Authorization: Config.Token
+            }
+        }).then(res => {
+            NotificationManager.success('Success message', 'Delete category successful');
+            const items = searchList.filter(item => item.id !== itemId)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            if(error.response){
+                if(error.response.data === 'CATEGORY_NOT_FOUND'){
+                    NotificationManager.error('Error  message', 'Category not found');
+                }else{
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+        });
+    }
+
     showCategories(categories) {
         var result = null;
         var { onDeleteCategory } = this.props;
         if (categories.length > 0) {
             result = categories.map((category, index) => {
-                return <CategorieItem category={category} key={index} index={index} onDeleteCategory={onDeleteCategory}
+                return <CategorieItem category={category} key={index} index={index} onDeleteCategory={this.handleDelete}
                     limit={this.state.drbLimit}
                     currentPage={this.state.currentPage} />
             });

@@ -82,7 +82,7 @@ class CmsParent extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="container-fluid-full">
+                <div className="container-fluid-full" id="app">
                     <div className="row-fluid">
                         <CmsMenu roles={this.state.roles}/>
                         <div id="content" className="span10">

@@ -22,6 +22,7 @@ const places = (state = initialState, action) => {
         case Types.DELETE_PLACE:
             index = findIndex(state, id);
             state.splice(index, 1);
+            debugger
             return [...state];
         default: return state;
     }
