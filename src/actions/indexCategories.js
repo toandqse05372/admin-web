@@ -18,6 +18,7 @@ export const actFetchCategories = (categories) => {
 }
 
 export const actAddCategoryRequest = (category, child) => {
+    debugger
     return (dispatch) => {
         return callApi('category', 'POST', category).then(res => {
             if (res) {
@@ -40,9 +41,10 @@ export const actAddCategory = (category) => {
     }
 }
 
-export const actUpdateCategoryRequest = (category, child) => {
+export const actUpdateCategoryRequest = (category, child, id) => {
+    debugger
     return (dispatch) => {
-        return callApi(`category/${category.id}`, 'PUT', category).then(res => {
+        return callApi(`category/${id}`, 'PUT', category).then(res => {
             if (res) {
                 dispatch(actUpdateCategory(res.data));
                 NotificationManager.success('Success message', 'Update category successful');

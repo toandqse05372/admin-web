@@ -39,12 +39,12 @@ const cmsMenus = [
         exact: true,
         role: ["ADMIN"]
     },
-    {
-        name: 'Payment Methods',
-        to: '/paymentMethods',
-        exact: true,
-        role: ["ADMIN"]
-    },
+    // {
+    //     name: 'Payment Methods',
+    //     to: '/paymentMethods',
+    //     exact: true,
+    //     role: ["ADMIN"]
+    // },
     {
         name: 'Order Manager',
         to: '/orders',

@@ -12,7 +12,9 @@ class VistorTypesActionCMS extends Component {
             id: '',
             txtName: '',
             txtProductCode: '',
-            txtPrice: ''
+            txtPrice: '',
+            txtTicketTypeId: '',
+            isUpdate: false
         };
     }
 
@@ -20,18 +22,21 @@ class VistorTypesActionCMS extends Component {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditVisitorType(id)
+            this.props.onGetVisitorType(id)
         } // else => add
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.match && nextProps.itemEditing) {
             var { itemEditing } = nextProps;
+            debugger
             this.setState({
                 id: itemEditing.id,
-                txtName: itemEditing.name,
-                txtShortDescription: itemEditing.shortDescription,
-                txtDetailDescription: itemEditing.detailDescription
+                txtName: itemEditing.typeName,
+                txtProductCode: itemEditing.typeKey,
+                txtPrice: itemEditing.price,
+                txtTicketTypeId: itemEditing.ticketTypeId,
+                isUpdate: true
             })
         }
     }
@@ -48,13 +53,13 @@ class VistorTypesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtProductCode, txtPrice } = this.state;
+        var { id, txtName, txtProductCode, txtPrice, isUpdate, txtTicketTypeId } = this.state;
         var visitorType = {
             id: id,
             typeName: txtName,
             typeKey: txtProductCode,
             price: txtPrice,
-            ticketTypeId: this.props.location.state.id
+            ticketTypeId: isUpdate ? txtTicketTypeId : this.props.location.state.id
         };
         if (id) {
             this.props.onUpdateVisitorType(visitorType);
@@ -64,8 +69,9 @@ class VistorTypesActionCMS extends Component {
     }
 
     render() {
+        debugger
         var { txtName, txtPrice, txtProductCode } = this.state;
-        const  data  = this.props.location.state
+        const  data  = this.props.match ? null : this.props.location.state
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>

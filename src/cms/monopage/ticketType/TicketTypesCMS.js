@@ -24,13 +24,12 @@ class TicketTypesCMS extends Component {
             totalItems: 0,
             totalPage: 1,
             currentPage: 1,
-            drbPlaceId: '',
+            drbPlaceId: 0,
+            selectPlace: 0,
             txtTicketTypeName: '',
 
             paramBody: {
-                name: '',
-                detailDescription: '',
-                shortDescription: '',
+                typeName: '',
                 page: 1,
                 limit: 10,
             }
@@ -39,6 +38,17 @@ class TicketTypesCMS extends Component {
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
         // this.receivedData(this.state.paramBody);
         this.props.fetchAllPlaces()
+        let placeId = localStorage.getItem('placeId');
+        if(placeId != null){
+            this.setState({
+                drbPlaceId: placeId
+            })
+        }
+        
+    }
+
+    componentWillMount(){
+        this.receivedData(this.state.paramBody)
     }
 
     onChange = (e) => {
@@ -66,6 +76,7 @@ class TicketTypesCMS extends Component {
             drbPlaceId: e.value
         });
         this.receivedData(this.state.paramBody);
+        localStorage.setItem('placeId', e.value);
     }
 
     receivedData(paramBody) {
@@ -86,28 +97,28 @@ class TicketTypesCMS extends Component {
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
                 totalItems: res.data.totalItems,
+                loaded: true
             })
         }).catch(function (error) {
             console.log(error.response);
         });
-        this.state.loadedTable = true
     }
 
     render() {
         var { places } = this.props;
-        var { drbPlaceId, loaded, drbGameId } = this.state;
+        var { drbPlaceId, loaded } = this.state;
         var optionsPlace = []
         var renderOptPlace = drbPlaceId
         if (places.length > 0 && !this.state.fetchedPlace) {
             for (let i = 0; i < places.length; i++) {
                 var option = { value: places[i].id, label: places[i].name }
                 optionsPlace.push(option);
-                if (drbPlaceId === places[i].id) {
-                    debugger
+                if(parseInt(drbPlaceId) == option.value){
                     renderOptPlace = i
                 }
             }
             loaded = true;
+            debugger
         }
         if (loaded) {
             const pageList = []
@@ -129,12 +140,13 @@ class TicketTypesCMS extends Component {
                         </li>
                     );
             });
+            console.log(renderOptPlace)
             return (
                 <div className="container span14">
                     <h1>Ticket Manager</h1>
                     <div className="myDiv">
                         <label>Place Name </label>
-                        <div >
+                        <div className="rowElement">
                             <Select
                                 options={optionsPlace}
                                 defaultValue={optionsPlace[renderOptPlace]}
@@ -143,7 +155,7 @@ class TicketTypesCMS extends Component {
                         </div>
                     </div>
                     <div style={{ display: drbPlaceId ? "" : "none" }}>
-                        <Form onSubmit={this.onSubmitSearch} >
+                        {/* <Form onSubmit={this.onSubmitSearch} >
                             <Table>
                                 <thead>
                                     <tr>
@@ -181,9 +193,10 @@ class TicketTypesCMS extends Component {
                                 </thead>
                             </Table>
                         </Form>
+                         */}
                         <Link to="/ticketTypes/add" className="btn btn-success mb-5 ">
                             <i className="glyphicon glyphicon-plus"></i> Add Ticket Type
-                </Link>
+                        </Link>
                         <TicketTypeList>
                             {this.showTicketTypes(this.state.searchList)}
                         </TicketTypeList>
@@ -256,7 +269,8 @@ class TicketTypesCMS extends Component {
 const mapStateToProps = state => {
     return {
         ticketTypes: state.ticketTypes,
-        places: state.places
+        places: state.places,
+        visitorTypes: state.visitorTypes
     }
 }
 

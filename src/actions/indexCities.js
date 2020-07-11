@@ -40,9 +40,9 @@ export const actAddCity = (city) => {
     }
 }
 
-export const actUpdateCityRequest = (city, child) => {
+export const actUpdateCityRequest = (city, child, id) => {
     return (dispatch) => {
-        return callApi(`city/${city.id}`, 'PUT', city).then(res => {
+        return callApi(`city/${id}`, 'PUT', city).then(res => {
             if (res) {
                 dispatch(actUpdateCity(res.data));
                 NotificationManager.success('Success message', 'Update city successful');

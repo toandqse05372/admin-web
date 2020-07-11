@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { actAddGameRequest, actUpdateGameRequest, actGetGameRequest } from '../../../actions/indexGames';
 import { actFetchPlacesRequest } from '../../../actions/indexPlaces';
 import Select from 'react-select'
-import { Button, Accordion, Card } from 'react-bootstrap'
-
+import { Col, Row } from 'react-bootstrap'
+import { NotificationManager } from 'react-notifications';
 // const [open, setOpen] = useState(false);
 
 class GamesActionCMS extends Component {
@@ -20,6 +20,7 @@ class GamesActionCMS extends Component {
             drbPlaceId: '',
             loaded: false,
             fetched: false,
+            errorPlace: ''
         };
 
     }
@@ -63,17 +64,26 @@ class GamesActionCMS extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         var { id, txtName, txtDescription, drbPlaceId } = this.state;
+        
         var game = {
             id: id,
             gameName: txtName,
             gameDescription: txtDescription,
             placeId: drbPlaceId
         };
-        if (id) {
-            this.props.onUpdateGame(game);
-        } else {
-            this.props.onAddGame(game);
+
+        if(drbPlaceId === ''){
+            this.setState({
+                errorPlace: 'Please choose a place'
+            })
+        }else{
+            if (id) {
+                this.props.onUpdateGame(game);
+            } else {
+                this.props.onAddGame(game);
+            }
         }
+        
     }
 
     onChangePlace = (e) => {
@@ -86,7 +96,7 @@ class GamesActionCMS extends Component {
 
     render() {
         var { places } = this.props;
-        var { txtName, txtDescription, drbPlaceId, loaded } = this.state;
+        var { txtName, txtDescription, drbPlaceId, loaded, errorPlace } = this.state;
         var options = []
         var renderOpt = drbPlaceId
         if (places.length > 0 && this.state.fetched) {
@@ -95,55 +105,32 @@ class GamesActionCMS extends Component {
                 options.push(option);
                 if (drbPlaceId === places[i].id) {
                     renderOpt = i
-                    debugger
                 }
             }
             loaded = true;
-        }  
-        if(loaded){
-            debugger
+        }
+        if (loaded) {
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
-                            <label>Game Name </label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                            <label>Game Name *</label>
+                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                         </div>
                         <div className="myDiv">
-                            <label>Place Name </label>
-                            <div >
+                            <label>Place Name *</label>
+                            <a className="rowElement">
                                 <Select
+                                    required
                                     openMenuOnClick={true}
                                     options={options}
                                     defaultValue={options[renderOpt]}
                                     onChange={this.onChangePlace}
-                                    />
-                            </div>
+                                /> 
+                            </a>
+                            <span className="rowElement"><h3 style={{color: 'red'}}>{errorPlace}</h3></span>
                         </div>
-                        {/* <button
-                            type="button" class="btn btn-info"
-                            data-toggle="collapse" data-target={"#" + drbPlaceId}>
-                            Next Step
-                        </button> */}
-                        {/* <div id={drbPlaceId} class={drbPlaceId?"collapse in":"collapse"}>
-                            <div className="myDiv">
-                                <label>{drbPlaceId} </label>
-                                <div style={{position: "hidden"}} >
-                                    <Select options={options}
-                                        defaultValue={options[renderOpt]}
-                                        onChange={this.onChangePlace} />
-                                </div>
-                            </div>
-                        </div> */}
-
-                            <div style={{visibility: drbPlaceId?"visible":"hidden"}} className="myDiv">
-                                <label>{drbPlaceId} </label>
-                                <div  >
-                                    {/* thứ mà hiện ra sau khi chọn dropdown */}
-                                    {/* new select chọn game */}
-                                </div>
-                            </div>
 
                         <div className="form-group">
                             <label>Description </label>

@@ -17,7 +17,7 @@ class TicketTypesActionCMS extends Component {
             txtDetailDescription: '',
             drbPlaceId: '',
             drbGameId: '',
-            loaded: 0,
+            loaded: false,
             fetchedPlace: false,
         };
     }
@@ -128,14 +128,13 @@ class TicketTypesActionCMS extends Component {
                 var option = { value: places[i].id, label: places[i].name }
                 optionsPlace.push(option);
                 if (drbPlaceId === places[i].id) {
-                    debugger
                     renderOptPlace = i
                 }
             }
-            loaded = loaded + 1;
+            loaded = true;
 
         }
-        if (loaded === 1) {
+        if (loaded) {
             return (
                 <div className="container">
 
@@ -143,7 +142,7 @@ class TicketTypesActionCMS extends Component {
                         <legend>* Please enter full information</legend>
                         <div className="myDiv">
                             <label>Place Name </label>
-                            <div >
+                            <div className="rowElement">
                                 <Select
                                     options={optionsPlace}
                                     defaultValue={optionsPlace[renderOptPlace]}
@@ -156,7 +155,7 @@ class TicketTypesActionCMS extends Component {
                                 {/* thứ mà hiện ra sau khi chọn dropdown */}
                                 <div className="myDiv">
                                     <label>Game Name </label>
-                                    <div >
+                                    <div className="rowElement">
                                         {this.showGame()}
                                     </div>
                                 </div>

@@ -19,7 +19,7 @@ class PlaceList extends Component {
                                 <th>Mail</th>
                                 <th>Phone Number</th>
                                 <th>Category</th>
-                                <th>Short Description</th>
+                                <th>Opening Hours</th>
                                 <th>Status</th>
                             </tr>
                         </thead>

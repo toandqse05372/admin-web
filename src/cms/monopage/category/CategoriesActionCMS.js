@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actAddCategoryRequest, actUpdateCategoryRequest, actGetCategoryRequest } from '../../../actions/indexCategories';
-import { Form } from 'react-bootstrap'
+import { FormControl } from 'react-bootstrap'
 
 class CategoryActionCMS extends Component {
 
@@ -11,7 +11,8 @@ class CategoryActionCMS extends Component {
         this.state = {
             id: '',
             txtName: '',
-            txtKey: ''
+            txtKey: '',
+            fileImage: null
         };
     }
 
@@ -38,7 +39,7 @@ class CategoryActionCMS extends Component {
     onChange = (e) => {
         var target = e.target;
         var name = target.name;
-        var value = target.type === 'checkbox' ? target.checked : target.value;
+        var value = name === 'fileImage' ? target.files[0] : target.value;
         this.setState({
             [name]: value
         });
@@ -46,16 +47,21 @@ class CategoryActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtKey } = this.state;
-        var city = {
+        var { id, txtName, txtKey, fileImage } = this.state;
+        var category = {
             id: id,
             categoryName: txtName,
             typeKey: txtKey
         };
+        let data = new FormData();
+        if (fileImage !== null && typeof fileImage !== "undefined") {
+            data.append('file', fileImage, fileImage.name);
+        }
+        data.append('category', JSON.stringify(category));
         if (id) {
-            this.props.onUpdateCategory(city);
+            this.props.onUpdateCategory(data, id);
         } else {
-            this.props.onAddCategory(city);
+            this.props.onAddCategory(data);
         }
     }
 
@@ -66,13 +72,21 @@ class CategoryActionCMS extends Component {
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">
-                        <label>Category Name </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        <label>Category Name *</label>
+                        <input required onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
+                        <label>Choose image file </label>
+                        <FormControl id="formControlsFile"
+                            type="file"
+                            label="File"
+                            name="fileImage"
+                            onChange={this.onChange} />
+                    </div>
+                    {/* <div className="form-group">
                         <label>Category Key </label>
                         <input onChange={this.onChange} value={txtKey} name="txtKey" type="text" className="form-control" />
-                    </div>
+                    </div> */}
                     <Link to="/Category" className="btn btn-danger mr-5">
                         <i className="glyphicon glyphicon-arrow-left"></i> Back
                     </Link>
@@ -97,8 +111,8 @@ const mapDispatchToProps = (dispatch, props) => {
         onAddCategory: (city) => {
             dispatch(actAddCategoryRequest(city, props.history));
         },
-        onUpdateCategory: (city) => {
-            dispatch(actUpdateCategoryRequest(city, props.history));
+        onUpdateCategory: (city, id) => {
+            dispatch(actUpdateCategoryRequest(city, props.history, id));
         },
         onGetCategory: (id) => {
             dispatch(actGetCategoryRequest(id));

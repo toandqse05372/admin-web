@@ -15,7 +15,7 @@ class PlaceTypeItem extends Component {
             <tr>
                  <td>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{category.categoryName}</td>
-                <td>{category.typeKey}</td>
+                {/* <td>{category.typeKey}</td> */}
 
                 <td className="center">
                     <Link to={`/categories/${category.id}/edit`} className="btn btn-info">

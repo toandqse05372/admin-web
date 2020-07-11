@@ -20,7 +20,8 @@ class UsersActionCMS extends Component {
             txtDescription: '',
             txtPassword: '',
             drbRole: [],
-            fetched: false
+            fetched: false,
+            errorRole: ''
         };
     }
 
@@ -30,6 +31,7 @@ class UsersActionCMS extends Component {
 
     componentWillMount() {
         var { match } = this.props;
+        debugger
         if (match) { // update
             var id = match.params.id;
             this.props.onEditUser(id)
@@ -77,13 +79,20 @@ class UsersActionCMS extends Component {
             lastName: txtLastName,
             password: txtPassword,
             mail: txtMail,
-            roleKey: Array.isArray(drbRole) ? drbRole : [drbRole],
+            roleKey: drbRole,
             phoneNumber: txtPhoneNumber
         };
-        if (id) {
-            this.props.onUpdateUser(user);
-        } else {
-            this.props.onAddUser(user);
+        if(drbRole.length < 1){
+            this.setState({
+                errorRole: 'Please choose at least one role'
+            })
+        }
+        else{
+            if (id) {
+                this.props.onUpdateUser(user);
+            } else {
+                this.props.onAddUser(user);
+            }
         }
 
     }
@@ -109,7 +118,7 @@ class UsersActionCMS extends Component {
     }
 
     render() {
-        var { txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, loaded } = this.state;
+        var { txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, loaded, errorRole } = this.state;
         var { roles } = this.props
         var options = []
         var renderOpt = []
@@ -129,41 +138,28 @@ class UsersActionCMS extends Component {
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
-                            <label>First Name </label>
+                            <label>First Name *</label>
                             <input style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
-                            <label>Last Name </label>
+                            <label>Last Name *</label>
                             <input style={{ width: 350 }} onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
-                            <label>Mail </label>
+                            <label>Mail *</label>
                             <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
-                            <label>Password </label>
+                            <label>Password *</label>
                             <input style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control" />
                         </div>
                         <div className="form-group">
-                            <label>Phone number </label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
+                            <label>Phone number *</label>
+                            <input required min="0" style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
                         </div>
-                        {/* <div className="form-group">
-                            <label>Role </label>
-                            <textarea onChange={this.onChange} value={txtRole} name="txtRole" className="form-control" rows="3">
-                            </textarea>
-                        </div> */}
-                        {/* <label>Role </label>
-                        <Form.Control as="select"
-                            name="txtRole"
-                            value={txtRole}
-                            onChange={this.onChange}>
-                            <option key={0} index={0} value={0}>-- Choose Role --</option>
-                            {this.showRoles(roles)}
-                        </Form.Control> */}
                         <div className="myDiv">
-                            <label>Role</label>
-                            <div >
+                            <label>Role *</label>
+                            <div className="rowElement">
                                 <Select
                                     defaultValue={renderOpt}
                                     isMulti
@@ -171,6 +167,7 @@ class UsersActionCMS extends Component {
                                     onChange={this.onChangeRole}
                                 />
                             </div>
+                            <span className="rowElement"><h3 style={{color: 'red'}}>{errorRole}</h3></span>
                         </div>
                         <br />
                         <Link to="/users" className="btn btn-danger mr-5">

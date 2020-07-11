@@ -9,6 +9,7 @@ import categories from './categories';
 import itemEditing from './itemEditing';
 import ticketTypes from './ticketTypes';
 import orders from './orders';
+import visitorTypes from './visitorTypes';
 
 const appReducers = combineReducers({
     users,
@@ -20,6 +21,7 @@ const appReducers = combineReducers({
     games,
     orders,
     paymentMethods,
+    visitorTypes,
     itemEditing
 });
 

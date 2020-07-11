@@ -87,7 +87,7 @@ class LoginCMS extends Component {
                                 </div>
                                 <div className="clearfix" />
                                 <div className="button-login">
-                                    <button type="submit" className="btn btn-primary">Login</button>
+                                    <button type="submit" className="btn btn-primary rowElement">Login</button>
                                     <h3 style={{color: 'red'}}>{txtError}</h3>
                                 </div>
                                 <div className="clearfix" />

@@ -23,10 +23,10 @@ const ticketTypes = (state = initialState, action) => {
     }
 };
 
-var findIndex = (cities, id) => {
+var findIndex = (ticketTypes, id) => {
     var result = -1;
-    cities.forEach((city, index) => {
-        if (city.id === id) {
+    ticketTypes.forEach((ticketType, index) => {
+        if (ticketType.id === id) {
             result = index;
         }
     });

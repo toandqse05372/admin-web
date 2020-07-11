@@ -22,7 +22,7 @@ class GameItem extends Component {
             <tr>
                 <td>{(currentPage - 1) * limit + index + 1}</td>
                 <td>{games.gameName}</td>
-                <td>{games.gameDescription}</td>
+                {/* <td>{games.gameDescription}</td> */}
                 <td>{games.placeName}</td>
                 <td>{games.status}</td>
                 <td className="center">

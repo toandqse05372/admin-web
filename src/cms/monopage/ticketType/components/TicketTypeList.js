@@ -13,7 +13,7 @@ class TicketTypeList extends Component {
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Ticket Type Name</th>
                             </tr>
                         </thead>

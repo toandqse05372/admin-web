@@ -15,7 +15,7 @@ class GameList extends Component {
                             <tr>
                                 <th>#</th>
                                 <th>Game Name</th>
-                                <th>Description</th>
+                                {/* <th>Description</th> */}
                                 <th>Place Name</th>
                                 <th>Status</th>
                             </tr>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actAddCityRequest, actUpdateCityRequest, actGetCityRequest } from '../../../actions/indexCities';
-import { Form } from 'react-bootstrap'
+import { FormControl } from 'react-bootstrap'
 
 class CitiesActionCMS extends Component {
 
@@ -12,7 +12,8 @@ class CitiesActionCMS extends Component {
             id: '',
             txtName: '',
             txtShortDescription: '',
-            txtDetailDescription: ''
+            txtDetailDescription: '',
+            fileImage: null
         };
     }
 
@@ -40,7 +41,7 @@ class CitiesActionCMS extends Component {
     onChange = (e) => {
         var target = e.target;
         var name = target.name;
-        var value = target.type === 'checkbox' ? target.checked : target.value;
+        var value = name === 'fileImage' ? target.files[0] : target.value;
         this.setState({
             [name]: value
         });
@@ -48,29 +49,34 @@ class CitiesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtShortDescription, txtDetailDescription } = this.state;
+        var { id, txtName, txtShortDescription, txtDetailDescription, fileImage } = this.state;
         var city = {
             id: id,
             name: txtName,
             shortDescription: txtShortDescription,
             detailDescription: txtDetailDescription
         };
+        let data = new FormData();
+        if (fileImage !== null && typeof fileImage !== "undefined") {
+            data.append('file', fileImage, fileImage.name);
+        }
+        data.append('city', JSON.stringify(city));
         if (id) {
-            this.props.onUpdateCity(city);
+            this.props.onUpdateCity(data, id);
         } else {
-            this.props.onAddCity(city);
+            this.props.onAddCity(data);
         }
     }
 
     render() {
-        var { txtName, txtShortDescription, txtDetailDescription } = this.state;
+        var { txtName, txtShortDescription, txtDetailDescription, fileImage } = this.state;
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">
-                        <label>City Name </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        <label>City Name *</label>
+                        <input required onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
                         <label>Short Description</label>
@@ -81,6 +87,14 @@ class CitiesActionCMS extends Component {
                         <label>Detail Description</label>
                         <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
                         </textarea>
+                    </div>
+                    <div className="form-group">
+                        <label>Choose image file </label>
+                        <FormControl id="formControlsFile"
+                            type="file"
+                            label="File"
+                            name="fileImage"
+                            onChange={this.onChange} />
                     </div>
                     <Link to="/cities" className="btn btn-danger mr-5">
                         <i className="glyphicon glyphicon-arrow-left"></i> Back
@@ -106,8 +120,8 @@ const mapDispatchToProps = (dispatch, props) => {
         onAddCity: (city) => {
             dispatch(actAddCityRequest(city, props.history));
         },
-        onUpdateCity: (city) => {
-            dispatch(actUpdateCityRequest(city, props.history));
+        onUpdateCity: (city, id) => {
+            dispatch(actUpdateCityRequest(city, props.history, id));
         },
         onEditCity: (id) => {
             dispatch(actGetCityRequest(id));

@@ -136,15 +136,12 @@ class TicketTypeItem extends Component {
         if (vistorTypes.length > 0) {
             result = vistorTypes.map((vistorTypes, index) => {
                 return <VistorTypeItem vistors={vistorTypes}
-                    key={index} index={index} onDeleteTicketType={onDeleteTicketType} />
+                    key={index} index={index} onDeleteTicketType={this.handleDelete} ticketTypeId={this.props.ticketTypes.id} 
+                    ticketTypeName={this.props.ticketTypes.typeName}/>
             });
         }
         return result;
     }
 }
-
-
-
-
 
 export default TicketTypeItem;

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import * as URL from '../../../../constants/ConfigURL';
 import callApi from '../../../../utils/apiCaller';
 
 class VistorTypeItem extends Component {
@@ -17,17 +15,17 @@ class VistorTypeItem extends Component {
 
     }
 
-    uploadExcel= (e) => {
+    uploadExcel = (e) => {
         let dataForm = new FormData();
         dataForm.append('file', e.target.files[0]);
-        dataForm.append('codeType',this.props.vistors.typeKey);
+        dataForm.append('codeType', this.props.vistors.typeKey);
         callApi('upload', 'POST', dataForm).then(res => {
-            
+
         });
     }
 
     render() {
-        var { vistors, index, limit, currentPage } = this.props;
+        var { vistors, index, limit, currentPage, ticketTypeId, ticketTypeName } = this.props;
         return (
             <tr>
                 <td>{index + 1}</td>
@@ -51,7 +49,10 @@ class VistorTypeItem extends Component {
                         id="hiddenFileInput" style={{ display: "none" }}
                         onChange={this.uploadExcel}
                     />
-                    <Link to={`/ticketTypes/vistors/1/edit`} className="btn btn-info">
+                    <Link to={{
+                        pathname: `/ticketTypes/vistors/${vistors.id}/edit`,
+                        state: { id: ticketTypeId, name: ticketTypeName } // your data array of objects
+                    }} className="btn btn-info">
                         <i className="halflings-icon white edit"></i>
                     </Link>
                     <a className="btn btn-danger" onClick={() => this.onDelete(vistors.id)}>
@@ -63,5 +64,7 @@ class VistorTypeItem extends Component {
         );
     }
 }
+
+
 
 export default VistorTypeItem;

@@ -35,6 +35,8 @@ export const actAddGameRequest = (games, child) => {
         }).catch(function(error) {
             if(error.response.data === 'GAME_EXISTED'){
                 NotificationManager.error('Error  message', 'Game has been existed');
+            }if(error.response.data === 'NOT_CHOOSE_DATE'){
+                NotificationManager.error('Error  message', 'Not choose place');
             }
         });
     }
@@ -56,8 +58,11 @@ export const actUpdateGameRequest = (game, child) => {
             }
             child.goBack();
         }).catch(function(error) {
+            debugger
             if(error.response.data === 'GAME_EXISTED'){
                 NotificationManager.error('Error  message', 'Game has been existed');
+            }if(error.response.data === 'NOT_CHOOSE_DATE'){
+                NotificationManager.error('Error  message', 'Not choose place');
             }
         });
     }

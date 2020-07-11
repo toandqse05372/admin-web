@@ -8,13 +8,13 @@ import { Form, FormControl } from 'react-bootstrap'
 import Select from 'react-select'
 
 const weekDays = [
-    { value: 1, label: 'Mon' },
-    { value: 2, label: 'Tue' },
-    { value: 3, label: 'Wed' },
-    { value: 4, label: 'Thu' },
-    { value: 5, label: 'Fri' },
-    { value: 6, label: 'Sat' },
-    { value: 7, label: 'Sun' }]
+    { value: 0, label: 'Mon' },
+    { value: 1, label: 'Tue' },
+    { value: 2, label: 'Wed' },
+    { value: 3, label: 'Thu' },
+    { value: 4, label: 'Fri' },
+    { value: 5, label: 'Sat' },
+    { value: 6, label: 'Sun' }]
 
 class PlacesActionCMS extends Component {
 
@@ -27,8 +27,9 @@ class PlacesActionCMS extends Component {
             txtMail: '',
             txtPhoneNumber: '',
             fileImage: [],
-            drbCityId: '',
+            drbCityId: 0,
             drbCategory: [],
+            drbWeekDays: [],
             txtDescription: '',
             txtOpenHours: '',
             txtStatus: '',
@@ -39,6 +40,10 @@ class PlacesActionCMS extends Component {
             txtName: '',
             txtShortDescription: '',
             txtDetailDescription: '',
+
+            errorCategory: '',
+            erorOpenDays: '',
+            errorCity: '',
 
         };
         this.onChange = this.onChange.bind(this);
@@ -71,9 +76,10 @@ class PlacesActionCMS extends Component {
                     fileImage: itemEditing.placeImageLink,
                     drbCityId: itemEditing.cityId,
                     drbCategory: itemEditing.categoryId,
+                    drbWeekDays: itemEditing.weekDays,
                     txtStatus: itemEditing.status,
                     txtPhoneNumber: itemEditing.phoneNumber,
-                    txtOpenHours: itemEditing.openHours,
+                    txtOpenHours: itemEditing.openingHours,
                     txtAddress: itemEditing.address,
                     txtImageLink: itemEditing.placeImageLink,
                     fetched: true
@@ -100,6 +106,7 @@ class PlacesActionCMS extends Component {
                 fileList.push(target.files[i])
             }
         }
+        debugger
         var value = name === 'fileImage' ? fileList : target.value;
         this.setState({
             [name]: value
@@ -108,7 +115,7 @@ class PlacesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, fileImage, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, txtName, txtShortDescription, txtDetailDescription } = this.state; 
+        var { id, fileImage, txtOpenHours, drbWeekDays, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, txtName, txtShortDescription, txtDetailDescription } = this.state;
         var place = {
             id: id,
             name: txtName,
@@ -119,22 +126,45 @@ class PlacesActionCMS extends Component {
             cityId: drbCityId,
             phoneNumber: txtPhoneNumber,
             categoryId: drbCategory,
+            weekDays: drbWeekDays,
+            openingHours: txtOpenHours
         };
-        let data = new FormData();
-        if (fileImage !== null && typeof fileImage !== "undefined") {
-            for (let i = 0; i < fileImage.length; i++) {
-                data.append('file', fileImage[i], fileImage[i].name);
+        var catErrorStr = ''
+        if (drbCategory.length < 1) {
+            catErrorStr = "Please choose at least one category"
+        }
+        var wdErrorStr = ''
+        if (drbWeekDays.length < 1) {
+            wdErrorStr = "Please choose at least one open day"
+        }
+        var cityErrorStr = ''
+        if (drbCityId === 0) {
+            cityErrorStr = "Please choose a city"
+        }
+        if (drbCategory.length > 0 && drbWeekDays > 0 && drbCityId !== 0) {
+            let data = new FormData();
+            if (fileImage !== null && typeof fileImage !== "undefined") {
+                for (let i = 0; i < fileImage.length; i++) {
+                    data.append('file', fileImage[i], fileImage[i].name);
 
+                }
             }
-        }
-        data.append('place', JSON.stringify(place));
-        if (id) {
-            this.props.onUpdatePlace(data, id);
+            data.append('place', JSON.stringify(place));
+            if (id) {
+                this.props.onUpdatePlace(data, id);
 
-        } else {
-            this.props.onAddPlace(data);
+            } else {
+                this.props.onAddPlace(data);
+            }
+        }else{
+            debugger
+            this.setState({
+                errorCity: cityErrorStr,
+                errorCategory: catErrorStr,
+                erorOpenDays: wdErrorStr
+            })
+            window.scrollTo(0, 0);
         }
-
     }
 
     onChangeCategory = (selectedOption) => {
@@ -146,6 +176,18 @@ class PlacesActionCMS extends Component {
         }
         this.setState({
             drbCategory: selectedKey
+        })
+    }
+
+    onChangeWeekdays = (selectedOption) => {
+        var selectedKey = []
+        if (selectedOption !== null) {
+            for (let i = 0; i < selectedOption.length; i++) {
+                selectedKey.push(selectedOption[i].value)
+            }
+        }
+        this.setState({
+            drbWeekDays: selectedKey
         })
     }
 
@@ -162,12 +204,13 @@ class PlacesActionCMS extends Component {
     }
 
     render() {
-        var { drbCityId, txtAddress, txtPhoneNumber, txtMail, drbCategory, loaded, txtName, txtDetailDescription, txtShortDescription } = this.state;
+        var { drbCityId, drbWeekDays, txtAddress, txtOpenHours, txtPhoneNumber, txtMail, drbCategory, loaded,
+            txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity } = this.state;
         var { cities, categories } = this.props
         var options = []
         var renderOpt = []
+        var renderOptWd = []
         if (categories.length > 0 && this.state.fetched && typeof drbCategory !== "undefined") {
-
             for (let i = 0; i < categories.length; i++) {
                 var option = { value: categories[i].id, label: categories[i].categoryName }
                 options.push(option);
@@ -177,15 +220,27 @@ class PlacesActionCMS extends Component {
             }
             loaded = loaded + 1;
         }
+        if (drbWeekDays.length > 0) {
+            for (let i = 0; i < weekDays.length; i++) {
+                if (drbWeekDays.includes(weekDays[i].value)) {
+                    renderOptWd.push(weekDays[i])
+                }
+            }
+        }
         if (loaded === 1) {
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
 
+                        <div className="form-group">
+                            <label>Place Name *</label>
+                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        </div>
+
                         <div className="myDiv">
                             <label>Category </label>
-                            <div >
+                            <div className="rowElement">
                                 <Select
                                     defaultValue={renderOpt}
                                     isMulti
@@ -193,11 +248,13 @@ class PlacesActionCMS extends Component {
                                     onChange={this.onChangeCategory}
                                 />
                             </div>
-
+                            <span className="rowElement"><h3 style={{ color: 'red' }}>{errorCategory}</h3></span>
                         </div>
                         <div className="form-group">
-                            <label>City </label>
+                            <label>City *</label>
+                            <div className="rowElement">
                             <Form.Control as="select"
+                                
                                 style={{ width: 360 }}
                                 name="drbCityId"
                                 value={drbCityId}
@@ -205,12 +262,9 @@ class PlacesActionCMS extends Component {
                                 <option key={0} index={0} value={0}>-- Choose City --</option>
                                 {this.showCities(cities)}
                             </Form.Control>
+                            </div>
+                            <span className="rowElement"><h3 style={{ color: 'red' }}>{errorCity}</h3></span>
                         </div>
-
-                        {/* <div className="form-group">
-                            <label>Open hours </label>
-                            <TimePicker/>
-                        </div> */}
                         <div className="form-group">
                             <label>Address </label>
                             <input style={{ width: 350 }} onChange={this.onChange} value={txtAddress} name="txtAddress" type="text" className="form-control" />
@@ -224,20 +278,21 @@ class PlacesActionCMS extends Component {
                             <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                         </div>
                         <div className="myDiv">
-                            <label>Open days </label>
-                            <div >
+                            <label>Open days *</label>
+                            <div className="rowElement">
                                 <Select
-                                    defaultValue={renderOpt}
+                                    defaultValue={renderOptWd}
                                     isMulti
                                     options={weekDays}
+                                    onChange={this.onChangeWeekdays}
                                 />
                             </div>
-
+                            <span className="rowElement"><h3 style={{ color: 'red' }}>{erorOpenDays}</h3></span>
                         </div>
-
                         <div className="form-group">
-                            <label>Place Name </label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                            <label>Opening Hours </label>
+                            <textarea style={{ width: 350, height: 60 }} onChange={this.onChange} value={txtOpenHours} name="txtOpenHours" className="form-control" rows="3">
+                            </textarea>
                         </div>
                         <div className="form-group">
                             <label>Short Description </label>
@@ -249,8 +304,6 @@ class PlacesActionCMS extends Component {
                             <textarea style={{ width: 350, height: 120 }} onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
                             </textarea>
                         </div>
-
-
 
                         <div className="form-group">
                             <label>Choose image file </label>

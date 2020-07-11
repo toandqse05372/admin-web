@@ -34,7 +34,7 @@ class PlaceItem extends Component {
                 <td>{places.mail}</td>
                 <td>{places.phoneNumber}</td>
                 <td>{categoryList}</td>
-                <td>{places.shortDescription}</td>
+                <td>{places.openingHours}</td>
                 <td>{places.status}</td>
                 {/* <td>{places.shortDescription.split("\n").map((i, key) => {
                     return <div key={key}>- {i}</div>;
