@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actAddCityRequest, actUpdateCityRequest, actGetCityRequest } from '../../../actions/indexCities';
+import { actAddOrderRequest, actUpdateOrderRequest, actGetOrderRequest } from '../../../actions/indexOrders';
 import { Form } from 'react-bootstrap'
+import OrderDetailList from './components/OrderDetailList';
+import OrderDetailItem from './components/OrderDetailItem';
 
 class OrderActionCMS extends Component {
 
@@ -12,7 +14,10 @@ class OrderActionCMS extends Component {
             id: '',
             txtName: '',
             txtShortDescription: '',
-            txtDetailDescription: ''
+            txtDetailDescription: '',
+            orderInfor: null,
+            loaded: false,
+            products: []
         };
     }
 
@@ -20,7 +25,7 @@ class OrderActionCMS extends Component {
         var { match } = this.props;
         if (match) { // update
             var id = match.params.id;
-            this.props.onEditCity(id)
+            this.props.onEditOrder(id)
         } // else => add
     }
 
@@ -29,9 +34,10 @@ class OrderActionCMS extends Component {
             var { itemEditing } = nextProps;
             this.setState({
                 id: itemEditing.id,
-                txtName: itemEditing.name,
-                txtShortDescription: itemEditing.shortDescription,
-                txtDetailDescription: itemEditing.detailDescription
+                txtName: itemEditing.ticketTypeName,
+                orderInfor: itemEditing,
+                products: itemEditing.products,
+                loaded: true
             })
         }
     }
@@ -49,51 +55,66 @@ class OrderActionCMS extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         var { id, txtName, txtShortDescription, txtDetailDescription } = this.state;
-        var city = {
+        var order = {
             id: id,
             name: txtName,
             shortDescription: txtShortDescription,
             detailDescription: txtDetailDescription
         };
         if (id) {
-            this.props.onUpdateCity(city);
+            this.props.onUpdateOrder(order);
         } else {
-            this.props.onAddCity(city);
+            this.props.onAddOrder(order);
         }
     }
 
     render() {
-        var { txtName, txtShortDescription, txtDetailDescription } = this.state;
-        return (
-            <div className="container">
-                <form onSubmit={this.onSubmit}>
-                    <legend>* Please enter full information</legend>
-                    <div className="form-group">
-                        <label>Tên tỉnh / thành </label>
-                        <input onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
-                    </div>
-                    <div className="form-group">
-                        <label>Giới thiệu ngắn</label>
-                        <textarea onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <div className="form-group">
-                        <label>Giới thiệu chi tiết</label>
-                        <textarea onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                        </textarea>
-                    </div>
-                    <div className="form-group">
-                        <Form.File.Input />
-                    </div>
-                    <Link to="/orders" className="btn btn-danger mr-5">
-                        <i className="glyphicon glyphicon-arrow-left"></i> Back
-                    </Link>
-                    <button type="submit" className="btn btn-primary">
-                        <i className="glyphicon glyphicon-save"></i> Save Order
-                            </button>
-                </form>
-            </div>
-        );
+        var { products, txtShortDescription,
+            txtDetailDescription, orderInfor, loaded } = this.state;
+        if (this.state.loaded) {
+            return (
+                <div className="container">
+                    <form onSubmit={this.onSubmit}>
+                        <legend>* Order {orderInfor.orderCode}</legend>
+                        <div className="form-group">
+                            <label>Name: {orderInfor.firstName} {orderInfor.lastName}</label>
+                        </div>
+                        <div className="form-group">
+                            <label>Mail: {orderInfor.mail}</label>
+                        </div>
+                        <div className="form-group">
+                            <label>Phone number: {orderInfor.phoneNumber}</label>
+                        </div>
+                        <div className="form-group">
+                            <label>Total Payment: {orderInfor.totalPayment} VNĐ</label>
+                        </div>
+                        <div style={{width: "600px"}}>
+                        <OrderDetailList>
+                            {this.showProduct(products)}
+                        </OrderDetailList>
+                        </div>
+                        
+                        <Link to="/orders" className="btn btn-danger mr-5">
+                            <i className="glyphicon glyphicon-arrow-left"></i> Back
+                        </Link>
+                        <button type="submit" className="btn btn-primary">
+                            <i className="glyphicon glyphicon-save"></i> Send Ticket
+                                </button>
+                    </form>
+                </div>
+            );
+        } else
+            return ""
+    }
+
+    showProduct(products) {
+        var result = null;
+        if (products.length > 0) {
+            result = products.map((product, index) => {
+                return <OrderDetailItem product={product} key={product} index={index} name={this.state.txtName}/>
+            });
+        }
+        return result;
     }
 
 }
@@ -106,14 +127,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddCity: (city) => {
-            dispatch(actAddCityRequest(city, props.history));
+        onAddOrder: (order) => {
+            dispatch(actAddOrderRequest(order, props.history));
         },
-        onUpdateCity: (city) => {
-            dispatch(actUpdateCityRequest(city, props.history));
+        onUpdateOrder: (order) => {
+            dispatch(actUpdateOrderRequest(order, props.history));
         },
-        onEditCity: (id) => {
-            dispatch(actGetCityRequest(id));
+        onEditOrder: (id) => {
+            dispatch(actGetOrderRequest(id));
         },
     }
 }

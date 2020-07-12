@@ -220,7 +220,7 @@ class PlacesActionCMS extends Component {
             }
             loaded = loaded + 1;
         }
-        if (drbWeekDays.length > 0) {
+        if (drbWeekDays.length > 0 && this.state.fetched && typeof drbCategory !== "undefined") {
             for (let i = 0; i < weekDays.length; i++) {
                 if (drbWeekDays.includes(weekDays[i].value)) {
                     renderOptWd.push(weekDays[i])
@@ -239,7 +239,7 @@ class PlacesActionCMS extends Component {
                         </div>
 
                         <div className="myDiv">
-                            <label>Category </label>
+                            <label>Category *</label>
                             <div className="rowElement">
                                 <Select
                                     defaultValue={renderOpt}

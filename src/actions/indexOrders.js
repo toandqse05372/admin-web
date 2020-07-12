@@ -74,7 +74,7 @@ export const actDeleteOrder = (id) => {
     }
 }
 
-export const actGetorderRequest = (id) => {
+export const actGetOrderRequest = (id) => {
     return dispatch => {
         return callApi(`order/${id}`, 'GET', null).then(res => {
             dispatch(actGetOrder(res.data))

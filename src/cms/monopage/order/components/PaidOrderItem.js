@@ -14,10 +14,10 @@ class OrderItem extends Component {
         var { order, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{(currentPage - 1) * limit + index + 1}</td>
-                <td>SE05372</td>
-                <td>23/08/1998</td>
-                <td>999 Roses</td>
+                <td>{index + 1}</td>
+                <td>{order.orderCode}</td>
+                <td>{order.purchaseDay}</td>
+                <td>{order.totalPayment} VNĐ</td>
 
                 <td className="center">
                     <a className="btn btn-primary" > Send ticket </a>

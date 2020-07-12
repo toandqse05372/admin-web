@@ -30,7 +30,7 @@ class VistorTypeItem extends Component {
             <tr>
                 <td>{index + 1}</td>
                 <td>{vistors.typeName}</td>
-                <td>{vistors.price}</td>
+                <td>{vistors.price} VNĐ</td>
                 <td>{vistors.typeKey}</td>
 
                 <td className="center">

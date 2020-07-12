@@ -19,28 +19,31 @@ class OrdersCMS extends Component {
         super(props);
         this.state = {
             loaded: false,
-            activePage: 1,
-            drbLimit: 10,
+            // activePage: 1,
+            // drbLimit: 10,
             searchListPaid: [],
             searchListUnpaid: [],
             searchListSent: [],
-            totalItems: 0,
-            totalPage: 1,
-            currentPage: 1,
+            // totalItems: 0,
+            // totalPage: 1,
+            // currentPage: 1,
 
-            txtOrderCode: '',
+            txtOrderPaid: '',
+            txtOrderUnpaid: '',
+            txtOrderSent: '',
 
+            tabIndex: 0,
+            txtStatus: 'PAID',
             paramBody: {
-                name: '',
-                detailDescription: '',
-                shortDescription: '',
-                page: 1,
-                limit: 10,
+                code: '',
+                
+                // page: 1,
+                // limit: 10,
             }
         }
     }
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
-        this.receivedData(this.state.paramBody);
+        this.receivedData(this.state.paramBody, this.state.txtStatus);
     }
 
     onChange = (e) => {
@@ -50,9 +53,7 @@ class OrdersCMS extends Component {
         this.setState({
             [name]: value,
             paramBody: {
-                name: (name === "txtOrderCode") ? value : this.state.txtOrderCode,
-                page: this.state.activePage,
-                limit: (name === "drbLimit") ? value : this.state.drbLimit,
+                code: value
             }
         })
 
@@ -60,28 +61,46 @@ class OrdersCMS extends Component {
 
     onSubmitSearch = (e) => {
         e.preventDefault();
-        this.receivedData(this.state.paramBody);
+        this.receivedData(this.state.paramBody, this.state.txtStatus);
     }
 
-    receivedData(paramBody) {
-        axios.get(URL.API_URL + '/city/searchByName',
+    onChangeTab(tabIndex) {
+        var status = null
+        if (tabIndex === 0) {
+            status = 'PAID'
+        } else if (tabIndex === 1) {
+            status = 'UNPAID'
+        } else {
+            status = 'SENT'
+        }
+        this.setState({
+            tabIndex: tabIndex,
+            txtStatus: status
+        })
+        this.receivedData(this.state.paramBody, status)
+    }
+
+    receivedData(paramBody, status) {
+        axios.get(URL.API_URL + '/order/searchByStatus',
             {
                 headers: {
                     Authorization: "Token " + JSON.parse(localStorage.getItem('tokenLogin'))
                 },
                 params: {
-                    name: paramBody.name,
-                    limit: paramBody.limit,
-                    page: paramBody.page
+                    status: status,
+                    code: paramBody.code,
+
+                    // limit: paramBody.limit,
+                    // page: paramBody.page
                 }
             }
         ).then(res => {
             //set state
             this.setState({
-                totalPage: res.data.totalPage,
+                // totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
-                totalItems: res.data.totalItems,
-                totalPage: res.data.totalPage
+                // totalItems: res.data.totalItems,
+                // totalPage: res.data.totalPage
             })
         }).catch(function (error) {
             console.log(error.response);
@@ -92,61 +111,94 @@ class OrdersCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtOrderCode, drbLimit, currentPage } = this.state;
-            var { cities } = this.props;
-            for (let i = 1; i <= this.state.totalPage; i++) {
-                pageList.push(i)
-            }
-            const renderPageNumbers = pageList.map(number => {
-                if (number == currentPage) {
-                    return (
-                        <li className="active" disabled >
-                            <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
-                        </li>
-                    );
-                } else
-                    return (
-                        <li className='pointer'>
-                            <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
-                        </li>
-                    );
-            });
+            const { txtOrderPaid, txtOrderUnpaid, txtOrderSent } = this.state;
+            // for (let i = 1; i <= this.state.totalPage; i++) {
+            //     pageList.push(i)
+            // }
+            // const renderPageNumbers = pageList.map(number => {
+            //     if (number == currentPage) {
+            //         return (
+            //             <li className="active" disabled >
+            //                 <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
+            //             </li>
+            //         );
+            //     } else
+            //         return (
+            //             <li className='pointer'>
+            //                 <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
+            //             </li>
+            //         );
+            // });
             return (
-                <Tabs defaultIndex={0}>
-                    <h1>Order Manager</h1>
-                    <br></br>
-                    <Form.Label id="basic-addon1">Order Code </Form.Label>
-                    <FormControl
-                        type="text"
-                        placeholder="Order code"
-                        name="txtOrderCode"
-                        value={txtOrderCode}
-                        onChange={this.onChange}
-                    />
-                    
-                     <br></br>
-                     <Button
-                        type="Submit"
-                        className="btn btn-inverse mb-5">
-                        Search
-                    </Button>
-                    <div style={{marginBottom : '11px'}}></div>
+                <Tabs selectedIndex={this.state.tabIndex}
+                    onSelect={tabIndex => this.onChangeTab(tabIndex)}>
+                    <div style={{ marginBottom: '30px' }}>
+                        <h1>Order Manager</h1>
+                    </div>
                     <TabList>
                         <Tab>Show paid orders</Tab>
                         <Tab>Show unpaid orders</Tab>
                         <Tab>Show sent orders</Tab>
                     </TabList>
                     <TabPanel>
+                        <Form onSubmit={this.onSubmitSearch} >
+                            <Form.Label id="basic-addon1">Order Code </Form.Label>
+                            <FormControl
+                                type="text"
+                                placeholder="Order code"
+                                name="txtOrderPaid"
+                                value={txtOrderPaid}
+                                onChange={this.onChange}
+                            />
+                            <Button
+                                style={{ marginBottom: '10px', height: '32px' }}
+                                type="Submit"
+                                className="btn btn-inverse mb-5">
+                                Search
+                        </Button>
+                        </Form>
                         <PaidOrderList>
                             {this.showPaid(this.state.searchList)}
                         </PaidOrderList>
                     </TabPanel>
                     <TabPanel>
+                        <Form onSubmit={this.onSubmitSearch} >
+                            <Form.Label id="basic-addon1">Order Code </Form.Label>
+                            <FormControl
+                                type="text"
+                                placeholder="Order code"
+                                name="txtOrderUnpaid"
+                                value={txtOrderUnpaid}
+                                onChange={this.onChange}
+                            />
+                            <Button
+                                style={{ marginBottom: '10px', height: '32px' }}
+                                type="Submit"
+                                className="btn btn-inverse mb-5">
+                                Search
+                        </Button>
+                        </Form>
                         <UnpaidOrderList>
                             {this.showUnpaid(this.state.searchList)}
                         </UnpaidOrderList>
                     </TabPanel>
                     <TabPanel>
+                        <Form onSubmit={this.onSubmitSearch} >
+                            <Form.Label id="basic-addon1">Order Code </Form.Label>
+                            <FormControl
+                                type="text"
+                                placeholder="Order code"
+                                name="txtOrderSent"
+                                value={txtOrderSent}
+                                onChange={this.onChange}
+                            />
+                            <Button
+                                style={{ marginBottom: '10px', height: '32px' }}
+                                type="Submit"
+                                className="btn btn-inverse mb-5">
+                                Search
+                        </Button>
+                        </Form>
                         <SentOrderList>
                             {this.showSent(this.state.searchList)}
                         </SentOrderList>
@@ -157,19 +209,19 @@ class OrdersCMS extends Component {
             return ""
     }
 
-    handlePageChange(number) {
-        this.setState({
-            activePage: number,
-            paramBody: {
-                name: this.state.txtCityName,
-                page: number,
-                limit: this.state.drbLimit,
-            }
-        }, () => {
-            this.receivedData(this.state.paramBody)
-            this.state.currentPage = number
-        })
-    }
+    // handlePageChange(number) {
+    //     this.setState({
+    //         activePage: number,
+    //         paramBody: {
+    //             name: this.state.txtCityName,
+    //             page: number,
+    //             limit: this.state.drbLimit,
+    //         }
+    //     }, () => {
+    //         this.receivedData(this.state.paramBody)
+    //         this.state.currentPage = number
+    //     })
+    // }
 
     showPaid(orders) {
         var result = null;

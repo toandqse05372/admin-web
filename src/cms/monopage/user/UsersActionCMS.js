@@ -139,19 +139,19 @@ class UsersActionCMS extends Component {
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
                             <label>First Name *</label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
+                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Last Name *</label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
+                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Mail *</label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Password *</label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control" />
+                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Phone number *</label>
