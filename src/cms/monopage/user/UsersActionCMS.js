@@ -21,7 +21,12 @@ class UsersActionCMS extends Component {
             txtPassword: '',
             drbRole: [],
             fetched: false,
-            errorRole: ''
+            currentPassword: '',
+
+            errorRole: '',
+            errorPassword: '',
+            errorPhoneNUmber: '',
+            errorEmail: ''
         };
     }
 
@@ -49,10 +54,11 @@ class UsersActionCMS extends Component {
                     drbRole: itemEditing.roleKey,
                     txtPhoneNumber: itemEditing.phoneNumber,
                     txtPassword: itemEditing.password,
+                    currentPassword: itemEditing.password,
                     fetched: true
                 })
             }
-        }else{
+        } else {
             this.setState({
                 fetched: true
             })
@@ -71,7 +77,7 @@ class UsersActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword } = this.state;
+        var { id, txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, currentPassword } = this.state;
         var user = {
             id: id,
             firstName: txtFirstName,
@@ -81,19 +87,162 @@ class UsersActionCMS extends Component {
             roleKey: drbRole,
             phoneNumber: txtPhoneNumber
         };
-        if(drbRole.length < 1){
-            this.setState({
-                errorRole: 'Please choose at least one role'
-            })
+        var hasError = false
+        const checkPassword = this.validateInput("password", txtPassword);
+        var errorPasswordStr = ''
+        if (txtPassword.localeCompare(currentPassword)) {
+            if (!checkPassword.isInputValid) {
+                hasError = true
+                errorPasswordStr = checkPassword.errorMessage
+            }
         }
-        else{
+        const checkPhoneNumber = this.validateInput("phoneNumber", txtPhoneNumber);
+        var errorPhoneNUmberStr = ''
+        if (!checkPhoneNumber.isInputValid) {
+            hasError = true
+            errorPhoneNUmberStr = checkPhoneNumber.errorMessage
+        }
+        const checkEmail = this.validateInput("email", txtMail);
+        var errorMailStr = ''
+        if (!checkEmail.isInputValid) {
+            hasError = true
+            errorMailStr = checkEmail.errorMessage
+        }
+        var errorRoleStr = ''
+        if (drbRole.length < 1) {
+            hasError = true
+            errorRoleStr = 'Please choose at least one role'
+        }
+
+        if (!hasError) {
             if (id) {
                 this.props.onUpdateUser(user);
             } else {
                 this.props.onAddUser(user);
             }
+        }else{
+            this.setState({
+                errorPassword: errorPasswordStr,
+                errorPhoneNUmber: errorPhoneNUmberStr,
+                errorEmail: errorMailStr,
+                errorRole: errorRoleStr
+            })
         }
 
+    }
+
+    validateInput = (type, checkingText) => {
+        var regexp = '';
+        var checkingResult = '';
+        switch (type) {
+            case "email":
+                regexp = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+                checkingResult = regexp.exec(checkingText);
+                if (checkingResult !== null) {
+                    return {
+                        isInputValid: true,
+                        errorMessage: ''
+                    };
+                } else {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Email is in the form abc@xyz.ghi (.xnh)'
+                    };
+                }
+            case "password":
+                regexp = /^(?!.* )(?=.*\d)(?=.*[A-Z]).{8,20}$/;
+                checkingResult = regexp.exec(checkingText);
+                if (checkingResult !== null) {
+                    return {
+                        isInputValid: true,
+                        errorMessage: ''
+                    };
+                } else {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Password must be between 8-20 characters, including numbers and letters, with at least 1 uppercase letter'
+                    };
+                }
+            case "RePassword":
+                const { password } = this.state;
+                if (checkingText === password.value && checkingText !== null) {
+                    return {
+                        isInputValid: true,
+                        errorMessage: ''
+                    };
+                }
+                if (checkingText !== password.value) {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Mật khẩu không khớp'
+                    };
+                }
+                else {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Mật khẩu không khớp'
+                    };
+                }
+            case "myfirstName":
+                regexp = /^[^\s].+[^\s]$/;
+                checkingResult = regexp.exec(checkingText);
+                if (checkingResult !== null) {
+                    return {
+                        isInputValid: true,
+                        errorMessage: ''
+                    };
+                } else {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Không có kí tự trắng ở đầu và cuối'
+                    };
+                }
+            case "lastName":
+                regexp = /^^[^\s].+[^\s]$/;
+                checkingResult = regexp.exec(checkingText);
+                if (checkingResult !== null) {
+                    return {
+                        isInputValid: true,
+                        errorMessage: ''
+                    };
+                } else {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Không có kí tự trắng ở đầu và cuối'
+                    };
+                }
+            case "dob":
+                regexp = /^(?:(?:(?:(?:(?:[1-9]\d)(?:0[48]|[2468][048]|[13579][26])|(?:(?:[2468][048]|[13579][26])00))(\/|-|\.)(?:0?2\1(?:29)))|(?:(?:[1-9]\d{3})(\/|-|\.)(?:(?:(?:0?[13578]|1[02])\2(?:31))|(?:(?:0?[13-9]|1[0-2])\2(?:29|30))|(?:(?:0?[1-9])|(?:1[0-2]))\2(?:0?[1-9]|1\d|2[0-8])))))$/;
+                checkingResult = regexp.exec(checkingText.toString());
+                if (checkingResult !== null) {
+                    // if (true) {
+                    return {
+                        isInputValid: true,
+                        errorMessage: ''
+                    };
+                } else {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Không đúng định dạng'
+                    };
+                }
+            case "phoneNumber":
+                regexp = /^\d{10,11}$/;
+                checkingResult = regexp.exec(checkingText);
+                if (checkingResult !== null) {
+                    return {
+                        isInputValid: true,
+                        errorMessage: ''
+                    };
+                } else {
+                    return {
+                        isInputValid: false,
+                        errorMessage: 'Phone must number contains 10-11 numbers'
+                    };
+                }
+            default:
+                return null;
+        }
     }
 
     showRoles(roles) {
@@ -108,8 +257,8 @@ class UsersActionCMS extends Component {
 
     onChangeRole = (selectedOption) => {
         var selectedKey = []
-        if(selectedOption !== null){
-            for(let i = 0; i < selectedOption.length; i++){
+        if (selectedOption !== null) {
+            for (let i = 0; i < selectedOption.length; i++) {
                 selectedKey.push(selectedOption[i].value)
             }
         }
@@ -119,7 +268,8 @@ class UsersActionCMS extends Component {
     }
 
     render() {
-        var { txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, loaded, errorRole } = this.state;
+        var { txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, loaded, errorRole, errorPassword,
+            errorPhoneNUmber, errorEmail } = this.state;
         var { roles } = this.props
         var options = []
         var renderOpt = []
@@ -127,12 +277,12 @@ class UsersActionCMS extends Component {
             for (let i = 0; i < roles.length; i++) {
                 var option = { value: roles[i].roleKey, label: roles[i].roleKey }
                 options.push(option);
-                if(drbRole.includes(option.label)){
+                if (drbRole.includes(option.label)) {
                     renderOpt.push(option)
                 }
             }
             loaded = true;
-        }  
+        }
         if (loaded) {
             return (
                 <div className="container">
@@ -147,17 +297,28 @@ class UsersActionCMS extends Component {
                             <input required style={{ width: 350 }} onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
-                            <label>Mail *</label>
-                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                            <div className="rowElement">
+                                <label>Mail *</label>
+                                <input required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                            </div>
+                            <span className="rowElement"><h4 style={{ color: 'red' }}>{errorEmail}</h4></span>
                         </div>
                         <div className="form-group">
-                            <label>Password *</label>
-                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control" />
+                            <div className="rowElement">
+                                <label>Password *</label>
+                                <input required style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control " />
+                            </div>
+                            <span className="rowElement"><h4 style={{ color: 'red' }}>{errorPassword}</h4></span>
                         </div>
+
                         <div className="form-group">
-                            <label>Phone number *</label>
-                            <input required min="0" style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
+                            <div className="rowElement">
+                                <label>Phone number *</label>
+                                <input required min="0" style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control rowElement" />
+                            </div>
+                            <span className="rowElement"><h4 style={{ color: 'red' }}>{errorPhoneNUmber}</h4></span>
                         </div>
+
                         <div className="myDiv">
                             <label>Role *</label>
                             <div className="rowElement">
@@ -168,7 +329,7 @@ class UsersActionCMS extends Component {
                                     onChange={this.onChangeRole}
                                 />
                             </div>
-                            <span className="rowElement"><h3 style={{color: 'red'}}>{errorRole}</h3></span>
+                            <span className="rowElement"><h3 style={{ color: 'red' }}>{errorRole}</h3></span>
                         </div>
                         <br />
                         <Link to="/users" className="btn btn-danger mr-5">

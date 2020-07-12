@@ -17,7 +17,7 @@ class OrderActionCMS extends Component {
             txtDetailDescription: '',
             orderInfor: null,
             loaded: false,
-            products: []
+            orderItems: []
         };
     }
 
@@ -36,7 +36,7 @@ class OrderActionCMS extends Component {
                 id: itemEditing.id,
                 txtName: itemEditing.ticketTypeName,
                 orderInfor: itemEditing,
-                products: itemEditing.products,
+                orderItems: itemEditing.orderItems,
                 loaded: true
             })
         }
@@ -69,7 +69,7 @@ class OrderActionCMS extends Component {
     }
 
     render() {
-        var { products, txtShortDescription,
+        var { orderItems, txtShortDescription,
             txtDetailDescription, orderInfor, loaded } = this.state;
         if (this.state.loaded) {
             return (
@@ -90,7 +90,7 @@ class OrderActionCMS extends Component {
                         </div>
                         <div style={{width: "600px"}}>
                         <OrderDetailList>
-                            {this.showProduct(products)}
+                            {this.showOrderItem(orderItems)}
                         </OrderDetailList>
                         </div>
                         
@@ -107,11 +107,11 @@ class OrderActionCMS extends Component {
             return ""
     }
 
-    showProduct(products) {
+    showOrderItem(orderItems) {
         var result = null;
-        if (products.length > 0) {
-            result = products.map((product, index) => {
-                return <OrderDetailItem product={product} key={product} index={index} name={this.state.txtName}/>
+        if (orderItems.length > 0) {
+            result = orderItems.map((orderItem, index) => {
+                return <OrderDetailItem orderItem={orderItem} key={orderItem} index={index} name={this.state.txtName}/>
             });
         }
         return result;

@@ -116,32 +116,37 @@ class PlacesActionCMS extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         var { id, fileImage, txtOpenHours, drbWeekDays, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, txtName, txtShortDescription, txtDetailDescription } = this.state;
-        var place = {
-            id: id,
-            name: txtName,
-            shortDescription: txtShortDescription,
-            detailDescription: txtDetailDescription,
-            address: txtAddress,
-            mail: txtMail,
-            cityId: drbCityId,
-            phoneNumber: txtPhoneNumber,
-            categoryId: drbCategory,
-            weekDays: drbWeekDays,
-            openingHours: txtOpenHours
-        };
+        
+        var hasError = false
         var catErrorStr = ''
         if (drbCategory.length < 1) {
             catErrorStr = "Please choose at least one category"
+            hasError = true
         }
         var wdErrorStr = ''
         if (drbWeekDays.length < 1) {
             wdErrorStr = "Please choose at least one open day"
+            hasError = true
         }
         var cityErrorStr = ''
-        if (drbCityId === 0) {
+        if (drbCityId < 1) {
             cityErrorStr = "Please choose a city"
+            hasError = true
         }
-        if (drbCategory.length > 0 && drbWeekDays > 0 && drbCityId !== 0) {
+        if (!hasError) {
+            var place = {
+                id: id,
+                name: txtName,
+                shortDescription: txtShortDescription,
+                detailDescription: txtDetailDescription,
+                address: txtAddress,
+                mail: txtMail,
+                cityId: drbCityId,
+                phoneNumber: txtPhoneNumber,
+                categoryId: drbCategory,
+                weekDays: drbWeekDays,
+                openingHours: txtOpenHours
+            };
             let data = new FormData();
             if (fileImage !== null && typeof fileImage !== "undefined") {
                 for (let i = 0; i < fileImage.length; i++) {

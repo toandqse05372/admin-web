@@ -5,12 +5,13 @@ class OrderDetailItem extends Component {
 
 
     render() {
-        var { product, index, name } = this.props;
+        var { orderItem, index, name } = this.props;
+        debugger
         return (
             <tr>
                 <td>{index + 1}</td>
-                <td>{name} [{product.visitorType.typeName}]</td>
-                <td>{product.quantity}</td>
+                <td>{name} [{orderItem.visitorTypeName}]</td>
+                <td>{orderItem.quantity}</td>
             </tr>
 
         );
