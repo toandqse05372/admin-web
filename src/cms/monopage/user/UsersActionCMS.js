@@ -31,7 +31,6 @@ class UsersActionCMS extends Component {
 
     componentWillMount() {
         var { match } = this.props;
-        debugger
         if (match) { // update
             var id = match.params.id;
             this.props.onEditUser(id)
@@ -109,8 +108,10 @@ class UsersActionCMS extends Component {
 
     onChangeRole = (selectedOption) => {
         var selectedKey = []
-        for(let i = 0; i < selectedOption.length; i++){
-            selectedKey.push(selectedOption[i].value)
+        if(selectedOption !== null){
+            for(let i = 0; i < selectedOption.length; i++){
+                selectedKey.push(selectedOption[i].value)
+            }
         }
         this.setState({
             drbRole: selectedKey
