@@ -28,14 +28,14 @@ const cmsMenus = [
         role: ["ADMIN"]
     },
     {
-        name: 'Ticket Manager',
-        to: '/ticketTypes',
+        name: 'City Manager',
+        to: '/cities',
         exact: true,
         role: ["ADMIN"]
     },
     {
-        name: 'City Manager',
-        to: '/cities',
+        name: 'Ticket Manager',
+        to: '/ticketTypes',
         exact: true,
         role: ["ADMIN"]
     },

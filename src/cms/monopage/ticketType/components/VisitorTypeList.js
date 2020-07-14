@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 
-class VistorTypeList extends Component {
+class VisitorTypeList extends Component {
 
     render() {
         return (
             <div className="row-fluid sortable">
             <div className="box span12">
                 <div className="box-header" data-original-title>
-                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Vistor Type List</h2>
+                    <h2><i className="halflings-icon white align-justify" /><span className="break" />Visitor Type List</h2>
                 </div>
                 <div className="box-content">
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Vistor type</th>
+                                <th>Visitor type</th>
                                 <th>Price</th>
                                 <th>Product ID</th>
+                                <th>Remaining</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,4 +34,4 @@ class VistorTypeList extends Component {
 
 }
 
-export default VistorTypeList;
+export default VisitorTypeList;

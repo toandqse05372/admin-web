@@ -27,7 +27,7 @@ export const actAddPlaceRequest = (place, child) => {
             child.goBack();
         }).catch(function (error) {
             if (error.response.data === 'PLACE_EXISTED') {
-                NotificationManager.error('Error  message', 'Place has been existed');
+                NotificationManager.error('Please change place name', 'Place has been existed');
             }
         });
     }
@@ -50,7 +50,7 @@ export const actUpdatePlaceRequest = (place, child, id) => {
             child.goBack();
         }).catch(function (error) {
             if (error.response.data === 'PLACE_EXISTED') {
-                NotificationManager.error('Error  message', 'Place has been existed');
+                NotificationManager.error('Please change place name', 'Place has been existed');
             }
         });
     }

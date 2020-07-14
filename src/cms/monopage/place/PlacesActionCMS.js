@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { actAddPlaceRequest, actUpdatePlaceRequest, actGetPlaceRequest } from '../../../actions/indexPlaces';
 import { actFetchCategoriesRequest } from '../../../actions/indexCategories';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
-import { Form, FormControl } from 'react-bootstrap'
-import Select from 'react-select'
+import { Form, FormControl } from 'react-bootstrap';
+import Select from 'react-select';
+import validateInput from '../../../utils/regex';
 
 const weekDays = [
     { value: 0, label: 'Mon' },
@@ -44,6 +45,8 @@ class PlacesActionCMS extends Component {
             errorCategory: '',
             erorOpenDays: '',
             errorCity: '',
+            errorMail: '',
+            errorPhoneNumber: ''
 
         };
         this.onChange = this.onChange.bind(this);
@@ -115,8 +118,9 @@ class PlacesActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, fileImage, txtOpenHours, drbWeekDays, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, txtName, txtShortDescription, txtDetailDescription } = this.state;
-        
+        var { id, fileImage, txtOpenHours, drbWeekDays, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, txtName,
+            txtShortDescription, txtDetailDescription } = this.state;
+
         var hasError = false
         var catErrorStr = ''
         if (drbCategory.length < 1) {
@@ -132,6 +136,22 @@ class PlacesActionCMS extends Component {
         if (drbCityId < 1) {
             cityErrorStr = "Please choose a city"
             hasError = true
+        }
+        var errorPhoneNUmberStr = ''
+        if (txtPhoneNumber !== "") {
+            const checkPhoneNumber = validateInput("phoneNumber", txtPhoneNumber);
+            if (!checkPhoneNumber.isInputValid) {
+                hasError = true
+                errorPhoneNUmberStr = checkPhoneNumber.errorMessage
+            }
+        }
+        var errorMailStr = ''
+        if (txtMail !== "") {
+            const checkEmail = validateInput("email", txtMail);
+            if (!checkEmail.isInputValid) {
+                hasError = true
+                errorMailStr = checkEmail.errorMessage
+            }
         }
         if (!hasError) {
             var place = {
@@ -161,12 +181,14 @@ class PlacesActionCMS extends Component {
             } else {
                 this.props.onAddPlace(data);
             }
-        }else{
+        } else {
             debugger
             this.setState({
                 errorCity: cityErrorStr,
                 errorCategory: catErrorStr,
-                erorOpenDays: wdErrorStr
+                erorOpenDays: wdErrorStr,
+                errorPhoneNumber: errorPhoneNUmberStr,
+                errorMail: errorMailStr
             })
             window.scrollTo(0, 0);
         }
@@ -209,26 +231,28 @@ class PlacesActionCMS extends Component {
     }
 
     render() {
-        var { drbCityId, drbWeekDays, txtAddress, txtOpenHours, txtPhoneNumber, txtMail, drbCategory, loaded,
+        var { drbCityId, drbWeekDays, txtAddress, txtOpenHours, txtPhoneNumber, txtMail, drbCategory, loaded, errorMail, errorPhoneNumber,
             txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity } = this.state;
         var { cities, categories } = this.props
         var options = []
         var renderOpt = []
         var renderOptWd = []
-        if (categories.length > 0 && this.state.fetched && typeof drbCategory !== "undefined") {
-            for (let i = 0; i < categories.length; i++) {
-                var option = { value: categories[i].id, label: categories[i].categoryName }
-                options.push(option);
-                if (drbCategory.includes(option.value)) {
-                    renderOpt.push(option)
+        if(this.state.fetched){
+            if (categories.length > 0 && typeof drbCategory !== "undefined") {
+                for (let i = 0; i < categories.length; i++) {
+                    var option = { value: categories[i].id, label: categories[i].categoryName }
+                    options.push(option);
+                    if (drbCategory.includes(option.value)) {
+                        renderOpt.push(option)
+                    }
                 }
+                loaded = loaded + 1;
             }
-            loaded = loaded + 1;
-        }
-        if (drbWeekDays.length > 0 && this.state.fetched && typeof drbCategory !== "undefined") {
-            for (let i = 0; i < weekDays.length; i++) {
-                if (drbWeekDays.includes(weekDays[i].value)) {
-                    renderOptWd.push(weekDays[i])
+            if (drbWeekDays.length > 0 && typeof drbWeekDays !== "undefined") {
+                for (let i = 0; i < weekDays.length; i++) {
+                    if (drbWeekDays.includes(weekDays[i].value)) {
+                        renderOptWd.push(weekDays[i])
+                    }
                 }
             }
         }
@@ -258,15 +282,15 @@ class PlacesActionCMS extends Component {
                         <div className="form-group">
                             <label>City *</label>
                             <div className="rowElement">
-                            <Form.Control as="select"
-                                
-                                style={{ width: 360 }}
-                                name="drbCityId"
-                                value={drbCityId}
-                                onChange={this.onChange}>
-                                <option key={0} index={0} value={0}>-- Choose City --</option>
-                                {this.showCities(cities)}
-                            </Form.Control>
+                                <Form.Control as="select"
+
+                                    style={{ width: 360 }}
+                                    name="drbCityId"
+                                    value={drbCityId}
+                                    onChange={this.onChange}>
+                                    <option key={0} index={0} value={0}>-- Choose City --</option>
+                                    {this.showCities(cities)}
+                                </Form.Control>
                             </div>
                             <span className="rowElement"><h3 style={{ color: 'red' }}>{errorCity}</h3></span>
                         </div>
@@ -275,12 +299,18 @@ class PlacesActionCMS extends Component {
                             <input style={{ width: 350 }} onChange={this.onChange} value={txtAddress} name="txtAddress" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
-                            <label>Phone Number </label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="number" className="form-control" />
+                            <div className="rowElement">
+                                <label>Phone Number </label>
+                                <input style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="text" className="form-control" />
+                            </div>
+                            <span className="rowElement"><h4 style={{ color: 'red' }}>{errorPhoneNumber}</h4></span>
                         </div>
                         <div className="form-group">
-                            <label>Mail </label>
-                            <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                            <div className="rowElement">
+                                <label>Mail *</label>
+                                <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                            </div>
+                            <span className="rowElement"><h4 style={{ color: 'red' }}>{errorMail}</h4></span>
                         </div>
                         <div className="myDiv">
                             <label>Open days *</label>

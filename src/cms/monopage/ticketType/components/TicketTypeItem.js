@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import VistorTypeItem from './VistorTypeItem'
-import VistorTypeList from './VistorTypeList'
+import VisitorTypeItem from './VisitorTypeItem'
+import VisitorTypeList from './VisitorTypeList'
 import axios from 'axios';
 import * as Config from '../../../../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
@@ -12,7 +12,7 @@ class TicketTypeItem extends Component {
         super(props);
         this.handleDelete = this.handleDelete.bind(this)
         this.state = {
-            showVistor: false,
+            showVisitor: true,
             visitorTypeList: [],
             loaded: false
         };
@@ -28,9 +28,9 @@ class TicketTypeItem extends Component {
         }
     }
 
-    onShowVistor = (show) => {
+    onShowVisitor = (show) => {
         this.setState({
-            showVistor: show
+            showVisitor: show
         });
     }
 
@@ -57,7 +57,7 @@ class TicketTypeItem extends Component {
 
     render() {
         var { ticketTypes, index, limit, currentPage,  } = this.props;
-        var { showVistor, loaded, visitorTypeList } = this.state;
+        var { showVisitor, loaded, visitorTypeList } = this.state;
         if(loaded){
             return (
                 <React.Fragment>
@@ -65,12 +65,16 @@ class TicketTypeItem extends Component {
                         <td>{(currentPage - 1) * limit + index + 1}</td>
                         <td>{ticketTypes.typeName}</td>
                         <td className="center">
-                            {/* <Link to={`/ticketTypes/vistors/${ticketTypes.id}`} className="btn btn-success">
+                            {/* <Link to={`/ticketTypes/visitors/${ticketTypes.id}`} className="btn btn-success">
                             Show visitor type
                         </Link> */}
-                            <a className="btn btn-warning" onClick={() => this.onShowVistor(!showVistor)}>
-                                Show vistor type
-                            </a>
+                            {!showVisitor ? 
+                            <a className="btn btn-warning" onClick={() => this.onShowVisitor(!showVisitor)}>
+                                Show visitor type
+                            </a> : 
+                            <a className="btn btn-inverse" onClick={() => this.onShowVisitor(!showVisitor)}>
+                                Hide visitor type
+                            </a>}
                             <Link to={`/ticketTypes/${ticketTypes.id}/edit`} className="btn btn-info">
                                 <i className="halflings-icon white edit"></i>
                             </Link>
@@ -81,18 +85,18 @@ class TicketTypeItem extends Component {
                     </tr>
                     <tr>
     
-                        <td colSpan={5} style={{ display: showVistor ? "" : "none" }}>
+                        <td colSpan={5} style={{ display: showVisitor ? "" : "none" }}>
                             <Link to={{
-                                pathname: "/ticketTypes/vistors/add",
+                                pathname: "/ticketTypes/visitors/add",
                                 state: { id: ticketTypes.id, name: ticketTypes.typeName } // your data array of objects
                             }} className="btn btn-success mb-5 ">
                                 <i className="glyphicon glyphicon-plus"></i> Add visitor type
                             </Link>
                             <div  >
                                 {/* thứ mà hiện ra sau khi chọn dropdown */}
-                                <VistorTypeList>
+                                <VisitorTypeList>
                                     {this.showVisitorTypes(visitorTypeList)}
-                                </VistorTypeList>
+                                </VisitorTypeList>
     
                             </div>
                         </td>
@@ -107,16 +111,16 @@ class TicketTypeItem extends Component {
     }
 
     handleDelete(itemId) {
-        const { searchList } = this.state;
+        const { visitorTypeList } = this.state;
         axios.delete(Config.API_URL + `/visitorType/${itemId}`,{
             headers: {
                 Authorization: Config.Token
             }
         }).then(res => {
             NotificationManager.success('Success message', 'Delete visitor type successful');
-            const items = searchList.filter(item => item.id !== itemId)
+            const items = visitorTypeList.filter(item => item.id !== itemId)
             this.setState({
-                searchList: items
+                visitorTypeList: items
             })
         }).catch(error => {
             if(error.response){
@@ -130,12 +134,11 @@ class TicketTypeItem extends Component {
         });
     }
 
-    showVisitorTypes(vistorTypes) {
+    showVisitorTypes(visitorTypes) {
         var result = null;
-        var { onDeleteTicketType } = this.props;
-        if (vistorTypes.length > 0) {
-            result = vistorTypes.map((vistorTypes, index) => {
-                return <VistorTypeItem vistors={vistorTypes}
+        if (visitorTypes.length > 0) {
+            result = visitorTypes.map((visitorType, index) => {
+                return <VisitorTypeItem visitorType={visitorType}
                     key={index} index={index} onDeleteTicketType={this.handleDelete} ticketTypeId={this.props.ticketTypes.id} 
                     ticketTypeName={this.props.ticketTypes.typeName}/>
             });

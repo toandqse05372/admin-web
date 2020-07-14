@@ -19,6 +19,7 @@ class TicketTypesActionCMS extends Component {
             drbGameId: '',
             loaded: false,
             fetchedPlace: false,
+            gameErrorStr: ''
         };
     }
 
@@ -86,10 +87,17 @@ class TicketTypesActionCMS extends Component {
             gameId: drbGameId,
             placeId: drbPlaceId
         };
-        if (id) {
-            this.props.onUpdateTicketType(city);
-        } else {
-            this.props.onAddTicketType(city);
+        if (drbGameId.length < 1) {
+            this.setState({
+                gameErrorStr : "Please choose at least one game"
+            })
+            
+        }else{
+            if (id) {
+                this.props.onUpdateTicketType(city);
+            } else {
+                this.props.onAddTicketType(city);
+            }
         }
     }
 
@@ -116,7 +124,7 @@ class TicketTypesActionCMS extends Component {
     }
 
     render() {
-        var { txtName, txtShortDescription, txtDetailDescription } = this.state;
+        var { txtName, txtShortDescription, txtDetailDescription, gameErrorStr } = this.state;
         var { places } = this.props;
         var { drbPlaceId, loaded, drbGameId } = this.state;
         var optionsPlace = []
@@ -141,7 +149,7 @@ class TicketTypesActionCMS extends Component {
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="myDiv">
-                            <label>Place Name </label>
+                            <label>Place Name *</label>
                             <div className="rowElement">
                                 <Select
                                     options={optionsPlace}
@@ -154,17 +162,18 @@ class TicketTypesActionCMS extends Component {
                             <div  >
                                 {/* thứ mà hiện ra sau khi chọn dropdown */}
                                 <div className="myDiv">
-                                    <label>Game Name </label>
+                                    <label>Game Name *</label>
                                     <div className="rowElement">
                                         {this.showGame()}
                                     </div>
+                                    <span className="rowElement"><h4 style={{ color: 'red' }}>{gameErrorStr}</h4></span>
                                 </div>
                             </div>
                         </div>
                         <div style={{ display: drbGameId ? "" : "none" }}>
                             <div className="form-group">
-                                <label>Ticket Name </label>
-                                <input style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                                <label>Ticket Name *</label>
+                                <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                             </div>
                             <div className="form-group">
                                 <label>Effective Time</label>

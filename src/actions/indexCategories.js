@@ -18,7 +18,6 @@ export const actFetchCategories = (categories) => {
 }
 
 export const actAddCategoryRequest = (category, child) => {
-    debugger
     return (dispatch) => {
         return callApi('category', 'POST', category).then(res => {
             if (res) {
@@ -42,7 +41,6 @@ export const actAddCategory = (category) => {
 }
 
 export const actUpdateCategoryRequest = (category, child, id) => {
-    debugger
     return (dispatch) => {
         return callApi(`category/${id}`, 'PUT', category).then(res => {
             if (res) {

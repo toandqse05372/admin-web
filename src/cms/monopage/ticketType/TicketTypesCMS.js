@@ -10,6 +10,7 @@ import axios from 'axios';
 import * as Config from '../../../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
 import Select from 'react-select'
+import callApi from '../../../utils/apiCaller';
 
 class TicketTypesCMS extends Component {
     constructor(props) {
@@ -25,8 +26,10 @@ class TicketTypesCMS extends Component {
             totalPage: 1,
             currentPage: 1,
             drbPlaceId: 0,
+            txtPlaceName: '',
             selectPlace: 0,
             txtTicketTypeName: '',
+            canExcel: true,
 
             paramBody: {
                 typeName: '',
@@ -39,10 +42,13 @@ class TicketTypesCMS extends Component {
         // this.receivedData(this.state.paramBody);
         this.props.fetchAllPlaces()
         let placeId = localStorage.getItem('placeId');
+        let placeName = localStorage.getItem('placeName');
+
         if (placeId != null) {
             this.receivedData(placeId)
             this.setState({
                 drbPlaceId: Number(placeId),
+                txtPlaceName: placeName,
                 loaded: true
             })
         }
@@ -70,10 +76,12 @@ class TicketTypesCMS extends Component {
 
     onChangePlace = (e) => {
         this.setState({
-            drbPlaceId: e.value
+            drbPlaceId: e.value,
+            txtPlaceName: e.label
         });
         this.receivedData(e.value);
         localStorage.setItem('placeId', e.value);
+        localStorage.setItem('placeName', e.label);
     }
 
     receivedData(placeId) {
@@ -89,17 +97,37 @@ class TicketTypesCMS extends Component {
         ).then(res => {
             //set state
             this.setState({
-                searchList: res.data,
-                loaded: true
+                searchList: res.data.listResult,
+                loaded: true,
+                canExcel: res.data.importExcel
             })
         }).catch(function (error) {
             console.log(error.response);
         });
     }
 
+    onImportExcel() {
+        document.getElementById('hiddenFileInput').click();
+
+    }
+
+    uploadExcel = (e) => {
+        let dataForm = new FormData();
+        dataForm.append('file', e.target.files[0]);
+        debugger
+        callApi('upload', 'POST', dataForm).then(res => {
+            // NotificationManager.success('Success message', 'Added code successful');
+            // this.setState({
+            //     remaining: res.data
+            // })
+            localStorage.setItem('ticketResult', "OK");
+            window.location.reload()
+        });
+    }
+
     render() {
         var { places } = this.props;
-        var { drbPlaceId } = this.state;
+        var { drbPlaceId, loaded, txtPlaceName, canExcel } = this.state;
         var optionsPlace = []
         var renderOptPlace = drbPlaceId
         if (places.length > 0 && !this.state.fetchedPlace) {
@@ -109,28 +137,47 @@ class TicketTypesCMS extends Component {
                 if (drbPlaceId === option.value) {
                     renderOptPlace = i
                 }
+                if (i == places.length) {
+                    loaded = true
+                }
             }
-            
+
         }
-        if (this.state.loaded) {
+        if (loaded) {
+            if (localStorage.getItem('ticketResult') === "OK") {
+                NotificationManager.success('Success message', 'Added code successfully');
+                localStorage.removeItem('ticketResult');
+            }
             return (
                 <div className="container span14">
                     <h1>Ticket Manager</h1>
                     <div className="myDiv">
-                        <label>Place Name </label>
+                        <h3>Place Name: {txtPlaceName} </h3>
                         <div className="rowElement">
                             <Select
                                 options={optionsPlace}
-                                defaultValue={optionsPlace[renderOptPlace]}
                                 onChange={this.onChangePlace}
                             />
                         </div>
                     </div>
                     <div style={{ display: drbPlaceId ? "" : "none" }}>
 
-                        <Link to="/ticketTypes/add" className="btn btn-success mb-5 ">
+                        <Link to="/ticketTypes/add" className="btn btn-primary mb-5 ">
                             <i className="glyphicon glyphicon-plus"></i> Add Ticket Type
                         </Link>
+
+                        {`\t`}
+
+                        {canExcel ? 
+                            <button className="btn btn-success mb-5" type="file"
+                                onClick={() => this.onImportExcel()}>
+                                Import code from excel
+                                <input type="file"
+                                    id="hiddenFileInput" style={{ display: "none" }}
+                                    onChange={this.uploadExcel.bind(this)}
+                                /> 
+                            </button>
+                            : ""}
                         <TicketTypeList>
                             {this.showTicketTypes(this.state.searchList)}
                         </TicketTypeList>

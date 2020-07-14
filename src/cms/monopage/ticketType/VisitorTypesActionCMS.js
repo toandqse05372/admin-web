@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { actAddVisitorTypeRequest, actUpdateVisitorTypeRequest, actGetVisitorTypeRequest } from '../../../actions/indexVisitorTypes';
 import { Form } from 'react-bootstrap'
 
-class VistorTypesActionCMS extends Component {
+class VisitorTypesActionCMS extends Component {
 
     constructor(props) {
         super(props);
@@ -29,7 +29,6 @@ class VistorTypesActionCMS extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.match && nextProps.itemEditing) {
             var { itemEditing } = nextProps;
-            debugger
             this.setState({
                 id: itemEditing.id,
                 txtName: itemEditing.typeName,
@@ -69,7 +68,6 @@ class VistorTypesActionCMS extends Component {
     }
 
     render() {
-        debugger
         var { txtName, txtPrice, txtProductCode } = this.state;
         const  data  = this.props.match ? null : this.props.location.state
         return (
@@ -77,16 +75,16 @@ class VistorTypesActionCMS extends Component {
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">
-                        <label>Type Name </label>
-                        <input style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        <label>Type Name *</label>
+                        <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Product Code </label>
-                        <input style={{ width: 350 }} onChange={this.onChange} value={txtProductCode} name="txtProductCode" type="text" className="form-control" />
+                        <label>Product Code *</label>
+                        <input required style={{ width: 350 }} onChange={this.onChange} value={txtProductCode} name="txtProductCode" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Price </label>
-                        <input style={{ width: 350 }} onChange={this.onChange} value={txtPrice} name="txtPrice" type="number" className="form-control" />
+                        <label>Price *</label>
+                        <input required min="0" style={{ width: 350 }} onChange={this.onChange} value={txtPrice} name="txtPrice" type="number" className="form-control" />
                         {`\t`}VNĐ
                     </div>
                     <Link to="/ticketTypes" className="btn btn-danger mr-5">
@@ -122,4 +120,4 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VistorTypesActionCMS);
+export default connect(mapStateToProps, mapDispatchToProps)(VisitorTypesActionCMS);

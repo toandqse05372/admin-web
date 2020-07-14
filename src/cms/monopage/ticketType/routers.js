@@ -1,7 +1,7 @@
 import React from 'react'; 
 import TicketTypesActionCMS from './TicketTypesActionCMS';
 import TicketTypesCMS from './TicketTypesCMS';
-import VistorTypesActionCMS from './VistorTypesActionCMS';
+import VisitorTypesActionCMS from './VisitorTypesActionCMS';
 
 const routes = [
     {
@@ -20,14 +20,14 @@ const routes = [
         main: ({ match, history }) => <TicketTypesActionCMS match={match} history={history} />
     },
     {
-        path: '/ticketTypes/vistors/:id/edit',
+        path: '/ticketTypes/visitors/:id/edit',
         exact: true,
-        main: ({ match, history }) => <VistorTypesActionCMS match={match} history={history} />
+        main: ({ match, history }) => <VisitorTypesActionCMS match={match} history={history} />
     },
     {
-        path: '/ticketTypes/vistors/add',
+        path: '/ticketTypes/visitors/add',
         exact: true,
-        main: ({ location, history }) => <VistorTypesActionCMS location={location} history={history} />
+        main: ({ location, history }) => <VisitorTypesActionCMS location={location} history={history} />
     }
 ];
 
