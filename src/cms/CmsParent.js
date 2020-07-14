@@ -7,42 +7,52 @@ import { NotificationContainer } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import { NotificationManager } from 'react-notifications';
 import callApi from '../utils/apiCaller'
+import LoadingOverlay from 'react-loading-overlay';
+import { connect } from 'react-redux';
 
 class CmsParent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username:'',
+            username: '',
             roles: [],
+            isActive: false
         }
     }
 
     logOut = () => {
-        var token = localStorage.getItem('tokenLogin') 
+        var token = localStorage.getItem('tokenLogin')
         callApi('login/logout', 'POST', null).then(res => {
             if (res) {
                 localStorage.removeItem('tokenLogin');
                 window.location.reload()
             }
-        }).catch(function(error) {
-                NotificationManager.error('Error  message', 'Something wrong');
+        }).catch(function (error) {
+            NotificationManager.error('Error  message', 'Something wrong');
         });
     }
 
-    componentWillMount(){
+    componentWillMount() {
         var jwtDecode = require('jwt-decode')
         var token = localStorage.getItem('tokenLogin')
         var decoded = jwtDecode(token)
         this.setState({
-            username: decoded.user.lastName + " " +decoded.user.firstName,
+            username: decoded.user.lastName + " " + decoded.user.firstName,
             roles: decoded.user.authorities
         })
     }
 
     render() {
-        const {username} = this.state
+        const { username, isActive } = this.state
+        const { overlay, roles } = this.props
+        debugger
         return (
-            <div>
+            <LoadingOverlay
+                active={overlay}
+                spinner
+                text='Loading...'
+            >
+                <div>
                 <div className="navbar">
                     <div className="navbar-inner">
                         <div className="container-fluid">
@@ -84,7 +94,7 @@ class CmsParent extends Component {
                 </div>
                 <div className="container-fluid-full" id="app">
                     <div className="row-fluid">
-                        <CmsMenu roles={this.state.roles}/>
+                        <CmsMenu roles={this.state.roles} />
                         <div id="content" className="span10">
                             {this.showContentMenus(cmsRoutes)}
                         </div>
@@ -92,7 +102,9 @@ class CmsParent extends Component {
                 </div>
                 <NotificationContainer />
             </div>
-        );
+
+            </LoadingOverlay>
+                    );
     }
 
     showContentMenus = (cmsRoutes) => {
@@ -114,4 +126,17 @@ class CmsParent extends Component {
 }
 
 
-export default CmsParent;
+const mapStateToProps = state => {
+    return {
+        roles: state.roles,
+        overlay: state.overlay
+    }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+       
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CmsParent);

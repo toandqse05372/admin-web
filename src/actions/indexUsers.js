@@ -3,6 +3,7 @@ import axios from 'axios';
 import * as URL from '../constants/ConfigURL';
 import callApi from '../utils/apiCaller';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from './indexOverlay';
 
 export const actFetchUsersRequest = (paramBody) => {
     return (dispatch) => {
@@ -32,13 +33,16 @@ export const actFetchUsers = (users) => {
 
 export const actAddUserRequest = (users, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay())
         return callApi('user/createUserCMS', 'POST', users).then(res => {
+            localStorage.setItem('loading', false);
             if (res) {
                 dispatch(actAddUser(res.data));
                 NotificationManager.success('Success message', 'Add user successful');
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay())
             if (error.response.data === 'EMAIL_EXISTED') {
                 NotificationManager.error('Error  message', 'Email has been existed');
             }
@@ -55,6 +59,7 @@ export const actAddUser = (users) => {
 
 export const actUpdateUserRequest = (user, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay())
         return callApi(`user/${user.id}`, 'PUT', user).then(res => {
             if (res) {
                 dispatch(actUpdateUser(res.data));
@@ -62,6 +67,7 @@ export const actUpdateUserRequest = (user, child) => {
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay())
             if (error.response.data === 'EMAIL_EXISTED') {
                 NotificationManager.error('Error  message', 'Email has been existed');
             }
@@ -78,12 +84,15 @@ export const actUpdateUser = (user) => {
 
 export const actDeleteUserRequest = (id) => {
     return (dispatch) => {
+        debugger
+        dispatch(actUpdateOverlay())
         return callApi(`user/${id}`, 'DELETE', null).then(res => {
             if (res) {
                 dispatch(actDeleteUser(id));
             }
             NotificationManager.success('Success message', 'Delete user successful');
         }).catch(function(error) {
+            dispatch(actUpdateOverlay())
             if(error.response.data === 'USER_NOT_FOUND'){
                 NotificationManager.error('Error  message', 'User not found');
             }

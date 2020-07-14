@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
 import routes from './routers';
 
 class Users extends Component {
     render() {
-        return (<div>
+        return (
+        <div>
             {this.showContentMenus(routes)}
         </div>
 

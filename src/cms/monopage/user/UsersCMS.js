@@ -10,6 +10,7 @@ import UserItem from './components/UserItem';
 import UserList from './components/UserList';
 import { actFetchUsersRequest, actDeleteUserRequest, actFetchRolesRequest } from '../../../actions/indexUsers';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from '../../../actions/indexOverlay';
 
 class UsersCMS extends Component {
     constructor(props) {
@@ -75,6 +76,7 @@ class UsersCMS extends Component {
     }
 
     receivedData(paramBody) {
+        this.props.showOverlay()
         var props = this.props
         axios.get(Config.API_URL + '/user/searchMul',
             {
@@ -100,6 +102,7 @@ class UsersCMS extends Component {
                 totalPage: res.data.totalPage
             })
         }).catch(function (error) {
+            this.props.showOverlay()
             props.history.push("/error");
         });
         this.state.loaded = true
@@ -247,6 +250,7 @@ class UsersCMS extends Component {
     }
 
     handleDelete(itemId) {
+        this.props.showOverlay()
         const { searchList } = this.state;
         axios.delete(Config.API_URL + `/user/${itemId}`,{
             headers: {
@@ -254,12 +258,14 @@ class UsersCMS extends Component {
             }
         }
         ).then(res => {
+            this.props.showOverlay()
             NotificationManager.success('Success message', 'Delete user successful');
             const items = searchList.filter(item => item.id !== itemId)
             this.setState({
                 searchList: items
             })
         }).catch(error => {
+            this.props.showOverlay()
             if (error.response.data === 'USER_NOT_FOUND') {
                 NotificationManager.error('Error  message', 'User not found');
             }else{
@@ -311,6 +317,9 @@ const mapDispatchToProps = (dispatch, props) => {
         onDeleteUser: (id) => {
             dispatch(actDeleteUserRequest(id));
         },
+        showOverlay: () => {
+            dispatch(actUpdateOverlay())
+        }
     }
 }
 

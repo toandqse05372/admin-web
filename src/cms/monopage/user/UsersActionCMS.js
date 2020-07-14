@@ -236,7 +236,8 @@ class UsersActionCMS extends Component {
 const mapStateToProps = state => {
     return {
         itemEditing: state.itemEditing,
-        roles: state.roles
+        roles: state.roles,
+        overlay: state.overlay
     }
 }
 

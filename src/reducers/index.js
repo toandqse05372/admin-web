@@ -10,6 +10,7 @@ import itemEditing from './itemEditing';
 import ticketTypes from './ticketTypes';
 import orders from './orders';
 import visitorTypes from './visitorTypes';
+import overlay from './overlay';
 
 const appReducers = combineReducers({
     users,
@@ -22,7 +23,8 @@ const appReducers = combineReducers({
     orders,
     paymentMethods,
     visitorTypes,
-    itemEditing
+    itemEditing,
+    overlay
 });
 
 export default appReducers;
