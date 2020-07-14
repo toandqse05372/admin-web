@@ -95,6 +95,7 @@ class UsersCMS extends Component {
             }
         ).then(res => {
             //set state
+            this.props.showOverlay()
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,

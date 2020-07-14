@@ -350,7 +350,7 @@ class PlacesActionCMS extends Component {
                                 onChange={this.onChange} />
                         </div>
                         <br />
-                        <Link to="/Places" className="btn btn-danger mr-5">
+                        <Link to="/places" className="btn btn-danger mr-5">
                             <i className="glyphicon glyphicon-arrow-left"></i> Back
                         </Link>
                         <button type="submit" className="btn btn-primary">

@@ -145,7 +145,6 @@ class TicketTypesActionCMS extends Component {
         if (loaded) {
             return (
                 <div className="container">
-
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="myDiv">

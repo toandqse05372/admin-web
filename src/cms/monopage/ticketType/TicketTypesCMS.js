@@ -11,6 +11,7 @@ import * as Config from '../../../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
 import Select from 'react-select'
 import callApi from '../../../utils/apiCaller';
+import { actUpdateOverlay } from '../../../actions/indexOverlay';
 
 class TicketTypesCMS extends Component {
     constructor(props) {
@@ -85,6 +86,7 @@ class TicketTypesCMS extends Component {
     }
 
     receivedData(placeId) {
+        this.props.showOverlay()
         axios.get(Config.API_URL + '/ticketType',
             {
                 headers: {
@@ -112,6 +114,7 @@ class TicketTypesCMS extends Component {
     }
 
     uploadExcel = (e) => {
+        this.props.showOverlay()
         let dataForm = new FormData();
         dataForm.append('file', e.target.files[0]);
         debugger
@@ -242,6 +245,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         fetchAllPlaces: () => {
             dispatch(actFetchPlacesRequest());
+        },
+        showOverlay: () => {
+            dispatch(actUpdateOverlay())
         }
     }
 }
