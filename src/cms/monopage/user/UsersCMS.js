@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormControl, Button, Table } from 'react-bootstrap'
-//import './App.css';
-import Pagination from "react-js-pagination";
 import { connect } from 'react-redux';
 import axios from 'axios';
 import * as Config from '../../../constants/ConfigURL';

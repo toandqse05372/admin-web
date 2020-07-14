@@ -12,6 +12,7 @@ import { NotificationManager } from 'react-notifications';
 import Select from 'react-select'
 import callApi from '../../../utils/apiCaller';
 import { actUpdateOverlay } from '../../../actions/indexOverlay';
+import * as LoadType from '../../../constants/LoadingType';
 
 class TicketTypesCMS extends Component {
     constructor(props) {
@@ -86,7 +87,7 @@ class TicketTypesCMS extends Component {
     }
 
     receivedData(placeId) {
-        this.props.showOverlay()
+        this.props.showOverlay(LoadType.loading)
         axios.get(Config.API_URL + '/ticketType',
             {
                 headers: {
@@ -97,7 +98,7 @@ class TicketTypesCMS extends Component {
                 }
             }
         ).then(res => {
-            //set state
+            this.props.showOverlay(LoadType.none)
             this.setState({
                 searchList: res.data.listResult,
                 loaded: true,
@@ -192,18 +193,21 @@ class TicketTypesCMS extends Component {
 
 
     handleDelete(itemId) {
+        this.props.showOverlay(LoadType.deleting)
         const { searchList } = this.state;
         axios.delete(Config.API_URL + `/ticketType/${itemId}`, {
             headers: {
                 Authorization: Config.Token
             }
         }).then(res => {
+            this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Delete ticket type successful');
             const items = searchList.filter(item => item.id !== itemId)
             this.setState({
                 searchList: items
             })
         }).catch(error => {
+            this.props.showOverlay(LoadType.none)
             if (error.response) {
                 if (error.response.data === 'TICKET_TYPE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Ticket type not found');
@@ -246,8 +250,8 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchAllPlaces: () => {
             dispatch(actFetchPlacesRequest());
         },
-        showOverlay: () => {
-            dispatch(actUpdateOverlay())
+        showOverlay: (overlay) => {
+            dispatch(actUpdateOverlay(overlay))
         }
     }
 }
