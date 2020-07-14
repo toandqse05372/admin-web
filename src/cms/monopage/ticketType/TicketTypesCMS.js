@@ -137,11 +137,8 @@ class TicketTypesCMS extends Component {
                 if (drbPlaceId === option.value) {
                     renderOptPlace = i
                 }
-                if (i == places.length) {
-                    loaded = true
-                }
             }
-
+            loaded = true
         }
         if (loaded) {
             if (localStorage.getItem('ticketResult') === "OK") {
