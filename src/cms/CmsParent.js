@@ -44,13 +44,13 @@ class CmsParent extends Component {
 
     render() {
         const { username, isActive } = this.state
-        const { overlay, roles } = this.props
+        const { overlay } = this.props
         debugger
         return (
             <LoadingOverlay
-                active={overlay}
+                active={overlay.status}
                 spinner
-                text='Loading...'
+                text={overlay.detail}
             >
                 <div>
                 <div className="navbar">
@@ -112,7 +112,6 @@ class CmsParent extends Component {
         if (cmsRoutes.length > 0) {
             result = cmsRoutes.map((route, index) => {
                 return (<Route
-
                     key={index}
                     path={route.path}
                     exact={route.exact}
@@ -128,7 +127,6 @@ class CmsParent extends Component {
 
 const mapStateToProps = state => {
     return {
-        roles: state.roles,
         overlay: state.overlay
     }
 }

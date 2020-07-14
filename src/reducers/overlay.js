@@ -1,11 +1,11 @@
 import * as Types from '../constants/OverlayActionType';
+import {none} from '../constants/LoadingType';
 
-const overlay = (state = false, action) => {
-    debugger
+const overlay = (state, action) => {
     switch (action.type) {
         case Types.UPDATE_OVERLAY:
-            return !state;
-        default: return false;
+            return action.overlay;
+        default: return none;
     }
 };
 

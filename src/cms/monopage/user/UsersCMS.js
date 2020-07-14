@@ -6,6 +6,7 @@ import Pagination from "react-js-pagination";
 import { connect } from 'react-redux';
 import axios from 'axios';
 import * as Config from '../../../constants/ConfigURL';
+import * as LoadType from '../../../constants/LoadingType';
 import UserItem from './components/UserItem';
 import UserList from './components/UserList';
 import { actFetchUsersRequest, actDeleteUserRequest, actFetchRolesRequest } from '../../../actions/indexUsers';
@@ -76,7 +77,7 @@ class UsersCMS extends Component {
     }
 
     receivedData(paramBody) {
-        this.props.showOverlay()
+        this.props.showOverlay(LoadType.loading)
         var props = this.props
         axios.get(Config.API_URL + '/user/searchMul',
             {
@@ -95,7 +96,7 @@ class UsersCMS extends Component {
             }
         ).then(res => {
             //set state
-            this.props.showOverlay()
+            this.props.showOverlay(LoadType.none)
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
@@ -103,7 +104,7 @@ class UsersCMS extends Component {
                 totalPage: res.data.totalPage
             })
         }).catch(function (error) {
-            this.props.showOverlay()
+            this.props.showOverlay(LoadType.none)
             props.history.push("/error");
         });
         this.state.loaded = true
@@ -251,7 +252,7 @@ class UsersCMS extends Component {
     }
 
     handleDelete(itemId) {
-        this.props.showOverlay()
+        this.props.showOverlay(LoadType.deleting)
         const { searchList } = this.state;
         axios.delete(Config.API_URL + `/user/${itemId}`,{
             headers: {
@@ -259,14 +260,14 @@ class UsersCMS extends Component {
             }
         }
         ).then(res => {
-            this.props.showOverlay()
+            this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Delete user successful');
             const items = searchList.filter(item => item.id !== itemId)
             this.setState({
                 searchList: items
             })
         }).catch(error => {
-            this.props.showOverlay()
+            this.props.showOverlay(LoadType.none)
             if (error.response.data === 'USER_NOT_FOUND') {
                 NotificationManager.error('Error  message', 'User not found');
             }else{
@@ -318,8 +319,8 @@ const mapDispatchToProps = (dispatch, props) => {
         onDeleteUser: (id) => {
             dispatch(actDeleteUserRequest(id));
         },
-        showOverlay: () => {
-            dispatch(actUpdateOverlay())
+        showOverlay: (status) => {
+            dispatch(actUpdateOverlay(status))
         }
     }
 }
