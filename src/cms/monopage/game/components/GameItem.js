@@ -12,7 +12,6 @@ class GameItem extends Component {
     onChangeStatus = (id, str) => {
         if (window.confirm('Are you sure want to '+str+' this ?' )) {
             this.props.onChangeStatusGame(id);
-            window.location.reload();
         }
     }
 

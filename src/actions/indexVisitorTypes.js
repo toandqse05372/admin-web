@@ -1,16 +1,21 @@
 import * as Types from '../constants/VisitorTypeActionType';
 import callApi from '../utils/apiCaller';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from './indexOverlay';
+import * as LoadType from '../constants/LoadingType';
 
 export const actAddVisitorTypeRequest = (visitorType, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.loading))
         return callApi('visitorType', 'POST', visitorType).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actAddVisitorType(res.data));
                 NotificationManager.success('Success message', 'Add visitor type successful');
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if (error.response.data === 'VISITOR_TYPE_EXISTED') {
                 NotificationManager.error('Error  message', 'Visitor type has been existed');
             }
@@ -27,13 +32,16 @@ export const actAddVisitorType = (visitorType) => {
 
 export const actUpdateVisitorTypeRequest = (visitorType, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.updating))
         return callApi(`visitorType/${visitorType.id}`, 'PUT', visitorType).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actUpdateVisitorType(res.data));
                 NotificationManager.success('Success message', 'Update visitor type successful');
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if (error.response.data === 'VISITOR_TYPE_EXISTED') {
                 NotificationManager.error('Error  message', 'Visitor type has been existed');
             }

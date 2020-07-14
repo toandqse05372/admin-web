@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import * as URL from '../../constants/ConfigURL';
-import { NotificationManager } from 'react-notifications';
+import validateInput from '../../utils/regex';
 
 class LoginCMS extends Component {
 
@@ -11,7 +11,8 @@ class LoginCMS extends Component {
         this.state = {
             txtMail: '',
             txtPassword: '',
-            txtError: ''
+            txtError: '',
+            disableLogin: false
         }
         this.onSubmitForm = this.onSubmitForm.bind(this)
     }
@@ -29,95 +30,89 @@ class LoginCMS extends Component {
     onSubmitForm(e) {
         e.preventDefault();
         const { txtMail, txtPassword, txtError } = this.state;
-        var user = {
-            mail: txtMail,
-            password: txtPassword,
-        };
-        var self = this
-        axios.post(URL.API_URL + '/login', user,
-            {
-                params: {
-                    page: 'CMS'
+        const checkEmail = validateInput("email", txtMail);
+        if (!checkEmail.isInputValid) {
+            this.setState({ txtError: checkEmail.errorMessage })
+        } else {
+            var user = {
+                mail: txtMail,
+                password: txtPassword,
+            };
+            var self = this
+            this.setState({ disableLogin: true })
+            axios.post(URL.API_URL + '/login', user,
+                {
+                    params: {
+                        page: 'CMS'
+                    }
                 }
-            }
-        ).then(res => {
-            localStorage.setItem('tokenLogin', JSON.stringify(res.data));
-            window.location.reload();
-        }).catch(function (error) {
-            self.setState({
-                txtError: "Wrong username or password"
-            })
-         });
-
+            ).then(res => {
+                self.setState({ disableLogin: false })
+                localStorage.setItem('tokenLogin', JSON.stringify(res.data));
+                window.location.reload();
+            }).catch(function (error) {
+                self.setState({
+                    txtError: "Wrong username or password",
+                    disableLogin: false
+                })
+            });
+        }
 
     }
 
 
     render() {
-        const { txtMail, txtPassword, txtError } = this.state;
-
-        return (<div className="container-fluid-full">
-            <div className="row-fluid">
+        const { txtMail, txtPassword, txtError, txtStatus, showOverlay, disableLogin } = this.state;
+        return (
+            <div className="container-fluid-full">
                 <div className="row-fluid">
-                    <div className="login-box">
-                    <div className="icons"></div>
-                        <h2>Login to your account</h2>
-                        <form className="form-horizontal" onSubmit={this.onSubmitForm}>
-                            <fieldset>
-                                <div className="input-prepend" title="Username">
-                                    <span className="add-on"><i className="halflings-icon user" /></span>
-                                    <input className="input-large span10"
-                                        value={txtMail}
-                                        name="txtMail"
-                                        id="mail"
-                                        type="text"
-                                        onChange={this.onChange}
-                                        placeholder="type mail" />
-                                </div>
-                                <div className="clearfix" />
-                                <div className="input-prepend" title="Password">
-                                    <span className="add-on"><i className="halflings-icon lock" /></span>
-                                    <input className="input-large span10"
-                                        value={txtPassword}
-                                        name="txtPassword"
-                                        id="mail"
-                                        type="password"
-                                        onChange={this.onChange}
-                                        placeholder="type password" />
-                                </div>
-                                <div className="clearfix" />
-                                <div className="button-login">
-                                    <button type="submit" className="btn btn-primary rowElement">Login</button>
-                                    <h3 style={{color: 'red'}}>{txtError}</h3>
-                                </div>
-                                <div className="clearfix" />
-                                <hr />
-                                <h3>Forgot Password?</h3>
-                                <p>
-                                    No problem, <a href="#">click here</a> to get a new password.
+                    <div className="row-fluid">
+                        <div className="login-box">
+                            <div className="icons"></div>
+                            <h2>Login to your account</h2>
+                            <form className="form-horizontal" onSubmit={this.onSubmitForm}>
+                                <fieldset>
+                                    <div className="input-prepend" title="Username">
+                                        <span className="add-on"><i className="halflings-icon user" /></span>
+                                        <input className="input-large span10"
+                                            value={txtMail}
+                                            name="txtMail"
+                                            id="mail"
+                                            type="text"
+                                            onChange={this.onChange}
+                                            placeholder="Email" />
+                                    </div>
+                                    <div className="clearfix" />
+                                    <div className="input-prepend" title="Password">
+                                        <span className="add-on"><i className="halflings-icon lock" /></span>
+                                        <input className="input-large span10"
+                                            value={txtPassword}
+                                            name="txtPassword"
+                                            id="password"
+                                            type="password"
+                                            onChange={this.onChange}
+                                            placeholder="Password" />
+                                    </div>
+                                    <div className="clearfix" />
+                                    <div className="button-login">
+                                        <button disabled={disableLogin} type="submit" className="btn btn-primary rowElement">
+                                            {!disableLogin ? 'Login': 'Please wait'}
+                                        </button>
+                                        <h3 style={{ color: 'red' }}>{txtError}</h3>
+                                    </div>
+                                    <div className="clearfix" />
+                                    <hr />
+                                    <h3>Forgot Password?</h3>
+                                    <p>
+                                        No problem, <a href="#">click here</a> to get a new password.
                   </p>
-                            </fieldset></form></div>{/*/span*/}
-                </div>{/*/row*/}
-            </div>{/*/.fluid-container*/}
-        </div>
+                                </fieldset></form></div>{/*/span*/}
+                    </div>{/*/row*/}
+                </div>{/*/.fluid-container*/}
+            </div>
         );
     }
 
 }
 
-
-const mapDispatchToProps = (dispatch, props) => {
-    return {
-        // fetchAllUsers: (paramBody) => {
-        //     dispatch(actFetchUsersRequest(paramBody));
-        // },
-        // fetchAllRoles: () => {
-        //     dispatch(actFetchRolesRequest());
-        // },
-        // onDeleteUser: (id) => {
-        //     dispatch(actDeleteUserRequest(id));
-        // },
-    }
-}
-
-export default connect(mapDispatchToProps)(LoginCMS);
+export default LoginCMS;

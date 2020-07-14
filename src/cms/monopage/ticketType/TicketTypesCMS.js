@@ -115,15 +115,12 @@ class TicketTypesCMS extends Component {
     }
 
     uploadExcel = (e) => {
-        this.props.showOverlay()
+        this.props.showOverlay(LoadType.importing)
         let dataForm = new FormData();
         dataForm.append('file', e.target.files[0]);
         debugger
         callApi('upload', 'POST', dataForm).then(res => {
-            // NotificationManager.success('Success message', 'Added code successful');
-            // this.setState({
-            //     remaining: res.data
-            // })
+            this.props.showOverlay(LoadType.none)
             localStorage.setItem('ticketResult', "OK");
             window.location.reload()
         });

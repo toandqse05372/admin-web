@@ -45,14 +45,12 @@ class CmsParent extends Component {
     render() {
         const { username, isActive } = this.state
         const { overlay } = this.props
-        debugger
         return (
             <LoadingOverlay
                 active={overlay.status}
                 spinner
                 text={overlay.detail}
             >
-                <div>
                 <div className="navbar">
                     <div className="navbar-inner">
                         <div className="container-fluid">
@@ -101,7 +99,6 @@ class CmsParent extends Component {
                     </div>
                 </div>
                 <NotificationContainer />
-            </div>
 
             </LoadingOverlay>
                     );

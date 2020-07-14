@@ -1,6 +1,8 @@
 import * as Types from '../constants/PlacesActionType';
 import callApi from '../utils/apiCaller';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from './indexOverlay';
+import * as LoadType from '../constants/LoadingType';
 
 export const actFetchPlacesRequest = () => {
     return (dispatch) => {
@@ -19,13 +21,16 @@ export const actFetchPlaces = (places) => {
 
 export const actAddPlaceRequest = (place, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.adding))
         return callApi('place', 'POST', place).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none));
                 dispatch(actAddPlace(res.data));
                 NotificationManager.success('Success message', 'Add place successful');
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay(LoadType.none));
             if (error.response.data === 'PLACE_EXISTED') {
                 NotificationManager.error('Please change place name', 'Place has been existed');
             }
@@ -42,13 +47,16 @@ export const actAddPlace = (places) => {
 
 export const actUpdatePlaceRequest = (place, child, id) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.updating));
         return callApi(`place/${id}`, 'PUT', place).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none));
                 dispatch(actUpdatePlace(res.data));
                 NotificationManager.success('Success message', 'Update place successful');
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay(LoadType.none));
             if (error.response.data === 'PLACE_EXISTED') {
                 NotificationManager.error('Please change place name', 'Place has been existed');
             }
@@ -65,9 +73,20 @@ export const actUpdatePlace = (place) => {
 
 export const actChangeStatusPlaceRequest = (id) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.changing));
         return callApi(`changePlace/${id}`, 'PUT', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             if (res) {
                 dispatch(actChangeStatusPlace(res.data));
+            }
+        }).catch(function (error) {
+            dispatch(actUpdateOverlay(LoadType.none));
+            if(error.response){
+                if (error.response.data === 'PLACE_EXISTED') {
+                    NotificationManager.error('Please change place name', 'Place has been existed');
+                }else{
+                    NotificationManager.error('Error mesage', 'Something wrong');
+                }
             }
         });
     }

@@ -1,6 +1,8 @@
 import * as Types from '../constants/CitiesActionType';
 import callApi from '../utils/apiCaller';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from './indexOverlay';
+import * as LoadType from '../constants/LoadingType';
 
 export const actFetchCitiesRequest = () => {
     return dispatch => {
@@ -19,13 +21,16 @@ export const actFetchCities = (cities) => {
 
 export const actAddCityRequest = (city, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.adding))
         return callApi('city', 'POST', city).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actAddCity(res.data));
                 NotificationManager.success('Success message', 'Add city successful');
             }
             child.goBack();
         }).catch(function(error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if(error.response.data === 'CITY_EXISTED'){
                 NotificationManager.error('Error  message', 'City has been existed');
             }
@@ -42,13 +47,16 @@ export const actAddCity = (city) => {
 
 export const actUpdateCityRequest = (city, child, id) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.updating))
         return callApi(`city/${id}`, 'PUT', city).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actUpdateCity(res.data));
                 NotificationManager.success('Success message', 'Update city successful');
             }
             child.goBack();
         }).catch(function(error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if(error.response.data === 'CITY_EXISTED'){
                 NotificationManager.error('Error  message', 'City has been existed');
             }

@@ -1,6 +1,8 @@
 import * as Types from '../constants/CategoriesActionType';
 import callApi from '../utils/apiCaller';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from './indexOverlay';
+import * as LoadType from '../constants/LoadingType';
 
 export const actFetchCategoriesRequest = () => {
     return dispatch => {
@@ -19,13 +21,16 @@ export const actFetchCategories = (categories) => {
 
 export const actAddCategoryRequest = (category, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.adding))
         return callApi('category', 'POST', category).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none))
             if (res) {
                 dispatch(actAddCategory(res.data));
                 NotificationManager.success('Success message', 'Add category successful');
             }
             child.goBack();
         }).catch(function(error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if(error.response.data === 'CATEGORY_EXISTED'){
                 NotificationManager.error('Error  message', 'Category has been existed');
             }
@@ -42,13 +47,16 @@ export const actAddCategory = (category) => {
 
 export const actUpdateCategoryRequest = (category, child, id) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.updating))
         return callApi(`category/${id}`, 'PUT', category).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actUpdateCategory(res.data));
                 NotificationManager.success('Success message', 'Update category successful');
             }
             child.goBack();
         }).catch(function(error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if(error.response.data === 'CATEGORY_EXISTED'){
                 NotificationManager.error('Error  message', 'Category has been existed');
             }

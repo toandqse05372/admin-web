@@ -254,9 +254,10 @@ class PlacesActionCMS extends Component {
                         renderOptWd.push(weekDays[i])
                     }
                 }
+                loaded = loaded + 1;
             }
         }
-        if (loaded === 1) {
+        if (this.state.fetched) {
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
@@ -307,7 +308,7 @@ class PlacesActionCMS extends Component {
                         </div>
                         <div className="form-group">
                             <div className="rowElement">
-                                <label>Mail *</label>
+                                <label>Mail</label>
                                 <input style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                             </div>
                             <span className="rowElement"><h4 style={{ color: 'red' }}>{errorMail}</h4></span>

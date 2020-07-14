@@ -9,11 +9,15 @@ import axios from 'axios';
 import { actFetchPlacesRequest } from '../../../actions/indexPlaces'
 import * as Config from '../../../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from '../../../actions/indexOverlay';
+import * as LoadType from '../../../constants/LoadingType';
+import callApi from '../../../utils/apiCaller';
 
 class GamesCMS extends Component {
     constructor(props) {
         super(props);
         this.handleDelete = this.handleDelete.bind(this)
+        this.handleChangeStatus = this.handleChangeStatus.bind(this)
         this.state = {
             loaded: false,
             activePage: 1,
@@ -61,6 +65,7 @@ class GamesCMS extends Component {
     }
 
     receivedData(paramBody) {
+        this.props.showOverlay(LoadType.loading)
         axios.get(Config.API_URL + '/game/searchMul',
             {
                 headers: {
@@ -74,13 +79,14 @@ class GamesCMS extends Component {
                 }
             }
         ).then(res => {
-            //set state
+            this.props.showOverlay(LoadType.none)
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
                 totalItems: res.data.totalItems
             })
         }).catch(function (error) {
+            this.props.showOverlay(LoadType.none)
             console.log(error.response);
         });
         this.state.loaded = true
@@ -194,22 +200,55 @@ class GamesCMS extends Component {
     }
 
     handleDelete(itemId) {
+        this.props.showOverlay(LoadType.deleting)
         const { searchList } = this.state;
         axios.delete(Config.API_URL + `/game/${itemId}`,{
             headers: {
                 Authorization: Config.Token
             }
         }).then(res => {
+            this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Delete game successful');
             const items = searchList.filter(item => item.id !== itemId)
             this.setState({
                 searchList: items
             })
         }).catch(error => {
+            this.props.showOverlay(LoadType.none)
             if(error.response){
                 if(error.response.data === 'GAME_EXISTED'){
                     NotificationManager.error('Error  message', 'Game has been existed');
                 }else{
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+        });
+    }
+
+    handleChangeStatus(itemId) {
+        this.props.showOverlay(LoadType.changing)
+        const { searchList } = this.state;
+        callApi(`changeGame/${itemId}`, 'PUT', null).then(res => {
+            if (res) {
+                this.props.showOverlay(LoadType.none)
+                NotificationManager.success('Success message', 'Change game status successful');
+                const updateIndex = searchList.findIndex(item => item.id == itemId)
+                let newList = searchList
+                newList[updateIndex] = {
+                    ...newList[updateIndex],
+                    status: newList[updateIndex].status === "DEACTIVE" ? "ACTIVE" : "DEACTIVE"
+                }
+                debugger
+                this.setState({
+                    searchList: newList
+                })
+            }
+        }).catch(function (error) {
+            this.props.showOverlay(LoadType.none)
+            if (error.response) {
+                if (error.response.data === 'GAME_NOT_FOUND') {
+                    NotificationManager.error('Error  message', 'Game not found');
+                } else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
             }
@@ -223,7 +262,7 @@ class GamesCMS extends Component {
             result = games.map((games, index) => {
                 return <GameItem games={games} key={index} index={index} 
                 onDeleteGame={this.handleDelete} 
-                onChangeStatusGame={onChangeStatusGame} 
+                onChangeStatusGame={this.handleChangeStatus} 
                 limit={this.state.drbLimit}
                 currentPage = {this.state.currentPage}/>
             });
@@ -235,8 +274,8 @@ class GamesCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        games: state.games,
-        places: state.places
+        // games: state.games,
+        // places: state.places
     }
 }
 
@@ -248,8 +287,11 @@ const mapDispatchToProps = (dispatch, props) => {
         onChangeStatusGame: (id) => {
             dispatch(actChangeStatusGameRequest(id));
         },
-        fetchAllPlaces: () => {
-            dispatch(actFetchPlacesRequest());
+        // fetchAllPlaces: () => {
+        //     dispatch(actFetchPlacesRequest());
+        // },
+        showOverlay: (status) => {
+            dispatch(actUpdateOverlay(status))
         }
     }
 }

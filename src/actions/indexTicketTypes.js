@@ -1,6 +1,8 @@
 import * as Types from '../constants/TicketTypesActionType';
 import callApi from '../utils/apiCaller';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from './indexOverlay';
+import * as LoadType from '../constants/LoadingType';
 
 export const actFetchTicketTypesRequest = () => {
     return dispatch => {
@@ -19,13 +21,16 @@ export const actFetchTicketTypes = (ticketTypes) => {
 
 export const actAddTicketTypeRequest = (ticketType, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.adding))
         return callApi('ticketType', 'POST', ticketType).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actAddTicketType(res.data));
                 NotificationManager.success('Success message', 'Add ticket type successful');
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if (error.response.data === 'TICKET_TYPE_EXISTED') {
                 NotificationManager.error('Error  message', 'Ticket type has been existed');
             }
@@ -42,13 +47,16 @@ export const actAddTicketType = (ticketType) => {
 
 export const actUpdateTicketTypeRequest = (ticketType, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.updating))
         return callApi(`ticketType/${ticketType.id}`, 'PUT', ticketType).then(res => {
             if (res) {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actUpdateTicketType(res.data));
                 NotificationManager.success('Success message', 'Update ticket type successful');
             }
             child.goBack();
         }).catch(function (error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if (error.response.data === 'TICKET_TYPE_EXISTED') {
                 NotificationManager.error('Error  message', 'Ticket type has been existed');
             }

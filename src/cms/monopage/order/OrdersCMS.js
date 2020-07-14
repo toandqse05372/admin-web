@@ -13,6 +13,8 @@ import { actDeleteOrderRequest } from '../../../actions/indexOrders';
 import axios from 'axios';
 import * as URL from '../../../constants/ConfigURL';
 import 'react-tabs/style/react-tabs.css';
+import { actUpdateOverlay } from '../../../actions/indexOverlay';
+import * as LoadType from '../../../constants/LoadingType';
 
 class OrdersCMS extends Component {
     constructor(props) {
@@ -81,6 +83,7 @@ class OrdersCMS extends Component {
     }
 
     receivedData(paramBody, status) {
+        this.props.showOverlay(LoadType.loading)
         axios.get(URL.API_URL + '/order/searchByStatus',
             {
                 headers: {
@@ -95,7 +98,7 @@ class OrdersCMS extends Component {
                 }
             }
         ).then(res => {
-            //set state
+            this.props.showOverlay(LoadType.none)
             this.setState({
                 // totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
@@ -103,6 +106,7 @@ class OrdersCMS extends Component {
                 // totalPage: res.data.totalPage
             })
         }).catch(function (error) {
+            this.props.showOverlay(LoadType.none)
             console.log(error.response);
         });
         this.state.loaded = true
@@ -274,6 +278,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         onDeleteOrder: (id) => {
             dispatch(actDeleteOrderRequest(id));
+        },
+        showOverlay: (overlay) => {
+            dispatch(actUpdateOverlay(overlay))
         }
     }
 }

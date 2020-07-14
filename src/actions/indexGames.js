@@ -3,6 +3,8 @@ import callApi from '../utils/apiCaller';
 import axios from 'axios';
 import * as Config from '../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from './indexOverlay';
+import * as LoadType from '../constants/LoadingType';
 
 export const actFetchGamesRequest = (placeId) => {
     return (dispatch) => {
@@ -26,13 +28,16 @@ export const actFetchGames = (games) => {
 
 export const actAddGameRequest = (games, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.adding))
         return callApi('game', 'POST', games).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none))
             if (res) {
                 dispatch(actAddGame(res.data));
                 NotificationManager.success('Success message', 'Add game successful');
             }
             child.goBack();
         }).catch(function(error) {
+            dispatch(actUpdateOverlay(LoadType.none))
             if(error.response.data === 'GAME_EXISTED'){
                 NotificationManager.error('Error  message', 'Game has been existed');
             }if(error.response.data === 'NOT_CHOOSE_DATE'){
@@ -51,14 +56,16 @@ export const actAddGame = (game) => {
 
 export const actUpdateGameRequest = (game, child) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.updating))
         return callApi(`game/${game.id}`, 'PUT', game).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none))
             if (res) {
                 dispatch(actUpdateGame(res.data));
                 NotificationManager.success('Success message', 'Update game successful');
             }
             child.goBack();
         }).catch(function(error) {
-            debugger
+            dispatch(actUpdateOverlay(LoadType.none))
             if(error.response.data === 'GAME_EXISTED'){
                 NotificationManager.error('Error  message', 'Game has been existed');
             }if(error.response.data === 'NOT_CHOOSE_DATE'){

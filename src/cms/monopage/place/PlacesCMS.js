@@ -7,14 +7,18 @@ import PlaceList from './components/PlaceList';
 import { actFetchPlacesRequest, actDeletePlaceRequest, actChangeStatusPlaceRequest } from '../../../actions/indexPlaces';
 import { actFetchCategoriesRequest } from '../../../actions/indexCategories';
 import { actFetchCitiesRequest } from '../../../actions/indexCities';
-import axios from 'axios';
+import callApi from '../../../utils/apiCaller';
+import axios from 'axios'
 import * as Config from '../../../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from '../../../actions/indexOverlay';
+import * as LoadType from '../../../constants/LoadingType';
 
 class PlacesCMS extends Component {
     constructor(props) {
         super(props);
         this.handleDelete = this.handleDelete.bind(this)
+        this.handleChangeStatus = this.handleChangeStatus.bind(this)
         this.state = {
             loaded: false,
             activePage: 1,
@@ -76,6 +80,8 @@ class PlacesCMS extends Component {
     }
 
     receivedData(paramBody) {
+        this.props.showOverlay(LoadType.loading)
+        var props = this.props
         axios.get(Config.API_URL + '/place/searchMul',
             {
                 headers: {
@@ -91,15 +97,15 @@ class PlacesCMS extends Component {
                 }
             }
         ).then(res => {
-            //set state
+            this.props.showOverlay(LoadType.none)
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
                 totalItems: res.data.totalItems,
             })
-            this.props.places = res.data.listResult
         }).catch(function (error) {
-            console.log(error.response);
+            props.showOverlay(LoadType.none)
+            props.history.push("/error");
         });
         this.state.loaded = true
     }
@@ -232,37 +238,66 @@ class PlacesCMS extends Component {
     }
 
     handleDelete(itemId) {
+        this.props.showOverlay(LoadType.deleting)
         const { searchList } = this.state;
-        axios.delete(Config.API_URL + `/place/${itemId}`,{
-            headers: {
-                Authorization: Config.Token
-            }
-        }).then(res => {
+        callApi(`place/${itemId}`, 'DELETE', null).then(res => {
+            this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Delete place successful');
             const items = searchList.filter(item => item.id !== itemId)
             this.setState({
                 searchList: items
             })
         }).catch(error => {
-            if(error.response){
+            this.props.showOverlay(LoadType.none)
+            if (error.response) {
                 if (error.response.data === 'PLACE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Place not found');
-                }else{
+                } else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
             }
-            
+
+        });
+    }
+
+    handleChangeStatus(itemId) {
+        this.props.showOverlay(LoadType.changing)
+        const { searchList } = this.state;
+        callApi(`changePlace/${itemId}`, 'PUT', null).then(res => {
+            if (res) {
+                this.props.showOverlay(LoadType.none)
+                NotificationManager.success('Success message', 'Change place status successful');
+                const updateIndex = searchList.findIndex(item => item.id == itemId)
+                let newList = searchList
+                newList[updateIndex] = {
+                    ...newList[updateIndex],
+                    status: newList[updateIndex].status === "DEACTIVE" ? "ACTIVE" : "DEACTIVE"
+                }
+                debugger
+                this.setState({
+                    searchList: newList
+                })
+            }
+        }).catch(function (error) {
+            this.props.showOverlay(LoadType.none)
+            if (error.response) {
+                if (error.response.data === 'PLACE_NOT_FOUND') {
+                    NotificationManager.error('Error  message', 'Place not found');
+                } else {
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
         });
     }
 
     showPlaces(places) {
         var result = null;
-        var { onDeletePlace, categories, onChangeStatusPlace } = this.props;
+        var { categories } = this.props;
         if (places.length > 0) {
             result = places.map((places, index) => {
                 return <PlaceItem places={places} key={index}
                     index={index} onDeletePlace={this.handleDelete}
-                    onChangeStatusPlace={onChangeStatusPlace}
+                    onChangeStatusPlace={this.handleChangeStatus}
                     limit={this.state.drbLimit}
                     currentPage={this.state.currentPage}
                     categories={categories}
@@ -319,6 +354,9 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchAllCategories: () => {
             dispatch(actFetchCategoriesRequest());
         },
+        showOverlay: (status) => {
+            dispatch(actUpdateOverlay(status))
+        }
     }
 }
 

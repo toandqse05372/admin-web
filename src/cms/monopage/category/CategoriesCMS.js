@@ -8,6 +8,8 @@ import { actDeleteCategoryRequest } from '../../../actions/indexCategories';
 import axios from 'axios';
 import * as Config from '../../../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
+import { actUpdateOverlay } from '../../../actions/indexOverlay';
+import * as LoadType from '../../../constants/LoadingType';
 
 class CategoriesCMS extends Component {
     constructor(props) {
@@ -56,6 +58,7 @@ class CategoriesCMS extends Component {
     }
 
     receivedData(paramBody) {
+        this.props.showOverlay(LoadType.loading)
         axios.get(Config.API_URL + '/category/searchByName',
             {
                 headers: {
@@ -69,13 +72,14 @@ class CategoriesCMS extends Component {
 
             }
         ).then(res => {
-            //set state
+            this.props.showOverlay(LoadType.none)
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
                 totalItems: res.data.totalItems
             })
         }).catch(function (error) {
+            this.props.showOverlay(LoadType.none)
             console.log(error.response);
         });
         this.state.loaded = true
@@ -174,18 +178,21 @@ class CategoriesCMS extends Component {
     }
 
     handleDelete(itemId) {
+        this.props.showOverlay(LoadType.deleting)
         const { searchList } = this.state;
         axios.delete(Config.API_URL + `/category/${itemId}`,{
             headers: {
                 Authorization: Config.Token
             }
         }).then(res => {
+            this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Delete category successful');
             const items = searchList.filter(item => item.id !== itemId)
             this.setState({
                 searchList: items
             })
         }).catch(error => {
+            this.props.showOverlay(LoadType.none)
             if(error.response){
                 if(error.response.data === 'CATEGORY_NOT_FOUND'){
                     NotificationManager.error('Error  message', 'Category not found');
@@ -221,6 +228,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         onDeleteCategory: (id) => {
             dispatch(actDeleteCategoryRequest(id));
+        },
+        showOverlay: (status) => {
+            dispatch(actUpdateOverlay(status))
         }
     }
 }
