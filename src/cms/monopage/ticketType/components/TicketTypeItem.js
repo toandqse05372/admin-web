@@ -23,7 +23,6 @@ class TicketTypeItem extends Component {
 
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
         // this.receivedData(this.props.ticketTypes.id);
-        debugger
         this.setState({
             visitorTypeList: this.props.ticketTypes.visitorTypes,
             loaded: true

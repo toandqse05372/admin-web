@@ -28,9 +28,6 @@ class TicketTypesActionCMS extends Component {
         var { match } = this.props;
         this.props.fetchAllPlaces();
         this.props.fetchAllGames(match.params.place)
-        this.setState({
-            fetched: true
-        })
     }
 
     componentWillMount() {
@@ -48,17 +45,20 @@ class TicketTypesActionCMS extends Component {
             var { itemEditing } = nextProps;
             if (typeof itemEditing.id !== "undefined") {
                 if (itemEditing.id === Number(match.params.id)) {
+                    debugger
                     this.setState({
                         id: itemEditing.id,
                         txtName: itemEditing.typeName,
                         drbPlaceId: itemEditing.placeId,
                         drbGameId: itemEditing.gameId,
+                        fetched: true
                     })
                 }
             }
 
         } else {
             this.setState({
+                fetched: true
             })
         }
     }
@@ -154,12 +154,13 @@ class TicketTypesActionCMS extends Component {
     }
 
     render() {
-        var { txtName, txtShortDescription, txtDetailDescription, gameErrorStr,drbPlaceId, drbGameId, loaded } = this.state;
+        var { txtName, txtShortDescription, txtDetailDescription, gameErrorStr,drbPlaceId, drbGameId, loaded, fetched } = this.state;
         var { places, games } = this.props;
-        if(places.length > 0 && games.length > 0){
+        if(places.length > 0 && games.length > 0 && fetched){
             loaded = true
         }
         if (loaded) {
+            debugger
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
