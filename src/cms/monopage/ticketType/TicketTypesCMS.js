@@ -118,7 +118,6 @@ class TicketTypesCMS extends Component {
         this.props.showOverlay(LoadType.importing)
         let dataForm = new FormData();
         dataForm.append('file', e.target.files[0]);
-        debugger
         callApi('upload', 'POST', dataForm).then(res => {
             this.props.showOverlay(LoadType.none)
             localStorage.setItem('ticketResult', "OK");

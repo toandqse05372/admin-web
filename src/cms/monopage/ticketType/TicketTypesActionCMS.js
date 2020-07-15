@@ -16,11 +16,21 @@ class TicketTypesActionCMS extends Component {
             txtShortDescription: '',
             txtDetailDescription: '',
             drbPlaceId: '',
-            drbGameId: '',
+            drbGameId: [],
             loaded: false,
-            fetchedPlace: false,
-            gameErrorStr: ''
+            fetched: false,
+            gameErrorStr: '',
+            gameList: [],
         };
+    }
+
+    componentDidMount() {
+        var { match } = this.props;
+        this.props.fetchAllPlaces();
+        this.props.fetchAllGames(match.params.place)
+        this.setState({
+            fetched: true
+        })
     }
 
     componentWillMount() {
@@ -29,23 +39,28 @@ class TicketTypesActionCMS extends Component {
             var id = match.params.id;
             this.props.onEditTicketType(id)
         } // else => add
-        this.props.fetchAllPlaces();
+        
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.match && nextProps.itemEditing) {
+            var { match } = this.props;
             var { itemEditing } = nextProps;
-            this.setState({
-                id: itemEditing.id,
-                txtName: itemEditing.typeName,
-                drbPlaceId: itemEditing.placeId,
-                drbGameId: itemEditing.gameId
-            })
+            if (typeof itemEditing.id !== "undefined") {
+                if (itemEditing.id === Number(match.params.id)) {
+                    this.setState({
+                        id: itemEditing.id,
+                        txtName: itemEditing.typeName,
+                        drbPlaceId: itemEditing.placeId,
+                        drbGameId: itemEditing.gameId,
+                    })
+                }
+            }
+
         } else {
             this.setState({
-                fetched: true
             })
-        } 
+        }
     }
 
 
@@ -89,10 +104,10 @@ class TicketTypesActionCMS extends Component {
         };
         if (drbGameId.length < 1) {
             this.setState({
-                gameErrorStr : "Please choose at least one game"
+                gameErrorStr: "Please choose at least one game"
             })
-            
-        }else{
+
+        } else {
             if (id) {
                 this.props.onUpdateTicketType(city);
             } else {
@@ -101,46 +116,48 @@ class TicketTypesActionCMS extends Component {
         }
     }
 
-    showGame() {
-        var { games } = this.props;
-        var { drbGameId } = this.state;
-        var optionsGame = []
-        var renderOptGame = drbGameId
-        if (games.length > 0) {
+    showGame(games, choosed) {
+        var options = []
+        var renderOpt = []
+        if (games.length > 0 && this.state.fetched && typeof choosed !== "undefined") {
             for (let i = 0; i < games.length; i++) {
                 var option = { value: games[i].id, label: games[i].gameName }
-                optionsGame.push(option);
-                if (drbGameId === games[i].id) {
-                    renderOptGame = i
+                options.push(option);
+                if (choosed.includes(games[i].id)) {
+                    renderOpt.push(option)
                 }
             }
-        }
-        return  <Select
+            return <Select
+            defaultValue={renderOpt}
             isMulti
-            options={optionsGame}
-            defaultValue={optionsGame[renderOptGame]}
-            onChange={this.onChangeGame}
-        />
+            options={options}
+            onChange={this.onChangeGame}/>
+        }
+    }
+
+    showPlace(places, choosed) {
+        var options = []
+        var renderOpt = null
+        if (places.length > 0 && this.state.fetched && typeof choosed !== "undefined") {
+            for (let i = 0; i < places.length; i++) {
+                var option = { value: places[i].id, label: places[i].name }
+                options.push(option);
+                if (choosed === places[i].id) {
+                    renderOpt = option
+                }
+            }
+            return <Select
+            defaultValue={renderOpt}
+            options={options}
+            onChange={this.onChangePlace}/>
+        }
     }
 
     render() {
-        var { txtName, txtShortDescription, txtDetailDescription, gameErrorStr } = this.state;
-        var { places } = this.props;
-        var { drbPlaceId, loaded, drbGameId } = this.state;
-        var optionsPlace = []
-        
-        var renderOptPlace = drbPlaceId
-
-        if (places.length > 0 && !this.state.fetchedPlace) {
-            for (let i = 0; i < places.length; i++) {
-                var option = { value: places[i].id, label: places[i].name }
-                optionsPlace.push(option);
-                if (drbPlaceId === places[i].id) {
-                    renderOptPlace = i
-                }
-            }
-            loaded = true;
-
+        var { txtName, txtShortDescription, txtDetailDescription, gameErrorStr,drbPlaceId, drbGameId, loaded } = this.state;
+        var { places, games } = this.props;
+        if(places.length > 0 && games.length > 0){
+            loaded = true
         }
         if (loaded) {
             return (
@@ -150,23 +167,16 @@ class TicketTypesActionCMS extends Component {
                         <div className="myDiv">
                             <label>Place Name *</label>
                             <div className="rowElement">
-                                <Select
-                                    options={optionsPlace}
-                                    defaultValue={optionsPlace[renderOptPlace]}
-                                    onChange={this.onChangePlace}
-                                />
+                                {this.showPlace(places, drbPlaceId)}
                             </div>
                         </div>
                         <div style={{ display: drbPlaceId ? "" : "none" }} className="myDiv">
-                            <div  >
-                                {/* thứ mà hiện ra sau khi chọn dropdown */}
-                                <div className="myDiv">
-                                    <label>Game Name *</label>
-                                    <div className="rowElement">
-                                        {this.showGame()}
-                                    </div>
-                                    <span className="rowElement"><h4 style={{ color: 'red' }}>{gameErrorStr}</h4></span>
+                            <div className="myDiv">
+                                <label>Game Name *</label>
+                                <div className="rowElement">
+                                    {this.showGame(games, drbGameId)}
                                 </div>
+                                <span className="rowElement"><h4 style={{ color: 'red' }}>{gameErrorStr}</h4></span>
                             </div>
                         </div>
                         <div style={{ display: drbGameId ? "" : "none" }}>
@@ -197,7 +207,7 @@ class TicketTypesActionCMS extends Component {
                             <div className="form-group">
                                 <label>Conversion Method</label>
                                 <textarea
-                                style={{ width: 350 }}
+                                    style={{ width: 350 }}
                                     value={txtDetailDescription}
                                     name="txtDetailDescription"
                                     className="form-control"

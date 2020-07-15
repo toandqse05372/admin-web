@@ -83,7 +83,7 @@ class TicketTypeItem extends Component {
                             <a className="btn btn-inverse" onClick={() => this.onShowVisitor(!showVisitor)}>
                                 Hide visitor type
                             </a>}
-                            <Link to={`/ticketTypes/${ticketTypes.id}/edit`} className="btn btn-info">
+                            <Link to={`/ticketTypes/${ticketTypes.placeId}/${ticketTypes.id}/edit`} className="btn btn-info">
                                 <i className="halflings-icon white edit"></i>
                             </Link>
                             <a className="btn btn-danger" onClick={() => this.onDeleteTicketType(ticketTypes.id)}>

@@ -67,26 +67,29 @@ class PlacesActionCMS extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.match && nextProps.itemEditing) {
+            var { match } = this.props;
             var { itemEditing } = nextProps;
-            if (typeof itemEditing.id !== "undefined") {
-                this.setState({
-                    id: itemEditing.id,
-                    txtName: itemEditing.name,
-                    txtShortDescription: itemEditing.shortDescription,
-                    txtDetailDescription: itemEditing.detailDescription,
-                    txtMail: itemEditing.mail,
-                    txtPhoneNumber: itemEditing.phoneNumber,
-                    fileImage: itemEditing.placeImageLink,
-                    drbCityId: itemEditing.cityId,
-                    drbCategory: itemEditing.categoryId,
-                    drbWeekDays: itemEditing.weekDays,
-                    txtStatus: itemEditing.status,
-                    txtPhoneNumber: itemEditing.phoneNumber,
-                    txtOpenHours: itemEditing.openingHours,
-                    txtAddress: itemEditing.address,
-                    txtImageLink: itemEditing.placeImageLink,
-                    fetched: true
-                })
+            if (typeof itemEditing.id !== "undefined" ) {
+                if(itemEditing.id === Number(match.params.id)){
+                    this.setState({
+                        id: itemEditing.id,
+                        txtName: itemEditing.name,
+                        txtShortDescription: itemEditing.shortDescription,
+                        txtDetailDescription: itemEditing.detailDescription,
+                        txtMail: itemEditing.mail,
+                        txtPhoneNumber: itemEditing.phoneNumber,
+                        fileImage: itemEditing.placeImageLink,
+                        drbCityId: itemEditing.cityId,
+                        drbCategory: itemEditing.categoryId,
+                        drbWeekDays: itemEditing.weekDays,
+                        txtStatus: itemEditing.status,
+                        txtPhoneNumber: itemEditing.phoneNumber,
+                        txtOpenHours: itemEditing.openingHours,
+                        txtAddress: itemEditing.address,
+                        txtImageLink: itemEditing.placeImageLink,
+                        fetched: true
+                    })
+                }
             }
         } else {
             this.setState({
@@ -102,14 +105,9 @@ class PlacesActionCMS extends Component {
         var fileList = []
         if (name === 'fileImage') {
             for (let i = 0; i < target.files.length; i++) {
-                // let data = new FormData();
-                // console.log(target.files[0])
-                // data.append('file', target.files[i], target.files[i],name);
-                // fileList.push(data)
                 fileList.push(target.files[i])
             }
         }
-        debugger
         var value = name === 'fileImage' ? fileList : target.value;
         this.setState({
             [name]: value
@@ -218,36 +216,12 @@ class PlacesActionCMS extends Component {
         })
     }
 
-    onChangeChild(field, value, lang) {
-        // parent class change handler is always called with field name and value
-        this.setState(
-            {
-                [lang]: {
-                    ...this.state[lang],
-                    [field]: value
-                }
-            }
-        );
-    }
-
     render() {
         var { drbCityId, drbWeekDays, txtAddress, txtOpenHours, txtPhoneNumber, txtMail, drbCategory, loaded, errorMail, errorPhoneNumber,
             txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity } = this.state;
         var { cities, categories } = this.props
-        var options = []
-        var renderOpt = []
         var renderOptWd = []
         if(this.state.fetched){
-            if (categories.length > 0 && typeof drbCategory !== "undefined") {
-                for (let i = 0; i < categories.length; i++) {
-                    var option = { value: categories[i].id, label: categories[i].categoryName }
-                    options.push(option);
-                    if (drbCategory.includes(option.value)) {
-                        renderOpt.push(option)
-                    }
-                }
-                loaded = loaded + 1;
-            }
             if (drbWeekDays.length > 0 && typeof drbWeekDays !== "undefined") {
                 for (let i = 0; i < weekDays.length; i++) {
                     if (drbWeekDays.includes(weekDays[i].value)) {
@@ -257,7 +231,7 @@ class PlacesActionCMS extends Component {
                 loaded = loaded + 1;
             }
         }
-        if (this.state.fetched) {
+        if (loaded) {
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
@@ -271,12 +245,7 @@ class PlacesActionCMS extends Component {
                         <div className="myDiv">
                             <label>Category *</label>
                             <div className="rowElement">
-                                <Select
-                                    defaultValue={renderOpt}
-                                    isMulti
-                                    options={options}
-                                    onChange={this.onChangeCategory}
-                                />
+                                {this.showCategories(categories, drbCategory)}
                             </div>
                             <span className="rowElement"><h3 style={{ color: 'red' }}>{errorCategory}</h3></span>
                         </div>
@@ -375,14 +344,23 @@ class PlacesActionCMS extends Component {
         return result;
     }
 
-    showCategories(categories) {
-        var result = null;
-        if (categories.length > 0) {
-            result = categories.map((categories, index) => {
-                return <option key={index} index={index} value={categories.id}>{categories.categoryName}</option>
-            });
+    showCategories(categories, choosed) {
+        var options = []
+        var renderOpt = []
+        if (categories.length > 0 && this.state.fetched && typeof choosed !== "undefined") {
+            for (let i = 0; i < categories.length; i++) {
+                var option = { value: categories[i].id, label: categories[i].categoryName }
+                options.push(option);
+                if (choosed.includes(option.value)) {
+                    renderOpt.push(option)
+                }
+            }
+            return <Select
+            defaultValue={renderOpt}
+            isMulti
+            options={options}
+            onChange={this.onChangeCategory}/>
         }
-        return result;
     }
 }
 

@@ -27,7 +27,11 @@ class UsersActionCMS extends Component {
             errorRole: '',
             errorPassword: '',
             errorPhoneNUmber: '',
-            errorEmail: ''
+            errorEmail: '',
+
+            options: [],
+            renderOpt: []
+
         };
     }
 
@@ -36,7 +40,8 @@ class UsersActionCMS extends Component {
     }
 
     componentWillMount() {
-        var { match } = this.props;
+        var { match, roles } = this.props;
+        var { drbRole } = this.state;
         if (match) { // update
             var id = match.params.id;
             this.props.onEditUser(id)
@@ -121,7 +126,7 @@ class UsersActionCMS extends Component {
             } else {
                 this.props.onAddUser(user);
             }
-        }else{
+        } else {
             this.setState({
                 errorPassword: errorPasswordStr,
                 errorPhoneNUmber: errorPhoneNUmberStr,
@@ -132,14 +137,24 @@ class UsersActionCMS extends Component {
 
     }
 
-    showRoles(roles) {
-        var result = null;
-        if (roles.length > 0) {
-            result = roles.map((roles, index) => {
-                return <option key={index} index={index} value={roles.roleKey}>{roles.roleKey}</option>
-            });
+    showRoles(roles, choosed) {
+        var options = []
+        var renderOpt = []
+        if (roles.length > 0 && this.state.fetched && typeof choosed !== "undefined") {
+            for (let i = 0; i < roles.length; i++) {
+                var option = { value: roles[i].roleKey, label: roles[i].roleKey }
+                options.push(option);
+                if (choosed.includes(option.label)) {
+                    debugger
+                    renderOpt.push(option)
+                }
+            }
+            return <Select
+            defaultValue={renderOpt}
+            isMulti
+            options={options}
+            onChange={this.onChangeRole}/>
         }
-        return result;
     }
 
     onChangeRole = (selectedOption) => {
@@ -156,21 +171,9 @@ class UsersActionCMS extends Component {
 
     render() {
         var { txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, loaded, errorRole, errorPassword,
-            errorPhoneNUmber, errorEmail } = this.state;
+            errorPhoneNUmber, errorEmail, renderOpt, options } = this.state;
         var { roles } = this.props
-        var options = []
-        var renderOpt = []
-        if (roles.length > 0 && this.state.fetched && typeof drbRole !== "undefined") {
-            for (let i = 0; i < roles.length; i++) {
-                var option = { value: roles[i].roleKey, label: roles[i].roleKey }
-                options.push(option);
-                if (drbRole.includes(option.label)) {
-                    renderOpt.push(option)
-                }
-            }
-            loaded = true;
-        }
-        if (loaded) {
+        if (!loaded) {
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
@@ -209,12 +212,7 @@ class UsersActionCMS extends Component {
                         <div className="myDiv">
                             <label>Role *</label>
                             <div className="rowElement">
-                                <Select
-                                    defaultValue={renderOpt}
-                                    isMulti
-                                    options={options}
-                                    onChange={this.onChangeRole}
-                                />
+                                {this.showRoles(roles, drbRole)}
                             </div>
                             <span className="rowElement"><h3 style={{ color: 'red' }}>{errorRole}</h3></span>
                         </div>
