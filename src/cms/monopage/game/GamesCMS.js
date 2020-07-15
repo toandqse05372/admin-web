@@ -236,7 +236,7 @@ class GamesCMS extends Component {
                 let newList = searchList
                 newList[updateIndex] = {
                     ...newList[updateIndex],
-                    status: newList[updateIndex].status === "DEACTIVE" ? "ACTIVE" : "DEACTIVE"
+                    status: newList[updateIndex].status === "ACTIVE" ? "DEACTIVATE" : "ACTIVE"
                 }
                 debugger
                 this.setState({

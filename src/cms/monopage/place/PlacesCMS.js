@@ -241,12 +241,12 @@ class PlacesCMS extends Component {
         this.props.showOverlay(LoadType.deleting)
         const { searchList } = this.state;
         callApi(`place/${itemId}`, 'DELETE', null).then(res => {
-            this.props.showOverlay(LoadType.none)
-            NotificationManager.success('Success message', 'Delete place successful');
             const items = searchList.filter(item => item.id !== itemId)
             this.setState({
                 searchList: items
             })
+            NotificationManager.success('Success message', 'Delete place successful');
+            this.props.showOverlay(LoadType.none)
         }).catch(error => {
             this.props.showOverlay(LoadType.none)
             if (error.response) {
@@ -265,18 +265,21 @@ class PlacesCMS extends Component {
         const { searchList } = this.state;
         callApi(`changePlace/${itemId}`, 'PUT', null).then(res => {
             if (res) {
-                this.props.showOverlay(LoadType.none)
-                NotificationManager.success('Success message', 'Change place status successful');
                 const updateIndex = searchList.findIndex(item => item.id == itemId)
                 let newList = searchList
+                var up = searchList[updateIndex].status
+                debugger
                 newList[updateIndex] = {
                     ...newList[updateIndex],
-                    status: newList[updateIndex].status === "DEACTIVE" ? "ACTIVE" : "DEACTIVE"
+                    status: searchList[updateIndex].status === "ACTIVE" ? "DEACTIVATE" : "ACTIVE"
                 }
+                var up2 = newList[updateIndex].status
                 debugger
                 this.setState({
                     searchList: newList
                 })
+                NotificationManager.success('Success message', 'Change place status successful');
+                this.props.showOverlay(LoadType.none)
             }
         }).catch(function (error) {
             this.props.showOverlay(LoadType.none)

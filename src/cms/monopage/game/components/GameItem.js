@@ -26,8 +26,8 @@ class GameItem extends Component {
                 <td>{games.status}</td>
                 <td className="center">
                     {games.status === 'ACTIVE'
-                        ? <a style={{width: 50}} className="btn btn-danger" onClick={() => this.onChangeStatus(games.id,'deactive')}> Deactive </a>
-                        : <a style={{width: 50}} className="btn btn-primary" onClick={() => this.onChangeStatus(games.id,'active')}> Active </a>
+                        ? <a style={{width: 60}} className="btn btn-danger" onClick={() => this.onChangeStatus(games.id,'deactivate')}> Deactivate </a>
+                        : <a style={{width: 60}} className="btn btn-primary" onClick={() => this.onChangeStatus(games.id,'active')}> Active </a>
                     }
                     <Link to={`/games/${games.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i>
