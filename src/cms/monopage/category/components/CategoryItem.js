@@ -13,9 +13,8 @@ class PlaceTypeItem extends Component {
         var { category, index, currentPage, limit } = this.props;
         return (
             <tr>
-                 <td>{(currentPage - 1)*limit + index + 1}</td>
+                <td style={{width:"30px"}}>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{category.categoryName}</td>
-                {/* <td>{category.typeKey}</td> */}
 
                 <td className="center">
                     <Link to={`/categories/${category.id}/edit`} className="btn btn-info">

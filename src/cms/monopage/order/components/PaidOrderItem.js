@@ -10,6 +10,10 @@ class OrderItem extends Component {
         }
     }
 
+    onSendTicket = (id) => {
+        this.props.sendTicket(id);
+    }
+
     render() {
         var { order, index, limit, currentPage } = this.props;
         return (
@@ -20,7 +24,7 @@ class OrderItem extends Component {
                 <td>{order.totalPayment} VNĐ</td>
 
                 <td className="center">
-                    <a className="btn btn-primary" > Send ticket </a>
+                    <a className="btn btn-primary" onClick={() => this.onSendTicket(order.id)}> Send ticket </a>
                     <Link to={`/orders/${order.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i>
                     </Link>

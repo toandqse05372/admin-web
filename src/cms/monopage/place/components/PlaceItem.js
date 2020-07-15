@@ -27,7 +27,7 @@ class PlaceItem extends Component {
         }
         return (
             <tr>
-                <td>{(currentPage - 1) * limit + index + 1}</td>
+                <td style={{width:"30px"}}>{(currentPage - 1) * limit + index + 1}</td>
                 <td>{places.name}</td>
                 <td>{places.cityName}</td>
                 <td>{places.mail}</td>

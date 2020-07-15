@@ -12,7 +12,7 @@ class CityItem extends Component {
         var { city, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{(currentPage - 1)*limit + index + 1}</td>
+                <td style={{width:"30px"}}>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{city.name}</td>
                 <td>{city.shortDescription}</td>
 

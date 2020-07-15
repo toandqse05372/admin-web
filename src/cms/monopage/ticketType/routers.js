@@ -20,7 +20,7 @@ const routes = [
         main: ({ match, history }) => <TicketTypesActionCMS match={match} history={history} />
     },
     {
-        path: '/ticketTypes/visitors/:id/edit',
+        path: '/ticketTypes/visitors/a/:id/edit',
         exact: true,
         main: ({ match, history }) => <VisitorTypesActionCMS match={match} history={history} />
     },

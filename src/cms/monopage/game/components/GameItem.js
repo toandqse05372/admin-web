@@ -19,7 +19,7 @@ class GameItem extends Component {
         var { games, index, limit, currentPage } = this.props;
         return (
             <tr>
-                <td>{(currentPage - 1) * limit + index + 1}</td>
+                <td style={{width:"30px"}}>{(currentPage - 1) * limit + index + 1}</td>
                 <td>{games.gameName}</td>
                 {/* <td>{games.gameDescription}</td> */}
                 <td>{games.placeName}</td>

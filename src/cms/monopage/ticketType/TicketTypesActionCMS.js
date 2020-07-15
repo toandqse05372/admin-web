@@ -24,19 +24,14 @@ class TicketTypesActionCMS extends Component {
         };
     }
 
-    componentDidMount() {
-        var { match } = this.props;
-        this.props.fetchAllPlaces();
-        this.props.fetchAllGames(match.params.place)
-    }
-
     componentWillMount() {
         var { match } = this.props;
+        this.props.fetchAllPlaces();
         if (match) { // update
             var id = match.params.id;
             this.props.onEditTicketType(id)
+            this.props.fetchAllGames(match.params.place)
         } // else => add
-        
     }
 
     componentWillReceiveProps(nextProps) {
@@ -155,12 +150,15 @@ class TicketTypesActionCMS extends Component {
 
     render() {
         var { txtName, txtShortDescription, txtDetailDescription, gameErrorStr,drbPlaceId, drbGameId, loaded, fetched } = this.state;
-        var { places, games } = this.props;
-        if(places.length > 0 && games.length > 0 && fetched){
+        var { places, games, match } = this.props;
+        if(match){
+            if(places.length > 0 && games.length > 0 && fetched){
+                loaded = true
+            }
+        }else{
             loaded = true
         }
         if (loaded) {
-            debugger
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>

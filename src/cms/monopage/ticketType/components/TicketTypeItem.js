@@ -8,6 +8,7 @@ import * as Config from '../../../../constants/ConfigURL';
 import { NotificationManager } from 'react-notifications';
 import { actUpdateOverlay } from '../../../../actions/indexOverlay';
 import * as LoadType from '../../../../constants/LoadingType';
+import callApi from '../../../../utils/apiCaller'
 
 class TicketTypeItem extends Component {
 
@@ -41,46 +42,45 @@ class TicketTypeItem extends Component {
         });
     }
 
-    // receivedData(ticketTypeId) {
-    //     axios.get(Config.API_URL + '/visitorType',
-    //         {
-    //             headers: {
-    //                 Authorization: Config.Token
-    //             },
-    //             params: {
-    //                 ticketTypeId: ticketTypeId,
-    //             }
-    //         }
-    //     ).then(res => {
-    //         //set state
-    //         this.setState({
-    //             visitorTypeList: res.data
-    //         })
-    //     }).catch(function (error) {
-    //         console.log(error.response);
-    //     });
-    //     this.state.loaded = true
-    // }
+    onMarrkBasic = (id) => {
+        this.props.showOverlay(LoadType.updating)
+        callApi(`markPrice/${id}`, 'PUT', null).then(res => {
+            if (res) {
+                this.props.showOverlay(LoadType.none)
+                localStorage.setItem('markType', "OK");
+                window.location.reload()
+            }
+        }).catch(function (error) {
+            this.props.showOverlay(LoadType.none)
+            if (error.response) {
+                if (error.response.data === 'VISITOR_TYPE_NOT_FOUND') {
+                    NotificationManager.error('Error  message', 'Type not found');
+                } else {
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }
+        });
+    }
 
     render() {
-        var { ticketTypes, index, limit, currentPage,  } = this.props;
+        var { ticketTypes, index } = this.props;
         var { showVisitor, loaded, visitorTypeList } = this.state;
-        if(loaded){
+        if (loaded) {
             return (
                 <React.Fragment>
                     <tr>
-                        <td>{(currentPage - 1) * limit + index + 1}</td>
+                        <td style={{ width: "30px" }}>{index + 1}</td>
                         <td>{ticketTypes.typeName}</td>
                         <td className="center">
                             {/* <Link to={`/ticketTypes/visitors/${ticketTypes.id}`} className="btn btn-success">
                             Show visitor type
                         </Link> */}
-                            {!showVisitor ? 
-                            <a className="btn btn-warning" onClick={() => this.onShowVisitor(!showVisitor)}>
-                                Show visitor type
-                            </a> : 
-                            <a className="btn btn-inverse" onClick={() => this.onShowVisitor(!showVisitor)}>
-                                Hide visitor type
+                            {!showVisitor ?
+                                <a className="btn btn-warning" onClick={() => this.onShowVisitor(!showVisitor)}>
+                                    Show visitor type
+                            </a> :
+                                <a className="btn btn-inverse" onClick={() => this.onShowVisitor(!showVisitor)}>
+                                    Hide visitor type
                             </a>}
                             <Link to={`/ticketTypes/${ticketTypes.placeId}/${ticketTypes.id}/edit`} className="btn btn-info">
                                 <i className="halflings-icon white edit"></i>
@@ -91,7 +91,7 @@ class TicketTypeItem extends Component {
                         </td>
                     </tr>
                     <tr>
-    
+
                         <td colSpan={5} style={{ display: showVisitor ? "" : "none" }}>
                             <Link to={{
                                 pathname: "/ticketTypes/visitors/add",
@@ -104,15 +104,15 @@ class TicketTypeItem extends Component {
                                 <VisitorTypeList>
                                     {this.showVisitorTypes(visitorTypeList)}
                                 </VisitorTypeList>
-    
+
                             </div>
                         </td>
                     </tr>
-    
+
                 </React.Fragment >
-    
+
             );
-        }else{
+        } else {
             return ""
         }
     }
@@ -120,7 +120,7 @@ class TicketTypeItem extends Component {
     handleDelete(itemId) {
         this.props.showOverlay(LoadType.deleting)
         const { visitorTypeList } = this.state;
-        axios.delete(Config.API_URL + `/visitorType/${itemId}`,{
+        axios.delete(Config.API_URL + `/visitorType/${itemId}`, {
             headers: {
                 Authorization: Config.Token
             }
@@ -133,14 +133,14 @@ class TicketTypeItem extends Component {
             })
         }).catch(error => {
             this.props.showOverlay(LoadType.none)
-            if(error.response){
-                if(error.response.data === 'VISITOR_TYPE_NOT_FOUND'){
+            if (error.response) {
+                if (error.response.data === 'VISITOR_TYPE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Visitor type not found');
-                }else{
+                } else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
             }
-            
+
         });
     }
 
@@ -149,8 +149,8 @@ class TicketTypeItem extends Component {
         if (visitorTypes !== null) {
             result = visitorTypes.map((visitorType, index) => {
                 return <VisitorTypeItem visitorType={visitorType}
-                    key={index} index={index} onDeleteTicketType={this.handleDelete} ticketTypeId={this.props.ticketTypes.id} 
-                    ticketTypeName={this.props.ticketTypes.typeName}/>
+                    key={index} index={index} onDeleteTicketType={this.handleDelete} ticketTypeId={this.props.ticketTypes.id}
+                    ticketTypeName={this.props.ticketTypes.typeName} onMarrkBasic={this.onMarrkBasic} />
             });
         }
         return result;

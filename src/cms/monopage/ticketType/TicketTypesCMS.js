@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, FormControl, Button, Table } from 'react-bootstrap'
 import { connect } from 'react-redux';
 import TicketTypeItem from './components/TicketTypeItem';
 import TicketTypeList from './components/TicketTypeList';
@@ -88,6 +87,9 @@ class TicketTypesCMS extends Component {
 
     receivedData(placeId) {
         this.props.showOverlay(LoadType.loading)
+        this.setState({
+            searchList: []
+        })
         axios.get(Config.API_URL + '/ticketType',
             {
                 headers: {
@@ -120,7 +122,7 @@ class TicketTypesCMS extends Component {
         dataForm.append('file', e.target.files[0]);
         callApi('upload', 'POST', dataForm).then(res => {
             this.props.showOverlay(LoadType.none)
-            localStorage.setItem('ticketResult', "OK");
+            localStorage.setItem('excelResult', "OK");
             window.location.reload()
         });
     }
@@ -141,9 +143,13 @@ class TicketTypesCMS extends Component {
             loaded = true
         }
         if (loaded) {
-            if (localStorage.getItem('ticketResult') === "OK") {
+            if (localStorage.getItem('excelResult') === "OK") {
                 NotificationManager.success('Success message', 'Added code successfully');
-                localStorage.removeItem('ticketResult');
+                localStorage.removeItem('excelResult');
+            }
+            if (localStorage.getItem('markType') === "OK") {
+                NotificationManager.success('Success message', 'Marked successfully');
+                localStorage.removeItem('markType');
             }
             return (
                 <div className="container span14">

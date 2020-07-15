@@ -15,20 +15,16 @@ import * as URL from '../../../constants/ConfigURL';
 import 'react-tabs/style/react-tabs.css';
 import { actUpdateOverlay } from '../../../actions/indexOverlay';
 import * as LoadType from '../../../constants/LoadingType';
+import callApi from '../../../utils/apiCaller'
 
 class OrdersCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
             loaded: false,
-            // activePage: 1,
-            // drbLimit: 10,
             searchListPaid: [],
             searchListUnpaid: [],
             searchListSent: [],
-            // totalItems: 0,
-            // totalPage: 1,
-            // currentPage: 1,
 
             txtOrderPaid: '',
             txtOrderUnpaid: '',
@@ -37,12 +33,10 @@ class OrdersCMS extends Component {
             tabIndex: 0,
             txtStatus: 'PAID',
             paramBody: {
-                code: '',
-                
-                // page: 1,
-                // limit: 10,
+            code: '',
             }
         }
+        this.sendTicket = this.sendTicket.bind(this)
     }
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
         this.receivedData(this.state.paramBody, this.state.txtStatus);
@@ -92,18 +86,12 @@ class OrdersCMS extends Component {
                 params: {
                     status: status,
                     code: paramBody.code,
-
-                    // limit: paramBody.limit,
-                    // page: paramBody.page
                 }
             }
         ).then(res => {
             this.props.showOverlay(LoadType.none)
             this.setState({
-                // totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
-                // totalItems: res.data.totalItems,
-                // totalPage: res.data.totalPage
             })
         }).catch(function (error) {
             this.props.showOverlay(LoadType.none)
@@ -114,25 +102,7 @@ class OrdersCMS extends Component {
 
     render() {
         if (this.state.loaded) {
-            const pageList = []
             const { txtOrderPaid, txtOrderUnpaid, txtOrderSent } = this.state;
-            // for (let i = 1; i <= this.state.totalPage; i++) {
-            //     pageList.push(i)
-            // }
-            // const renderPageNumbers = pageList.map(number => {
-            //     if (number == currentPage) {
-            //         return (
-            //             <li className="active" disabled >
-            //                 <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
-            //             </li>
-            //         );
-            //     } else
-            //         return (
-            //             <li className='pointer'>
-            //                 <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
-            //             </li>
-            //         );
-            // });
             return (
                 <Tabs selectedIndex={this.state.tabIndex}
                     onSelect={tabIndex => this.onChangeTab(tabIndex)}>
@@ -213,19 +183,14 @@ class OrdersCMS extends Component {
             return ""
     }
 
-    // handlePageChange(number) {
-    //     this.setState({
-    //         activePage: number,
-    //         paramBody: {
-    //             name: this.state.txtCityName,
-    //             page: number,
-    //             limit: this.state.drbLimit,
-    //         }
-    //     }, () => {
-    //         this.receivedData(this.state.paramBody)
-    //         this.state.currentPage = number
-    //     })
-    // }
+    sendTicket(id) {
+        this.props.showOverlay(LoadType.loading)
+        callApi(`order/sendTicket/${id}`, 'PUT', null).then(res => {
+            this.props.showOverlay(LoadType.none)
+        }).catch(function (error) {
+            this.props.showOverlay(LoadType.none)
+        });
+    }
 
     showPaid(orders) {
         var result = null;
@@ -234,6 +199,7 @@ class OrdersCMS extends Component {
             result = orders.map((order, index) => {
                 return <PaidOrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
                     limit={this.state.drbLimit}
+                    sendTicket={this.sendTicket}
                     currentPage={this.state.currentPage} />
             });
         }

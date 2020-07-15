@@ -21,7 +21,7 @@ class UserItem extends Component {
         }
         return (
             <tr>
-                <td>{(currentPage - 1)*limit + index + 1}</td>
+                <td style={{width:"30px"}}>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{users.firstName}</td>
                 <td>{users.lastName}</td>
                 <td>{users.mail}</td>

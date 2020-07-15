@@ -6,7 +6,7 @@ import * as LoadType from '../constants/LoadingType';
 
 export const actAddVisitorTypeRequest = (visitorType, child) => {
     return (dispatch) => {
-        dispatch(actUpdateOverlay(LoadType.loading))
+        dispatch(actUpdateOverlay(LoadType.adding))
         return callApi('visitorType', 'POST', visitorType).then(res => {
             if (res) {
                 dispatch(actUpdateOverlay(LoadType.none))
