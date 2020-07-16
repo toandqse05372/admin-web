@@ -16,6 +16,7 @@ import 'react-tabs/style/react-tabs.css';
 import { actUpdateOverlay } from '../../../actions/indexOverlay';
 import * as LoadType from '../../../constants/LoadingType';
 import callApi from '../../../utils/apiCaller'
+import { NotificationManager } from 'react-notifications';
 
 class OrdersCMS extends Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class OrdersCMS extends Component {
             tabIndex: 0,
             txtStatus: 'PAID',
             paramBody: {
-            code: '',
+                code: '',
             }
         }
         this.sendTicket = this.sendTicket.bind(this)
@@ -185,9 +186,18 @@ class OrdersCMS extends Component {
 
     sendTicket(id) {
         this.props.showOverlay(LoadType.loading)
+        const { searchList, tabIndex} = this.state;
         callApi(`order/sendTicket/${id}`, 'PUT', null).then(res => {
+            if (tabIndex < 2) {
+                const items = searchList.filter(item => item.id !== id)
+                this.setState({
+                    searchList: items
+                })
+            }
             this.props.showOverlay(LoadType.none)
+            NotificationManager.success('Success message', 'Send ticket successful');
         }).catch(function (error) {
+            NotificationManager.error('Error  message', 'Something wrong');
             this.props.showOverlay(LoadType.none)
         });
     }

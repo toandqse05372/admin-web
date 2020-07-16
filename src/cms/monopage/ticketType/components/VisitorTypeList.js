@@ -15,7 +15,7 @@ class VisitorTypeList extends Component {
                             <tr>
                                 <th>#</th>
                                 <th>Visitor type</th>
-                                <th>Product ID</th>
+                                <th>Type Key</th>
                                 <th>Price</th>
                                 <th>Remaining</th>
                             </tr>

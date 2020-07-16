@@ -219,16 +219,20 @@ class PlacesActionCMS extends Component {
     render() {
         var { drbCityId, drbWeekDays, txtAddress, txtOpenHours, txtPhoneNumber, txtMail, drbCategory, loaded, errorMail, errorPhoneNumber,
             txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity } = this.state;
-        var { cities, categories } = this.props
+        var { cities, categories, match } = this.props
         var renderOptWd = []
         if(this.state.fetched){
-            if (drbWeekDays.length > 0 && typeof drbWeekDays !== "undefined") {
-                for (let i = 0; i < weekDays.length; i++) {
-                    if (drbWeekDays.includes(weekDays[i].value)) {
-                        renderOptWd.push(weekDays[i])
+            if(match){
+                if (drbWeekDays.length > 0 && typeof drbWeekDays !== "undefined") {
+                    for (let i = 0; i < weekDays.length; i++) {
+                        if (drbWeekDays.includes(weekDays[i].value)) {
+                            renderOptWd.push(weekDays[i])
+                        }
                     }
+                    
                 }
-                loaded = loaded + 1;
+            }else{
+                loaded = true;
             }
         }
         if (loaded) {

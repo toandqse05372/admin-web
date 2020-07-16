@@ -60,16 +60,19 @@ class VisitorTypesActionCMS extends Component {
             price: txtPrice,
             ticketTypeId: isUpdate ? txtTicketTypeId : this.props.location.state.id
         };
+        let data = new FormData();
+        data.append('placeId', localStorage.getItem('placeId'));
+        data.append('visitorType', JSON.stringify(visitorType));
         if (id) {
             this.props.onUpdateVisitorType(visitorType);
         } else {
-            this.props.onAddVisitorType(visitorType);
+            this.props.onAddVisitorType(data);
         }
     }
 
     render() {
         var { txtName, txtPrice, txtProductCode } = this.state;
-        const  data  = this.props.match ? null : this.props.location.state
+        const data = this.props.match ? null : this.props.location.state
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>

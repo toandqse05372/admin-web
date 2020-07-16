@@ -124,7 +124,10 @@ class TicketTypesCMS extends Component {
             this.props.showOverlay(LoadType.none)
             localStorage.setItem('excelResult', "OK");
             window.location.reload()
-        });
+        }).catch(error => {
+            this.props.showOverlay(LoadType.none)
+            NotificationManager.error('Error  message', 'Something wrong');
+        })
     }
 
     render() {
