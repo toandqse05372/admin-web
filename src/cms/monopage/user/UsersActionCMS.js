@@ -189,7 +189,7 @@ class UsersActionCMS extends Component {
                         <div className="form-group">
                             <div className="rowElement">
                                 <label>Mail *</label>
-                                <input required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                                <input disabled required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                             </div>
                             <span className="rowElement"><h4 style={{ color: 'red' }}>{errorEmail}</h4></span>
                         </div>

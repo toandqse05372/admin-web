@@ -57,7 +57,7 @@ class TicketTypeItem extends Component {
             if (error.response) {
                 if (error.response.data === 'VISITOR_TYPE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Type not found');
-                } else {
+                }else{
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
             }
@@ -138,6 +138,8 @@ class TicketTypeItem extends Component {
             if (error.response) {
                 if (error.response.data === 'VISITOR_TYPE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Visitor type not found');
+                }else if (error.response.data === 'VISITOR_TYPE_IS_BASIC') {
+                    NotificationManager.error('Error  message', 'Can not delete basic type');
                 } else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }

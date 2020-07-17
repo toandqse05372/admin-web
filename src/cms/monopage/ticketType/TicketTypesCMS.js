@@ -120,13 +120,27 @@ class TicketTypesCMS extends Component {
         this.props.showOverlay(LoadType.importing)
         let dataForm = new FormData();
         dataForm.append('file', e.target.files[0]);
+        dataForm.append('placeId', localStorage.getItem("placeId"));
         callApi('upload', 'POST', dataForm).then(res => {
             this.props.showOverlay(LoadType.none)
             localStorage.setItem('excelResult', "OK");
             window.location.reload()
         }).catch(error => {
+            if (error.response) {
+                if (error.response.data === 'NOT_EXCEL_FILE') {
+                    NotificationManager.error('Error  message', 'This is not excel file');
+                } else if (error.response.data === 'COULD_NOT_UPLOAD_FILE') {
+                    NotificationManager.error('Error  message', 'Could not import file');
+                }
+                else {
+                    window.location.reload();
+                    localStorage.setItem('excelResult', error.response.data)
+                }
+            }else{
+                NotificationManager.error('Error  message', 'Something wrong');
+            }
             this.props.showOverlay(LoadType.none)
-            NotificationManager.error('Error  message', 'Something wrong');
+            
         })
     }
 
@@ -146,9 +160,15 @@ class TicketTypesCMS extends Component {
             loaded = true
         }
         if (loaded) {
-            if (localStorage.getItem('excelResult') === "OK") {
-                NotificationManager.success('Success message', 'Added code successfully');
-                localStorage.removeItem('excelResult');
+            if (localStorage.getItem('excelResult')) {
+                const excelResult = localStorage.getItem('excelResult');
+                if(excelResult === "OK"){
+                    NotificationManager.success('Success message', 'Added code successful');
+                    localStorage.removeItem('excelResult');
+                }else{
+                    NotificationManager.error('Error message', localStorage.getItem('excelResult'));
+                    localStorage.removeItem('excelResult');
+                }
             }
             if (localStorage.getItem('markType') === "OK") {
                 NotificationManager.success('Success message', 'Marked successfully');

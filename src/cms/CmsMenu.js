@@ -51,6 +51,12 @@ const cmsMenus = [
         exact: true,
         role: ["ADMIN","STAFF"]
     },
+    {
+        name: 'Report Static',
+        to: '/report',
+        exact: true,
+        role: ["ADMIN","STAFF"]
+    },
 ];
 
 const CmsMenuLink = ({ label, to, activeOnlyWhenExact }) => {

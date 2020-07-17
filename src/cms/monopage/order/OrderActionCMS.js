@@ -69,9 +69,10 @@ class OrderActionCMS extends Component {
     }
 
     render() {
-        var { orderItems, txtShortDescription,
-            txtDetailDescription, orderInfor, loaded } = this.state;
+        var { orderItems, orderInfor, loaded } = this.state;
         if (this.state.loaded) {
+            debugger
+            var moneyAdddot = orderInfor.totalPayment.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
             return (
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
@@ -86,7 +87,7 @@ class OrderActionCMS extends Component {
                             <label>Phone number: {orderInfor.phoneNumber}</label>
                         </div>
                         <div className="form-group">
-                            <label>Total Payment: {orderInfor.totalPayment} VNĐ</label>
+                            <label>Total Payment: {moneyAdddot} VNĐ</label>
                         </div>
                         <div style={{width: "600px"}}>
                         <OrderDetailList>

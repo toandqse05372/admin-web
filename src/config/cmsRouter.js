@@ -8,6 +8,7 @@ import Categories from '../cms/monopage/category/Categories';
 import PaymentMethods from '../cms/monopage/paymentMethod/PaymentMethods';
 import Orders from '../cms/monopage/order/Orders';
 import Error from '../cms/Error';
+import Report from '../cms/report/Report';
 
 const cmsRouters = [
     {
@@ -49,6 +50,11 @@ const cmsRouters = [
         path :'/orders',
         exact: false,
         main: ({history}) => <Orders history={history}/>
+    },
+    {
+        path :'/report',
+        exact: false,
+        main: ({history}) => <Report history={history}/>
     },
     {
         path :'/error',

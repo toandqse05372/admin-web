@@ -40,7 +40,6 @@ class TicketTypesActionCMS extends Component {
             var { itemEditing } = nextProps;
             if (typeof itemEditing.id !== "undefined") {
                 if (itemEditing.id === Number(match.params.id)) {
-                    debugger
                     this.setState({
                         id: itemEditing.id,
                         txtName: itemEditing.typeName,

@@ -101,7 +101,7 @@ class UsersCMS extends Component {
                 totalItems: res.data.totalItems,
                 totalPage: res.data.totalPage
             })
-        }).catch(function (error) {
+        }).catch(error => {
             this.props.showOverlay(LoadType.none)
             props.history.push("/error");
         });

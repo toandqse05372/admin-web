@@ -196,8 +196,17 @@ class OrdersCMS extends Component {
             }
             this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Send ticket successful');
-        }).catch(function (error) {
-            NotificationManager.error('Error  message', 'Something wrong');
+        }).catch(error => {
+            if(error.response){
+                if (error.response.data === 'CODE_NOT_ENOUGH') {
+                    NotificationManager.error('Please add more code', 'Code is not enough to send');
+                }else{
+                    NotificationManager.error('Error message', 'Something wrong');
+                }
+            }
+            else{
+                NotificationManager.error('Error message', 'Something wrong');
+            }
             this.props.showOverlay(LoadType.none)
         });
     }

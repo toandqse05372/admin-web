@@ -17,12 +17,13 @@ class VisitorTypeItem extends Component {
 
     render() {
         var { visitorType, index, ticketTypeId, ticketTypeName } = this.props;
+        var moneyAdddot = visitorType.price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
         return (
             <tr>
                 <td style={{width:"30px"}}>{index + 1}</td>
                 <td>{visitorType.typeName}</td>
                 <td>{visitorType.typeKey}</td>
-                <td>{visitorType.price} VNĐ</td>
+                <td>{moneyAdddot} VNĐ</td>
                 <td>{visitorType.remaining}</td>
                 <td style={{width:"400px"}} className="center">
                     <Link to={{
