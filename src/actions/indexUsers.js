@@ -110,8 +110,12 @@ export const actDeleteUser = (id) => {
 
 export const actGetUserRequest = (id) => {
     return dispatch => {
+        dispatch(actUpdateOverlay(LoadType.loading));
         return callApi(`user/${id}`, 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actGetUser(res.data))
+        }).catch(error => {
+            dispatch(actUpdateOverlay(LoadType.none));
         });
     }
 }

@@ -95,8 +95,12 @@ export const actDeleteCity = (id) => {
 
 export const actGetCityRequest = (id) => {
     return dispatch => {
+        dispatch(actUpdateOverlay(LoadType.loading));
         return callApi(`city/${id}`, 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actGetCity(res.data))
+        }).catch(error => {
+            dispatch(actUpdateOverlay(LoadType.none));
         });
     }
 }

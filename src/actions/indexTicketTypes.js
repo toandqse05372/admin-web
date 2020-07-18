@@ -95,8 +95,12 @@ export const actDeleteTicketType = (id) => {
 
 export const actGetTicketTypeRequest = (id) => {
     return dispatch => {
+        dispatch(actUpdateOverlay(LoadType.loading));
         return callApi(`ticketType/${id}`, 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actGetTicketType(res.data))
+        }).catch(error => {
+            dispatch(actUpdateOverlay(LoadType.none));
         });
     }
 }

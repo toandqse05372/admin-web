@@ -95,8 +95,12 @@ export const actDeleteCategory = (id) => {
 
 export const actGetCategoryRequest = (id) => {
     return dispatch => {
+        dispatch(actUpdateOverlay(LoadType.loading));
         return callApi(`category/${id}`, 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actGetCategory(res.data))
+        }).catch(error => {
+            dispatch(actUpdateOverlay(LoadType.none));
         });
     }
 }

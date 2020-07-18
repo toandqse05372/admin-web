@@ -29,17 +29,17 @@ class PlaceItem extends Component {
             <tr>
                 <td style={{width:"30px"}}>{(currentPage - 1) * limit + index + 1}</td>
                 <td>{places.name}</td>
-                <td>{places.cityName}</td>
+                <td style={{width:"100px"}}>{places.cityName}</td>
                 <td>{places.mail}</td>
                 <td>{places.phoneNumber}</td>
                 <td>{categoryList}</td>
                 <td>{places.openingHours}</td>
-                <td>{places.status}</td>
+                <td style={{width:"80px"}}>{places.status}</td>
                 {/* <td>{places.shortDescription.split("\n").map((i, key) => {
                     return <div key={key}>- {i}</div>;
                 })}</td> */}
 
-                <td className="center">
+                <td style={{width:"200px"}} className="center">
                     {places.status === 'ACTIVE'
                         ? <a style={{width: 60}} className="btn btn-danger" onClick={() => this.onChangeStatus(places.id, 'deactivate')}> Deactivate </a>
                         : <a style={{width: 60}} className="btn btn-primary" onClick={() => this.onChangeStatus(places.id, 'active')}> Active </a>

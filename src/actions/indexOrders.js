@@ -2,6 +2,8 @@ import * as Types from '../constants/OrdersActionType';
 import axios from 'axios';
 import * as URL from '../constants/ConfigURL';
 import callApi from '../utils/apiCaller';
+import { actUpdateOverlay } from './indexOverlay';
+import * as LoadType from '../constants/LoadingType';
 
 export const actFetchOrdersRequest = (paramBody) => {
     return (dispatch) => {
@@ -76,8 +78,12 @@ export const actDeleteOrder = (id) => {
 
 export const actGetOrderRequest = (id) => {
     return dispatch => {
+        dispatch(actUpdateOverlay(LoadType.loading));
         return callApi(`order/${id}`, 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actGetOrder(res.data))
+        }).catch(error => {
+            dispatch(actUpdateOverlay(LoadType.none));
         });
     }
 }

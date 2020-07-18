@@ -21,6 +21,7 @@ class PlaceList extends Component {
                                 <th>Category</th>
                                 <th>Opening Hours</th>
                                 <th>Status</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

@@ -227,6 +227,7 @@ class PlacesActionCMS extends Component {
                     for (let i = 0; i < weekDays.length; i++) {
                         if (drbWeekDays.includes(weekDays[i].value)) {
                             renderOptWd.push(weekDays[i])
+                            loaded = true;
                         }
                     }
                     

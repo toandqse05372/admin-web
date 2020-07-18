@@ -123,8 +123,12 @@ export const actDeleteGame = (id) => {
 
 export const actGetGameRequest = (id) => {
     return dispatch => {
+        dispatch(actUpdateOverlay(LoadType.loading));
         return callApi(`game/${id}`, 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actGetGame(res.data))
+        }).catch(error => {
+            dispatch(actUpdateOverlay(LoadType.none));
         });
     }
 }
@@ -135,33 +139,3 @@ export const actGetGame = (game) => {
         game
     }
 }
-
-// export const actFetchRolesRequest = () => {
-//     return dispatch => {
-//         return callApi(`Game/roles`, 'GET', null).then(res => {
-//             dispatch(actFetchRoles(res.data))
-//         });
-//     }
-// }
-
-// export const actFetchRoles = (roles) => {
-//     return {
-//         type: Types.FETCH_ROLES,
-//         roles
-//     }
-// }
-
-// export const actFetchTokenRequest = (token) => {
-//     return (dispatch) => {
-//         return callApi('Game/token', 'POST', token).then(res => {
-//             dispatch(actFetchToken(res.data));
-//         });
-//     }
-// }
-
-// export const actFetchToken = (token) => {
-//     return {
-//         type: Types.FETCH_TOKEN,
-//         token
-//     }
-// }
