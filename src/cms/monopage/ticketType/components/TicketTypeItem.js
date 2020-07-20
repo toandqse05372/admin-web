@@ -15,6 +15,7 @@ class TicketTypeItem extends Component {
     constructor(props) {
         super(props);
         this.handleDelete = this.handleDelete.bind(this)
+        this.handleChangeStatus = this.handleChangeStatus.bind(this)
         this.state = {
             showVisitor: true,
             visitorTypeList: [],
@@ -42,10 +43,10 @@ class TicketTypeItem extends Component {
         });
     }
 
-    onMarrkBasic = (id) => {
+    onMarkBasic = (id) => {
         // this.props.showOverlay(LoadType.updating)
         let data = new FormData();
-        data.append('placeId',localStorage.getItem('placeId'));
+        data.append('placeId', localStorage.getItem('placeId'));
         callApi(`markPrice/${id}`, 'PUT', data).then(res => {
             if (res) {
                 // this.props.showOverlay(LoadType.none)
@@ -53,15 +54,21 @@ class TicketTypeItem extends Component {
                 window.location.reload()
             }
         }).catch(function (error) {
-          //  this.props.showOverlay(LoadType.none)
+            //  this.props.showOverlay(LoadType.none)
             if (error.response) {
                 if (error.response.data === 'VISITOR_TYPE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Type not found');
-                }else{
+                } else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
             }
         });
+    }
+
+    onChangeStatus = (id, str) => {
+        if (window.confirm('Are you sure want to '+str+' this ?' )) {
+            this.props.onChangeStatus(id);
+        }
     }
 
     render() {
@@ -73,6 +80,7 @@ class TicketTypeItem extends Component {
                     <tr>
                         <td style={{ width: "30px" }}>{index + 1}</td>
                         <td>{ticketTypes.typeName}</td>
+                        <td>{ticketTypes.status}</td>
                         <td className="center">
                             {/* <Link to={`/ticketTypes/visitors/${ticketTypes.id}`} className="btn btn-success">
                             Show visitor type
@@ -80,10 +88,15 @@ class TicketTypeItem extends Component {
                             {!showVisitor ?
                                 <a className="btn btn-warning" onClick={() => this.onShowVisitor(!showVisitor)}>
                                     Show visitor type
-                            </a> :
+                                </a> :
                                 <a className="btn btn-inverse" onClick={() => this.onShowVisitor(!showVisitor)}>
                                     Hide visitor type
-                            </a>}
+                                </a>
+                            }
+                             {ticketTypes.status === 'ACTIVE'
+                                ? <a style={{ width: 60 }} className="btn btn-danger" onClick={() => this.onChangeStatus(ticketTypes.id, 'deactivate')}> Deactivate </a>
+                                : <a style={{ width: 60 }} className="btn btn-primary" onClick={() => this.onChangeStatus(ticketTypes.id, 'active')}> Active </a>
+                            }
                             <Link to={`/ticketTypes/${ticketTypes.placeId}/${ticketTypes.id}/edit`} className="btn btn-info">
                                 <i className="halflings-icon white edit"></i>
                             </Link>
@@ -138,7 +151,7 @@ class TicketTypeItem extends Component {
             if (error.response) {
                 if (error.response.data === 'VISITOR_TYPE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Visitor type not found');
-                }else if (error.response.data === 'VISITOR_TYPE_IS_BASIC') {
+                } else if (error.response.data === 'VISITOR_TYPE_IS_BASIC') {
                     NotificationManager.error('Error  message', 'Can not delete basic type');
                 } else {
                     NotificationManager.error('Error  message', 'Something wrong');
@@ -148,12 +161,46 @@ class TicketTypeItem extends Component {
         });
     }
 
+    handleChangeStatus(itemId) {
+        this.props.showOverlay(LoadType.changing)
+        const { visitorTypeList } = this.state;
+        callApi(`changeVisitorType/${itemId}`, 'PUT', null).then(res => {
+            if (res) {
+                this.props.showOverlay(LoadType.none)
+                NotificationManager.success('Success message', 'Change visitor type status successful');
+                const updateIndex = visitorTypeList.findIndex(item => item.id == itemId)
+                let newList = visitorTypeList
+                newList[updateIndex] = {
+                    ...newList[updateIndex],
+                    status: newList[updateIndex].status === "ACTIVE" ? "DEACTIVATE" : "ACTIVE"
+                }
+                this.setState({
+                    visitorTypeList: newList
+                })
+            }
+        }).catch(error => {
+            this.props.showOverlay(LoadType.none)
+            if (error.response) {
+                if (error.response.data === 'VISITOR_TYPE_IS_BASIC') {
+                    NotificationManager.error('Error  message', 'Can not deactivate basic type');
+                } 
+                else {
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }else{
+                NotificationManager.error('Error  message', 'Something wrong');
+            }
+        });
+    }
+
     showVisitorTypes(visitorTypes) {
         var result = null;
         if (visitorTypes !== null) {
             result = visitorTypes.map((visitorType, index) => {
                 return <VisitorTypeItem visitorType={visitorType}
-                    key={index} index={index} onDeleteTicketType={this.handleDelete} ticketTypeId={this.props.ticketTypes.id}
+                    key={index} index={index} onDeleteTicketType={this.handleDelete} 
+                    onChangeStatus={this.handleChangeStatus} 
+                    ticketTypeId={this.props.ticketTypes.id}
                     ticketTypeName={this.props.ticketTypes.typeName} onMarrkBasic={this.onMarrkBasic} />
             });
         }

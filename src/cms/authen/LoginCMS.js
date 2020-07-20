@@ -88,7 +88,7 @@ class LoginCMS extends Component {
                                         <input className="input-large span10"
                                             value={txtPassword}
                                             name="txtPassword"
-                                            id="password"
+                                            id="mail"
                                             type="password"
                                             onChange={this.onChange}
                                             placeholder="Password" />

@@ -172,7 +172,7 @@ class UsersActionCMS extends Component {
     render() {
         var { txtFirstName, txtLastName, txtMail, drbRole, txtPhoneNumber, txtPassword, loaded, errorRole, errorPassword,
             errorPhoneNUmber, errorEmail, renderOpt, options } = this.state;
-        var { roles } = this.props
+        var { roles, match } = this.props
         if (!loaded) {
             return (
                 <div className="container">
@@ -189,14 +189,14 @@ class UsersActionCMS extends Component {
                         <div className="form-group">
                             <div className="rowElement">
                                 <label>Mail *</label>
-                                <input disabled required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                                <input disabled={match} required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                             </div>
                             <span className="rowElement"><h4 style={{ color: 'red' }}>{errorEmail}</h4></span>
                         </div>
                         <div className="form-group">
                             <div className="rowElement">
                                 <label>Password *</label>
-                                <input required style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control " />
+                                <input disabled={match} required style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control " />
                             </div>
                             <span className="rowElement"><h4 style={{ color: 'red' }}>{errorPassword}</h4></span>
                         </div>

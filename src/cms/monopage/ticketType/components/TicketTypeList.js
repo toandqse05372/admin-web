@@ -15,6 +15,7 @@ class TicketTypeList extends Component {
                             <tr>
                                 <th>#</th>
                                 <th>Ticket Type Name</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>

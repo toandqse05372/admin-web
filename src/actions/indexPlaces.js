@@ -6,7 +6,9 @@ import * as LoadType from '../constants/LoadingType';
 
 export const actFetchPlacesRequest = () => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.loading))
         return callApi('places', 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none))
             dispatch(actFetchPlaces(res.data));
         });
     }

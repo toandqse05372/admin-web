@@ -9,9 +9,15 @@ class VisitorTypeItem extends Component {
         }
     }
 
-    onMarrkBasic = (id) => {
-        if (window.confirm('Are you sure want to mark this as basic type?')) { 
-            this.props.onMarrkBasic(id);
+    onMarkBasic = (id) => {
+        if (window.confirm('Are you sure want to mark this as basic type?')) {
+            this.props.onMarkBasic(id);
+        }
+    }
+
+    onChangeStatus = (id) => {
+        if (window.confirm('Are you sure want to mark this as basic type?')) {
+            this.props.onChangeStatus(id);
         }
     }
 
@@ -20,12 +26,17 @@ class VisitorTypeItem extends Component {
         var moneyAdddot = visitorType.price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
         return (
             <tr>
-                <td style={{width:"30px"}}>{index + 1}</td>
+                <td style={{ width: "30px" }}>{index + 1}</td>
                 <td>{visitorType.typeName}</td>
                 <td>{visitorType.typeKey}</td>
                 <td>{moneyAdddot} VNĐ</td>
                 <td>{visitorType.remaining}</td>
-                <td style={{width:"400px"}} className="center">
+                <td>{visitorType.status}</td>
+                <td style={{ width: "400px" }} className="center">
+                    {visitorType.status === 'ACTIVE'
+                        ? <a style={{ width: 60 }} className="btn btn-danger" onClick={() => this.onChangeStatus(visitorType.id, 'deactivate')}> Deactivate </a>
+                        : <a style={{ width: 60 }} className="btn btn-primary" onClick={() => this.onChangeStatus(visitorType.id, 'active')}> Active </a>
+                    }
                     <Link to={{
                         pathname: `/ticketTypes/visitors/a/${visitorType.id}/edit`,
                         state: { id: ticketTypeId, name: ticketTypeName } // your data array of objects
@@ -36,7 +47,7 @@ class VisitorTypeItem extends Component {
                         <i className="halflings-icon white trash" />
                     </a>
                     {!visitorType.basicType ?
-                        <a className="btn btn-primary" onClick={() => this.onMarrkBasic(visitorType.id)}>
+                        <a className="btn btn-primary" onClick={() => this.onMarkBasic(visitorType.id)}>
                             Mark as basic type</a>
                         : ""
                     }

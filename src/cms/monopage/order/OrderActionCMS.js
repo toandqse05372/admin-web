@@ -5,6 +5,7 @@ import { actAddOrderRequest, actUpdateOrderRequest, actGetOrderRequest } from '.
 import { Form } from 'react-bootstrap'
 import OrderDetailList from './components/OrderDetailList';
 import OrderDetailItem from './components/OrderDetailItem';
+import formatDate from '../../../utils/formatDate'
 
 class OrderActionCMS extends Component {
 
@@ -32,13 +33,15 @@ class OrderActionCMS extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.match && nextProps.itemEditing) {
             var { itemEditing } = nextProps;
-            this.setState({
-                id: itemEditing.id,
-                txtName: itemEditing.ticketTypeName,
-                orderInfor: itemEditing,
-                orderItems: itemEditing.orderItems,
-                loaded: true
-            })
+            if (typeof itemEditing.id !== "undefined") {
+                this.setState({
+                    id: itemEditing.id,
+                    txtName: itemEditing.ticketTypeName,
+                    orderInfor: itemEditing,
+                    orderItems: itemEditing.orderItems,
+                    loaded: true
+                })
+            }
         }
     }
 
@@ -70,8 +73,7 @@ class OrderActionCMS extends Component {
 
     render() {
         var { orderItems, orderInfor, loaded } = this.state;
-        if (this.state.loaded) {
-            debugger
+        if (loaded) {
             var moneyAdddot = orderInfor.totalPayment.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
             return (
                 <div className="container">

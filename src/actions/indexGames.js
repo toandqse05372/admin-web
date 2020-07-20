@@ -8,12 +8,14 @@ import * as LoadType from '../constants/LoadingType';
 
 export const actFetchGamesRequest = (placeId) => {
     return (dispatch) => {
+        dispatch(actUpdateOverlay(LoadType.loading))
         axios.get(Config.API_URL + '/game/listOption', {
             params: {
                 placeId: placeId
             }
         })
             .then(res => {
+                dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actFetchGames(res.data));
             });
     }

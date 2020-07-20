@@ -16,6 +16,7 @@ class OrderList extends Component {
                                 <th>#</th>
                                 <th>Order Code</th>
                                 <th>Purchase Day</th>
+                                <th>Redemption Day</th>
                                 <th>Total Payment</th>
                             </tr>
                         </thead>

@@ -25,13 +25,15 @@ class TicketTypesActionCMS extends Component {
     }
 
     componentWillMount() {
-        var { match } = this.props;
-        this.props.fetchAllPlaces();
+        var { match, location } = this.props;
         if (match) { // update
             var id = match.params.id;
             this.props.onEditTicketType(id)
             this.props.fetchAllGames(match.params.place)
-        } // else => add
+        }
+        if (location) {
+            this.props.fetchAllGames(location.state.placeId)
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -85,16 +87,15 @@ class TicketTypesActionCMS extends Component {
         this.setState({
             drbGameId: selectedId
         });
-        console.log(drbGameId);
     }
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, drbGameId, drbPlaceId } = this.state;
+        var { id, txtName, drbGameId } = this.state;
         var city = {
             id: id,
             typeName: txtName,
             gameId: drbGameId,
-            placeId: drbPlaceId
+            placeId: this.props.location.state.placeId
         };
         if (drbGameId.length < 1) {
             this.setState({
@@ -122,39 +123,39 @@ class TicketTypesActionCMS extends Component {
                 }
             }
             return <Select
-            defaultValue={renderOpt}
-            isMulti
-            options={options}
-            onChange={this.onChangeGame}/>
+                defaultValue={renderOpt}
+                isMulti
+                options={options}
+                onChange={this.onChangeGame} />
         }
     }
 
-    showPlace(places, choosed) {
-        var options = []
-        var renderOpt = null
-        if (places.length > 0 && this.state.fetched && typeof choosed !== "undefined") {
-            for (let i = 0; i < places.length; i++) {
-                var option = { value: places[i].id, label: places[i].name }
-                options.push(option);
-                if (choosed === places[i].id) {
-                    renderOpt = option
-                }
-            }
-            return <Select
-            defaultValue={renderOpt}
-            options={options}
-            onChange={this.onChangePlace}/>
-        }
-    }
+    // showPlace(places, choosed) {
+    //     var options = []
+    //     var renderOpt = null
+    //     if (places.length > 0 && this.state.fetched && typeof choosed !== "undefined") {
+    //         for (let i = 0; i < places.length; i++) {
+    //             var option = { value: places[i].id, label: places[i].name }
+    //             options.push(option);
+    //             if (choosed === places[i].id) {
+    //                 renderOpt = option
+    //             }
+    //         }
+    //         return <Select
+    //             defaultValue={renderOpt}
+    //             options={options}
+    //             onChange={this.onChangePlace} />
+    //     }
+    // }
 
     render() {
-        var { txtName, txtShortDescription, txtDetailDescription, gameErrorStr,drbPlaceId, drbGameId, loaded, fetched } = this.state;
-        var { places, games, match } = this.props;
-        if(match){
-            if(places.length > 0 && games.length > 0 && fetched){
+        var { txtName, gameErrorStr, drbGameId, loaded, fetched } = this.state;
+        var { games, match } = this.props;
+        if (match) {
+            if (games.length > 0 && fetched) {
                 loaded = true
             }
-        }else{
+        } else {
             loaded = true
         }
         if (loaded) {
@@ -163,26 +164,20 @@ class TicketTypesActionCMS extends Component {
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="myDiv">
-                            <label>Place Name *</label>
-                            <div className="rowElement">
-                                {this.showPlace(places, drbPlaceId)}
-                            </div>
                         </div>
-                        <div style={{ display: drbPlaceId ? "" : "none" }} className="myDiv">
-                            <div className="myDiv">
-                                <label>Game Name *</label>
-                                <div className="rowElement">
-                                    {this.showGame(games, drbGameId)}
-                                </div>
-                                <span className="rowElement"><h4 style={{ color: 'red' }}>{gameErrorStr}</h4></span>
+                        <div className="myDiv">
+                            <label>Game Name *</label>
+                            <div className="rowElement">
+                                {this.showGame(games, drbGameId)}
                             </div>
+                            <span className="rowElement"><h4 style={{ color: 'red' }}>{gameErrorStr}</h4></span>
                         </div>
                         <div style={{ display: drbGameId ? "" : "none" }}>
                             <div className="form-group">
                                 <label>Ticket Name *</label>
                                 <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                             </div>
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label>Effective Time</label>
                                 <textarea style={{ width: 350 }} onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
                                 </textarea>
@@ -213,7 +208,7 @@ class TicketTypesActionCMS extends Component {
                                     onBlur={this.handleBlur}
                                 >
                                 </textarea>
-                            </div>
+                            </div> */}
                             <Link to="/ticketTypes" className="btn btn-danger mr-5">
                                 <i className="glyphicon glyphicon-arrow-left"></i> Back
                             </Link>

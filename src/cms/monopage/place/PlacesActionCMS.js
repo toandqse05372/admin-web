@@ -69,8 +69,8 @@ class PlacesActionCMS extends Component {
         if (nextProps.match && nextProps.itemEditing) {
             var { match } = this.props;
             var { itemEditing } = nextProps;
-            if (typeof itemEditing.id !== "undefined" ) {
-                if(itemEditing.id === Number(match.params.id)){
+            if (typeof itemEditing.id !== "undefined") {
+                if (itemEditing.id === Number(match.params.id)) {
                     this.setState({
                         id: itemEditing.id,
                         txtName: itemEditing.name,
@@ -168,7 +168,7 @@ class PlacesActionCMS extends Component {
             let data = new FormData();
             if (fileImage !== null && typeof fileImage !== "undefined") {
                 for (let i = 0; i < fileImage.length; i++) {
-                    data.append('file', fileImage[i], fileImage[i].name);
+                    data.append('file', fileImage[i]);
 
                 }
             }
@@ -221,18 +221,17 @@ class PlacesActionCMS extends Component {
             txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity } = this.state;
         var { cities, categories, match } = this.props
         var renderOptWd = []
-        if(this.state.fetched){
-            if(match){
-                if (drbWeekDays.length > 0 && typeof drbWeekDays !== "undefined") {
+        if (this.state.fetched) {
+            if (match && typeof drbWeekDays !== "undefined") {
+                if (drbWeekDays.length > 0) {
                     for (let i = 0; i < weekDays.length; i++) {
                         if (drbWeekDays.includes(weekDays[i].value)) {
                             renderOptWd.push(weekDays[i])
                             loaded = true;
                         }
                     }
-                    
                 }
-            }else{
+            } else {
                 loaded = true;
             }
         }
@@ -241,7 +240,6 @@ class PlacesActionCMS extends Component {
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
-
                         <div className="form-group">
                             <label>Place Name *</label>
                             <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
@@ -361,10 +359,10 @@ class PlacesActionCMS extends Component {
                 }
             }
             return <Select
-            defaultValue={renderOpt}
-            isMulti
-            options={options}
-            onChange={this.onChangeCategory}/>
+                defaultValue={renderOpt}
+                isMulti
+                options={options}
+                onChange={this.onChangeCategory} />
         }
     }
 }

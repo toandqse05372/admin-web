@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import formatDate from '../../../../utils/formatDate'
 
 class OrderItem extends Component {
 
     onDeleteOrder = (id) => {
-        if (confirm('Are you sure want to delete this ?')) { //eslint-disable-line
+        if (window.confirm('Are you sure want to delete this ?')) { //eslint-disable-line
             this.props.onDeleteOrder(id);
-            window.location.reload();
         }
     }
 
@@ -15,13 +15,14 @@ class OrderItem extends Component {
     }
 
     render() {
-        var { order, index, limit, currentPage } = this.props;
+        var { order, index } = this.props;
         var moneyAdddot = order.totalPayment.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
         return (
             <tr>
                 <td>{index + 1}</td>
                 <td>{order.orderCode}</td>
-                <td>{order.purchaseDay}</td>
+                <td>{formatDate(order.purchaseDay)}</td>
+                <td>{formatDate(order.redemptionDate)}</td>
                 <td>{moneyAdddot} VNĐ</td>
 
                 <td className="center">

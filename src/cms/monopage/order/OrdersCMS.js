@@ -38,6 +38,7 @@ class OrdersCMS extends Component {
             }
         }
         this.sendTicket = this.sendTicket.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
     }
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
         this.receivedData(this.state.paramBody, this.state.txtStatus);
@@ -184,10 +185,34 @@ class OrdersCMS extends Component {
             return ""
     }
 
+    handleDelete(id) {
+        this.props.showOverlay(LoadType.deleting)
+        const { searchList } = this.state;
+        callApi(`order/${id}`, 'DELETE', null).then(res => {
+            this.props.showOverlay(LoadType.none)
+            NotificationManager.success('Success message', 'Delete orrder successful');
+            const items = searchList.filter(item => item.id !== id)
+            this.setState({
+                searchList: items
+            })
+        }).catch(error => {
+            this.props.showOverlay(LoadType.none)
+            if (error.response.data === 'ORDER_NOT_FOUND') {
+                NotificationManager.error('Error  message', 'Order not found');
+            }else{
+                NotificationManager.error('Error  message', 'Something wrong');
+            }
+        });
+    }
+
     sendTicket(id) {
         this.props.showOverlay(LoadType.loading)
         const { searchList, tabIndex} = this.state;
-        callApi(`order/sendTicket/${id}`, 'PUT', null).then(res => {
+        var printRequest = {
+            orderId: id,
+            type: tabIndex
+        }
+        callApi(`order/sendTicket`, 'POST', printRequest).then(res => {
             if (tabIndex < 2) {
                 const items = searchList.filter(item => item.id !== id)
                 this.setState({
@@ -213,10 +238,9 @@ class OrdersCMS extends Component {
 
     showPaid(orders) {
         var result = null;
-        var { onDeleteOrder } = this.props;
         if (orders.length > 0) {
             result = orders.map((order, index) => {
-                return <PaidOrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
+                return <PaidOrderItem order={order} key={order} index={index} onDeleteOrder={this.handleDelete}
                     limit={this.state.drbLimit}
                     sendTicket={this.sendTicket}
                     currentPage={this.state.currentPage} />
@@ -227,11 +251,11 @@ class OrdersCMS extends Component {
 
     showUnpaid(orders) {
         var result = null;
-        var { onDeleteOrder } = this.props;
         if (orders.length > 0) {
             result = orders.map((order, index) => {
-                return <UnpaidOrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
+                return <UnpaidOrderItem order={order} key={order} index={index} onDeleteOrder={this.handleDelete}
                     limit={this.state.drbLimit}
+                    sendTicket={this.sendTicket}
                     currentPage={this.state.currentPage} />
             });
         }
@@ -240,11 +264,11 @@ class OrdersCMS extends Component {
 
     showSent(orders) {
         var result = null;
-        var { onDeleteOrder } = this.props;
         if (orders.length > 0) {
             result = orders.map((order, index) => {
-                return <SentOrderItem order={order} key={order} index={index} onDeleteOrder={onDeleteOrder}
+                return <SentOrderItem order={order} key={order} index={index} onDeleteOrder={this.handleDelete}
                     limit={this.state.drbLimit}
+                    sendTicket={this.sendTicket}
                     currentPage={this.state.currentPage} />
             });
         }

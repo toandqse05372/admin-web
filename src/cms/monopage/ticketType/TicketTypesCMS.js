@@ -17,19 +17,14 @@ class TicketTypesCMS extends Component {
     constructor(props) {
         super(props);
         this.handleDelete = this.handleDelete.bind(this)
+        this.handleChangeStatus = this.handleChangeStatus.bind(this)
         this.state = {
             loaded: false,
             loadedTable: false,
-            activePage: 1,
-            drbLimit: 10,
             searchList: [],
-            totalItems: 0,
-            totalPage: 1,
-            currentPage: 1,
             drbPlaceId: 0,
             txtPlaceName: '',
             selectPlace: 0,
-            txtTicketTypeName: '',
             canExcel: true,
 
             paramBody: {
@@ -40,11 +35,9 @@ class TicketTypesCMS extends Component {
         }
     }
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
-        // this.receivedData(this.state.paramBody);
         this.props.fetchAllPlaces()
         let placeId = localStorage.getItem('placeId');
         let placeName = localStorage.getItem('placeName');
-
         if (placeId != null) {
             this.receivedData(placeId)
             this.setState({
@@ -53,21 +46,6 @@ class TicketTypesCMS extends Component {
                 loaded: true
             })
         }
-    }
-
-    onChange = (e) => {
-        var target = e.target;
-        var name = target.name;
-        var value = target.value;
-        this.setState({
-            [name]: value,
-            paramBody: {
-                typeName: (name === "txtTicketTypeName") ? value : this.state.txtTicketTypeName,
-                page: this.state.activePage,
-                limit: (name === "drbLimit") ? value : this.state.drbLimit,
-            }
-        })
-
     }
 
     onSubmitSearch = (e) => {
@@ -121,6 +99,7 @@ class TicketTypesCMS extends Component {
         let dataForm = new FormData();
         dataForm.append('file', e.target.files[0]);
         dataForm.append('placeId', localStorage.getItem("placeId"));
+        e.target.value = "";
         callApi('upload', 'POST', dataForm).then(res => {
             this.props.showOverlay(LoadType.none)
             localStorage.setItem('excelResult', "OK");
@@ -188,7 +167,9 @@ class TicketTypesCMS extends Component {
                     </div>
                     <div style={{ display: drbPlaceId ? "" : "none" }}>
 
-                        <Link to="/ticketTypes/add" className="btn btn-primary mb-5 ">
+                        <Link to={{
+                            pathname: "/ticketTypes/add",
+                            state: { placeId: drbPlaceId, placeName: txtPlaceName } }} className="btn btn-primary mb-5 ">
                             <i className="glyphicon glyphicon-plus"></i> Add Ticket Type
                         </Link>
 
@@ -214,6 +195,38 @@ class TicketTypesCMS extends Component {
             );
         } else
             return ""
+    }
+
+    handleChangeStatus(itemId) {
+        this.props.showOverlay(LoadType.changing)
+        const { searchList } = this.state;
+        callApi(`changeTicketType/${itemId}`, 'PUT', null).then(res => {
+            if (res) {
+                this.props.showOverlay(LoadType.none)
+                NotificationManager.success('Success message', 'Change ticket type status successful');
+                const updateIndex = searchList.findIndex(item => item.id == itemId)
+                let newList = searchList
+                newList[updateIndex] = {
+                    ...newList[updateIndex],
+                    status: newList[updateIndex].status === "ACTIVE" ? "DEACTIVATE" : "ACTIVE"
+                }
+                this.setState({
+                    searchList: newList
+                })
+            }
+        }).catch(error => {
+            this.props.showOverlay(LoadType.none)
+            if (error.response) {
+                if (error.response.data === 'VISITOR_TYPE_IS_BASIC') {
+                    NotificationManager.error('Error  message', 'Containing basic visitor type');
+                } 
+                else {
+                    NotificationManager.error('Error  message', 'Something wrong');
+                }
+            }else{
+                NotificationManager.error('Error  message', 'Something wrong');
+            }
+        });
     }
 
 
@@ -246,12 +259,11 @@ class TicketTypesCMS extends Component {
 
     showTicketTypes(ticketTypes) {
         var result = null;
-        var { onDeleteTicketType } = this.props;
         if (ticketTypes.length > 0) {
             result = ticketTypes.map((ticketTypes, index) => {
-                return <TicketTypeItem ticketTypes={ticketTypes} limit={this.state.drbLimit}
-                    currentPage={this.state.currentPage}
-                    key={index} index={index} onDeleteTicketType={this.handleDelete} />
+                return <TicketTypeItem ticketTypes={ticketTypes} key={index} index={index} 
+                onChangeStatus={this.handleChangeStatus}
+                onDeleteTicketType={this.handleDelete} />
             });
         }
         return result;

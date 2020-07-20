@@ -129,7 +129,9 @@ export const actGetUser = (user) => {
 
 export const actFetchRolesRequest = () => {
     return dispatch => {
+        dispatch(actUpdateOverlay(LoadType.loading));
         return callApi(`user/roles`, 'GET', null).then(res => {
+            dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actFetchRoles(res.data))
         });
     }
