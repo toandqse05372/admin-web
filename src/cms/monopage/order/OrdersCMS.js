@@ -104,6 +104,13 @@ class OrdersCMS extends Component {
 
     render() {
         if (this.state.loaded) {
+            if(localStorage.getItem('sendStatus') === 'OK'){
+                NotificationManager.success('Success message', 'Send ticket successful');
+            }
+            if(localStorage.getItem('sendStatus') === 'ORDER_EXPIRED'){
+                NotificationManager.error('Error message', 'Booking date has been passed');
+            }
+            localStorage.removeItem('sendStatus')
             const { txtOrderPaid, txtOrderUnpaid, txtOrderSent } = this.state;
             return (
                 <Tabs selectedIndex={this.state.tabIndex}
@@ -199,7 +206,7 @@ class OrdersCMS extends Component {
             this.props.showOverlay(LoadType.none)
             if (error.response.data === 'ORDER_NOT_FOUND') {
                 NotificationManager.error('Error  message', 'Order not found');
-            }else{
+            } else {
                 NotificationManager.error('Error  message', 'Something wrong');
             }
         });
@@ -207,7 +214,7 @@ class OrdersCMS extends Component {
 
     sendTicket(id) {
         this.props.showOverlay(LoadType.loading)
-        const { searchList, tabIndex} = this.state;
+        const { searchList, tabIndex } = this.state;
         var printRequest = {
             orderId: id,
             type: tabIndex
@@ -222,14 +229,21 @@ class OrdersCMS extends Component {
             this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Send ticket successful');
         }).catch(error => {
-            if(error.response){
+            if (error.response) {
                 if (error.response.data === 'CODE_NOT_ENOUGH') {
                     NotificationManager.error('Please add more code', 'Code is not enough to send');
-                }else{
+                } else if (error.response.data === 'ORDER_EXPIRED') {
+                    const items = searchList.filter(item => item.id !== id)
+                    this.setState({
+                        searchList: items
+                    })
+                    NotificationManager.error('Error message', 'Booking date has been passed');
+                }
+                else {
                     NotificationManager.error('Error message', 'Something wrong');
                 }
             }
-            else{
+            else {
                 NotificationManager.error('Error message', 'Something wrong');
             }
             this.props.showOverlay(LoadType.none)

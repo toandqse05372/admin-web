@@ -20,11 +20,11 @@ class GameItem extends Component {
         return (
             <tr>
                 <td style={{width:"30px"}}>{(currentPage - 1) * limit + index + 1}</td>
-                <td>{games.gameName}</td>
+                <td style={{width: 300}}>{games.gameName}</td>
                 {/* <td>{games.gameDescription}</td> */}
                 <td>{games.placeName}</td>
-                <td>{games.status}</td>
-                <td className="center">
+                <td style={{width: 60}}>{games.status}</td>
+                <td className="center" style={{width: 180}}>
                     {games.status === 'ACTIVE'
                         ? <a style={{width: 60}} className="btn btn-danger" onClick={() => this.onChangeStatus(games.id,'deactivate')}> Deactivate </a>
                         : <a style={{width: 60}} className="btn btn-primary" onClick={() => this.onChangeStatus(games.id,'active')}> Active </a>

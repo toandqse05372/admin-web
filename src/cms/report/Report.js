@@ -138,7 +138,7 @@ class Report extends Component {
                                 name="drbOption"
                                 value={drbOption}
                                 onChange={this.onChangeOption}>
-                                <option key={0} index={0} value={0}>-- Choose report type --</option>
+                                <option key={0} index={0} value={0}>Daily</option>
                                 <option key={1} index={1} value={1}>Weekly</option>
                                 <option key={2} index={2} value={2}>Monthly</option>
                                 <option key={3} index={3} value={3}>Custom</option>
@@ -165,13 +165,11 @@ class Report extends Component {
                                     minDate={startDate}
                                 /></div>
                         </div>
-                        <div style={{ display: drbOption > 0 ? "" : "none" }}>
                             <Button
                                 type="Submit"
                                 className="btn btn-inverse mb-5">
                                 Show report
                             </Button>
-                        </div>
 
                     </Form>
 

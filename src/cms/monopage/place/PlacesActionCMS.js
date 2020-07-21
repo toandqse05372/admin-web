@@ -9,13 +9,13 @@ import Select from 'react-select';
 import validateInput from '../../../utils/regex';
 
 const weekDays = [
-    { value: 0, label: 'Mon' },
-    { value: 1, label: 'Tue' },
-    { value: 2, label: 'Wed' },
-    { value: 3, label: 'Thu' },
-    { value: 4, label: 'Fri' },
-    { value: 5, label: 'Sat' },
-    { value: 6, label: 'Sun' }]
+    { value: 0, label: 'Sun' },
+    { value: 1, label: 'Mon' },
+    { value: 2, label: 'Tue' },
+    { value: 3, label: 'Wed' },
+    { value: 4, label: 'Thu' },
+    { value: 5, label: 'Fri' },
+    { value: 6, label: 'Sat' }]
 
 class PlacesActionCMS extends Component {
 
@@ -240,11 +240,14 @@ class PlacesActionCMS extends Component {
                 <div className="container">
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
-                        <div className="form-group">
+                        <div className="form-group rowElement">
                             <label>Place Name *</label>
                             <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                         </div>
-
+                        <div className="form-group rowElement">
+                            <label>Place Key </label>
+                            <input style={{ width: 50 }} type="text" className="form-control" />
+                        </div>
                         <div className="myDiv">
                             <label>Category *</label>
                             <div className="rowElement">

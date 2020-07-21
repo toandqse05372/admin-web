@@ -15,6 +15,7 @@ class OrderDetailList extends Component {
                             <tr>
                                 <th>#</th>
                                 <th>Product Name</th>
+                                <th>Key</th>
                                 <th>Quantity</th>
                             </tr>
                         </thead>
