@@ -132,90 +132,94 @@ class PlacesCMS extends Component {
                         </li>
                     );
             });
-            return (
-                <div className="container span14">
-                    <Form onSubmit={this.onSubmitSearch} >
-                        <h1>Place Manager</h1>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th><Form.Label id="basic-addon1">Place Name</Form.Label>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="Place Name"
-                                            name="txtPlaceName"
-                                            value={txtPlaceName}
-                                            onChange={this.onChange}
-                                        />
-                                    </th>
-                                    <th><Form.Label id="basic-addon1">Address </Form.Label>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="Address"
-                                            name="txtAddress"
-                                            value={txtAddress}
-                                            onChange={this.onChange}
-                                        /></th>
-                                    <th><Form.Label id="basic-addon1">City </Form.Label>
-                                        <Form.Control as="select"
-                                            name="drBCity"
-                                            value={drBCity}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={0}>-- Choose City --</option>
-                                            {this.showCities(cities)}
-                                        </Form.Control></th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Form.Label id="basic-addon1">Category</Form.Label>
-                                        <Form.Control as="select"
-                                            name="drbcategory"
-                                            value={drbcategory}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={0}>-- Choose Category --</option>
-                                            {this.showCategories(categories)}
-                                        </Form.Control>
-                                    </td>
-                                    <td>
-                                        <Form.Label>Show</Form.Label>
-                                        <Form.Control as="select"
-                                            name="drbLimit"
-                                            value={drbLimit}
-                                            onChange={this.onChange}>
-                                            <option key={0} index={0} value={10}>10 / page</option>
-                                            <option key={1} index={1} value={15}>15 / page</option>
-                                            <option key={2} index={2} value={20}>20 / page</option>
-                                        </Form.Control>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Button
-                                            type="Submit"
-                                            className="btn btn-inverse mb-5">
-                                            Search
-                                        </Button>
-                                    </td>
-                                    <td>
-
-                                    </td>
-                                </tr>
-                            </thead>
-                        </Table>
-                    </Form>
-                    <Link to="/places/add" className="btn btn-success mb-5 ">
-                        <i className="glyphicon glyphicon-plus"></i> Add New Place
-                </Link>
-                    <PlaceList>
-                        {this.showPlaces(this.state.searchList)}
-                    </PlaceList>
-                    <div className="dataTables_paginate paging_bootstrap pagination">
-                        <ul>
-                            {renderPageNumbers}
-                        </ul>
+            if(cities.length > 0 && categories.length > 0){
+                return (
+                    <div className="container span14">
+                        <Form onSubmit={this.onSubmitSearch} >
+                            <h1>Place Manager</h1>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th><Form.Label id="basic-addon1">Place Name</Form.Label>
+                                            <FormControl
+                                                type="text"
+                                                placeholder="Place Name"
+                                                name="txtPlaceName"
+                                                value={txtPlaceName}
+                                                onChange={this.onChange}
+                                            />
+                                        </th>
+                                        <th><Form.Label id="basic-addon1">Address </Form.Label>
+                                            <FormControl
+                                                type="text"
+                                                placeholder="Address"
+                                                name="txtAddress"
+                                                value={txtAddress}
+                                                onChange={this.onChange}
+                                            /></th>
+                                        <th><Form.Label id="basic-addon1">City </Form.Label>
+                                            <Form.Control as="select"
+                                                name="drBCity"
+                                                value={drBCity}
+                                                onChange={this.onChange}>
+                                                <option key={0} index={0} value={0}>-- Choose City --</option>
+                                                {this.showCities(cities)}
+                                            </Form.Control></th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Form.Label id="basic-addon1">Category</Form.Label>
+                                            <Form.Control as="select"
+                                                name="drbcategory"
+                                                value={drbcategory}
+                                                onChange={this.onChange}>
+                                                <option key={0} index={0} value={0}>-- Choose Category --</option>
+                                                {this.showCategories(categories)}
+                                            </Form.Control>
+                                        </td>
+                                        <td>
+                                            <Form.Label>Show</Form.Label>
+                                            <Form.Control as="select"
+                                                name="drbLimit"
+                                                value={drbLimit}
+                                                onChange={this.onChange}>
+                                                <option key={0} index={0} value={10}>10 / page</option>
+                                                <option key={1} index={1} value={15}>15 / page</option>
+                                                <option key={2} index={2} value={20}>20 / page</option>
+                                            </Form.Control>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Button
+                                                type="Submit"
+                                                className="btn btn-inverse mb-5">
+                                                Search
+                                            </Button>
+                                        </td>
+                                        <td>
+    
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </Table>
+                        </Form>
+                        <Link to="/places/add" className="btn btn-success mb-5 ">
+                            <i className="glyphicon glyphicon-plus"></i> Add New Place
+                    </Link>
+                        <PlaceList>
+                            {this.showPlaces(this.state.searchList)}
+                        </PlaceList>
+                        <div className="dataTables_paginate paging_bootstrap pagination">
+                            <ul>
+                                {renderPageNumbers}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            );
+                );
+            }else{
+                return ""
+            }
         } else
             return ""
     }

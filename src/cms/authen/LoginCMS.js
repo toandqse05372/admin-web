@@ -50,9 +50,17 @@ class LoginCMS extends Component {
                 self.setState({ disableLogin: false })
                 localStorage.setItem('tokenLogin', JSON.stringify(res.data));
                 window.location.reload();
-            }).catch(function (error) {
+            }).catch(error => {
+                var errorStr = '';
+                if (error.response) {
+                    if (error.response.data === 'WRONG_USERNAME_PASSWORD') {
+                        errorStr = "Wrong username or password"
+                    } else {
+                        errorStr = "Account has been logged in"
+                    }
+                }
                 self.setState({
-                    txtError: "Wrong username or password",
+                    txtError: errorStr,
                     disableLogin: false
                 })
             });
