@@ -72,8 +72,8 @@ class GamesCMS extends Component {
                     Authorization: Config.Token
                 },
                 params: {
-                    gameName: paramBody.name,
-                    placeName: paramBody.address,
+                    gameName: paramBody.gameName,
+                    placeName: paramBody.placeName,
                     limit: paramBody.limit,
                     page: paramBody.page
                 }
