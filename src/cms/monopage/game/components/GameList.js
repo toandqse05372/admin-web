@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 class GameList extends Component {
 
     render() {
+        const { totalItems } = this.props
         return (
             <div className="row-fluid sortable">
             <div className="box span12">
@@ -24,6 +25,10 @@ class GameList extends Component {
                             {this.props.children}
                         </tbody>
                     </table>
+                    {
+                        totalItems == 0 ? <h4>No result</h4>
+                        :""
+                    }
                 </div>
             </div>{/*/span*/}
         </div>

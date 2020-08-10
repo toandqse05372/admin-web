@@ -98,22 +98,23 @@ class PlacesCMS extends Component {
             }
         ).then(res => {
             this.props.showOverlay(LoadType.none)
+            debugger
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
                 totalItems: res.data.totalItems,
+                loaded: true
             })
         }).catch(function (error) {
             props.showOverlay(LoadType.none)
             props.history.push("/error");
         });
-        this.state.loaded = true
     }
 
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtPlaceName, txtAddress, drBCity, drbLimit, drbcategory, currentPage } = this.state;
+            const { txtPlaceName, txtAddress, drBCity, drbLimit, drbcategory, currentPage, totalItems } = this.state;
             var { cities, categories } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
@@ -207,7 +208,7 @@ class PlacesCMS extends Component {
                         <Link to="/places/add" className="btn btn-success mb-5 ">
                             <i className="glyphicon glyphicon-plus"></i> Add New Place
                     </Link>
-                        <PlaceList>
+                        <PlaceList limit={drbLimit} totalItems={totalItems}>
                             {this.showPlaces(this.state.searchList)}
                         </PlaceList>
                         <div className="dataTables_paginate paging_bootstrap pagination">

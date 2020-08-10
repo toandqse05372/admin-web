@@ -90,7 +90,7 @@ class CitiesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtCityName, drbLimit, currentPage } = this.state;
+            const { txtCityName, drbLimit, currentPage, totalItems } = this.state;
             var { cities } = this.props;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
@@ -153,7 +153,7 @@ class CitiesCMS extends Component {
                     <Link to="/cities/add" className="btn btn-success mb-5 ">
                         <i className="glyphicon glyphicon-plus"></i> Add New City
                 </Link>
-                    <CityList>
+                    <CityList totalItems={totalItems}>
                         {this.showCities(this.state.searchList)}
                     </CityList>
                     <div className="dataTables_paginate paging_bootstrap pagination">

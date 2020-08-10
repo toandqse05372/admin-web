@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 class PlaceList extends Component {
 
     render() {
+        const { limit, totalItems } = this.props
         return (
             <div className="row-fluid sortable">
             <div className="box span12">
@@ -28,6 +29,10 @@ class PlaceList extends Component {
                             {this.props.children}
                         </tbody>
                     </table>
+                    {
+                        totalItems == 0 ? <h4>No result</h4>
+                        :""
+                    }
                 </div>
             </div>{/*/span*/}
         </div>

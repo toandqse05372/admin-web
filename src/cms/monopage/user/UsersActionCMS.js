@@ -179,23 +179,23 @@ class UsersActionCMS extends Component {
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
                             <label>First Name *</label>
-                            <input required maxLength="100" style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
+                            <input required maxLength="50" style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Last Name *</label>
-                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
+                            <input required maxLength="50" style={{ width: 350 }} onChange={this.onChange} value={txtLastName} name="txtLastName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <div className="rowElement">
                                 <label>Mail *</label>
-                                <input disabled={match} required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
+                                <input disabled={match} maxLength="50" required style={{ width: 350 }} onChange={this.onChange} value={txtMail} name="txtMail" type="text" className="form-control" />
                             </div>
                             <span className="rowElement"><h4 style={{ color: 'red' }}>{errorEmail}</h4></span>
                         </div>
                         <div className="form-group">
                             <div className="rowElement">
                                 <label>Password *</label>
-                                <input disabled={match} required style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control " />
+                                <input disabled={match} maxLength="255" required style={{ width: 350 }} onChange={this.onChange} value={txtPassword} name="txtPassword" type="password" className="form-control " />
                             </div>
                             <span className="rowElement"><h4 style={{ color: 'red' }}>{errorPassword}</h4></span>
                         </div>
@@ -203,7 +203,7 @@ class UsersActionCMS extends Component {
                         <div className="form-group">
                             <div className="rowElement">
                                 <label>Phone number *</label>
-                                <input required style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="text" className="form-control rowElement" />
+                                <input required maxLength="11" style={{ width: 350 }} onChange={this.onChange} value={txtPhoneNumber} name="txtPhoneNumber" type="text" className="form-control rowElement" />
                             </div>
                             <span className="rowElement"><h4 style={{ color: 'red' }}>{errorPhoneNUmber}</h4></span>
                         </div>

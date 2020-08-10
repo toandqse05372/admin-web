@@ -111,7 +111,7 @@ class UsersCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtFirstName, txtLastName, txtPhoneNumber, txtMail, drbRole, drbLimit, currentPage } = this.state;
+            const { txtFirstName, txtLastName, txtPhoneNumber, txtMail, drbRole, drbLimit, currentPage, totalItems } = this.state;
             var { users } = this.props;
             var { roles } = this.props
             for (let i = 1; i <= this.state.totalPage; i++) {
@@ -141,6 +141,7 @@ class UsersCMS extends Component {
                                     <th><Form.Label id="basic-addon1">First Name </Form.Label>
                                         <FormControl
                                             type="text"
+                                            maxLength={255}
                                             placeholder="First Name"
                                             name="txtFirstName"
                                             value={txtFirstName}
@@ -150,6 +151,7 @@ class UsersCMS extends Component {
                                     <th><Form.Label id="basic-addon1">Last Name </Form.Label>
                                         <FormControl
                                             type="text"
+                                            maxLength={255}
                                             placeholder="Last Name"
                                             name="txtLastName"
                                             value={txtLastName}
@@ -158,6 +160,7 @@ class UsersCMS extends Component {
                                     <th><Form.Label id="basic-addon1">Mail </Form.Label>
                                         <FormControl
                                             type="text"
+                                            maxLength={255}
                                             placeholder="Mail"
                                             name="txtMail"
                                             value={txtMail}
@@ -169,6 +172,7 @@ class UsersCMS extends Component {
                                         <Form.Label id="basic-addon1">Phone number </Form.Label>
                                         <FormControl
                                             type="text"
+                                            maxLength={255}
                                             placeholder="Phone number"
                                             name="txtPhoneNumber"
                                             value={txtPhoneNumber}
@@ -215,7 +219,7 @@ class UsersCMS extends Component {
                     <Link to="/users/add" className="btn btn-success mb-5 ">
                         <i className="glyphicon glyphicon-plus"></i> Add New User
                     </Link>
-                    <UserList>
+                    <UserList totalItems={totalItems}>
                         {this.showUser(this.state.searchList)}
                     </UserList>
                     <div className="dataTables_paginate paging_bootstrap pagination">

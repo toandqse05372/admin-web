@@ -88,7 +88,7 @@ class CategoriesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtCategoryName, drbLimit, currentPage, searchList } = this.state;
+            const { txtCategoryName, drbLimit, currentPage, searchList, totalItems } = this.state;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }
@@ -149,7 +149,7 @@ class CategoriesCMS extends Component {
                     <Link to="/categories/add" className="btn btn-success mb-5 ">
                         <i className="glyphicon glyphicon-plus"></i> Add Category
                 </Link>
-                    <CategorieList>
+                    <CategorieList limit={drbLimit} totalItems={totalItems}>
                         {this.showCategories(searchList)}
                     </CategorieList>
                     <div className="dataTables_paginate paging_bootstrap pagination">

@@ -95,7 +95,7 @@ class GamesCMS extends Component {
     render() {
         if (this.state.loaded) {
             const pageList = []
-            const { txtGameName, txtPlaceName,drbLimit, currentPage } = this.state;
+            const { txtGameName, txtPlaceName,drbLimit, currentPage, totalItems } = this.state;
             for (let i = 1; i <= this.state.totalPage; i++) {
                 pageList.push(i)
             }
@@ -169,7 +169,7 @@ class GamesCMS extends Component {
                     <Link to="/games/add" className="btn btn-success mb-5 ">
                         <i className="glyphicon glyphicon-plus"></i> Add New Game
                 </Link>
-                    <GameList>
+                    <GameList totalItems={totalItems} >
                         {this.showGames(this.state.searchList)}
                     </GameList>
                     <div className="dataTables_paginate paging_bootstrap pagination">
