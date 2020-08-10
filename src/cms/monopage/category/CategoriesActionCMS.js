@@ -11,7 +11,7 @@ class CategoryActionCMS extends Component {
         this.state = {
             id: '',
             txtName: '',
-            txtKey: '',
+            txtDescription: '',
             fileImage: null
         };
     }
@@ -30,7 +30,7 @@ class CategoryActionCMS extends Component {
             this.setState({
                 id: itemEditing.id,
                 txtName: itemEditing.categoryName,
-                txtKey: itemEditing.typeKey,
+                txtDescription: itemEditing.description,
             })
         }
     }
@@ -47,11 +47,11 @@ class CategoryActionCMS extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        var { id, txtName, txtKey, fileImage } = this.state;
+        var { id, txtName, txtDescription, fileImage } = this.state;
         var category = {
             id: id,
             categoryName: txtName,
-            typeKey: txtKey
+            description: txtDescription
         };
         let data = new FormData();
         if (fileImage !== null && typeof fileImage !== "undefined") {
@@ -66,14 +66,19 @@ class CategoryActionCMS extends Component {
     }
 
     render() {
-        var { txtName, txtKey } = this.state;
+        var { txtName, txtDescription } = this.state;
         return (
             <div className="container">
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">
                         <label>Category Name *</label>
-                        <input required onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                        <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
+                    </div>
+                    <div className="form-group">
+                            <label>Description </label>
+                            <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDescription} name="txtDescription" className="form-control" rows="3">
+                            </textarea>
                     </div>
                     <div className="form-group">
                         <label>Choose image file </label>
@@ -81,13 +86,9 @@ class CategoryActionCMS extends Component {
                             type="file"
                             label="File"
                             name="fileImage"
-                            onChange={this.onChange} />
+                            onChange={this.onChange}/>
                     </div>
-                    {/* <div className="form-group">
-                        <label>Category Key </label>
-                        <input onChange={this.onChange} value={txtKey} name="txtKey" type="text" className="form-control" />
-                    </div> */}
-                    <Link to="/Category" className="btn btn-danger mr-5">
+                    <Link to="/categories" className="btn btn-danger mr-5">
                         <i className="glyphicon glyphicon-arrow-left"></i> Back
                     </Link>
                     <button type="submit" className="btn btn-primary">

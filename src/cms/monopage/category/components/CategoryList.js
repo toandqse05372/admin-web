@@ -15,7 +15,7 @@ class PlaceTypeList extends Component {
                             <tr>
                                 <th>#</th>
                                 <th>Category Name</th>
-                                {/* <th>Category Code</th> */}
+                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>

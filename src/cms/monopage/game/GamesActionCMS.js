@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { actAddGameRequest, actUpdateGameRequest, actGetGameRequest } from '../../../actions/indexGames';
 import { actFetchPlacesRequest } from '../../../actions/indexPlaces';
 import Select from 'react-select'
-import { Col, Row } from 'react-bootstrap'
-import { NotificationManager } from 'react-notifications';
 // const [open, setOpen] = useState(false);
 
 class GamesActionCMS extends Component {

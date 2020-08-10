@@ -145,7 +145,6 @@ class UsersActionCMS extends Component {
                 var option = { value: roles[i].roleKey, label: roles[i].roleKey }
                 options.push(option);
                 if (choosed.includes(option.label)) {
-                    debugger
                     renderOpt.push(option)
                 }
             }
@@ -180,7 +179,7 @@ class UsersActionCMS extends Component {
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
                             <label>First Name *</label>
-                            <input required style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
+                            <input required maxLength="100" style={{ width: 350 }} onChange={this.onChange} value={txtFirstName} name="txtFirstName" type="text" className="form-control" />
                         </div>
                         <div className="form-group">
                             <label>Last Name *</label>

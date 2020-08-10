@@ -15,7 +15,7 @@ class PlaceTypeItem extends Component {
             <tr>
                 <td style={{width:"30px"}}>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{category.categoryName}</td>
-
+                <td>{category.description}</td>
                 <td className="center">
                     <Link to={`/categories/${category.id}/edit`} className="btn btn-info">
                         <i className="halflings-icon white edit"></i> 

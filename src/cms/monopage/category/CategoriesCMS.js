@@ -96,7 +96,7 @@ class CategoriesCMS extends Component {
                 if (number == currentPage) {
                     return (
                         <li className="active" disabled >
-                            <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
+                            <a value={number} >{number}</a>
                         </li>
                     );
                 } else
