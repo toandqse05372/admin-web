@@ -41,6 +41,7 @@ class PlacesActionCMS extends Component {
             txtName: '',
             txtShortDescription: '',
             txtDetailDescription: '',
+            txtKey: '',
 
             errorCategory: '',
             erorOpenDays: '',
@@ -87,6 +88,7 @@ class PlacesActionCMS extends Component {
                         txtOpenHours: itemEditing.openingHours,
                         txtAddress: itemEditing.address,
                         txtImageLink: itemEditing.placeImageLink,
+                        txtKey: itemEditing.placeKey,
                         fetched: true
                     })
                 }
@@ -117,7 +119,7 @@ class PlacesActionCMS extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         var { id, fileImage, txtOpenHours, drbWeekDays, txtAddress, txtMail, drbCityId, txtPhoneNumber, drbCategory, txtName,
-            txtShortDescription, txtDetailDescription } = this.state;
+            txtShortDescription, txtDetailDescription, txtKey } = this.state;
 
         var hasError = false
         var catErrorStr = ''
@@ -163,7 +165,8 @@ class PlacesActionCMS extends Component {
                 phoneNumber: txtPhoneNumber,
                 categoryId: drbCategory,
                 weekDays: drbWeekDays,
-                openingHours: txtOpenHours
+                openingHours: txtOpenHours,
+                placeKey: txtKey
             };
             let data = new FormData();
             if (fileImage !== null && typeof fileImage !== "undefined") {
@@ -218,7 +221,7 @@ class PlacesActionCMS extends Component {
 
     render() {
         var { drbCityId, drbWeekDays, txtAddress, txtOpenHours, txtPhoneNumber, txtMail, drbCategory, loaded, errorMail, errorPhoneNumber,
-            txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity } = this.state;
+            txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity, txtKey } = this.state;
         var { cities, categories, match } = this.props
         var renderOptWd = []
         if (this.state.fetched) {
@@ -246,7 +249,7 @@ class PlacesActionCMS extends Component {
                         </div>
                         <div className="form-group rowElement">
                             <label>Place Key </label>
-                            <input style={{ width: 50 }} type="text" className="form-control" />
+                            <input style={{ width: 50 }} type="text" className="form-control" value={txtKey} name="txtKey" onChange={this.onChange}/>
                         </div>
                         <div className="myDiv">
                             <label>Category *</label>

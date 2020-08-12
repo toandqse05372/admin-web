@@ -4,7 +4,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import cmsRoutes from './config/cmsRouter';
 import CmsParent from './cms/CmsParent';
 import LoginCMS from './cms/authen/LoginCMS';
-import callApi from './utils/apiCaller'
+import callApi from './utils/apiCaller';
+import {
+  BrowserView,
+  MobileView,
+  isBrowser,
+  isMobile
+} from "react-device-detect";
 
 class App extends Component {
   constructor(props) {
@@ -32,20 +38,29 @@ class App extends Component {
   }
 
   render() {
-    const { loaded } = this.state;
-    if (loaded) {
-      return (
-        <Router>
-          <CmsParent />
-        </Router>
-      )
-    } else {
-      return (
-        <Router>
-          <LoginCMS />
-        </Router>
-      );
+    if(isBrowser){
+      debugger
+      const { loaded } = this.state;
+      if (loaded) {
+        return (
+          <Router>
+            <CmsParent />
+          </Router>
+        )
+      } else {
+        return (
+          <Router>
+            <LoginCMS />
+          </Router>
+        );
+      }
+    }else{
+      debugger
+      return <MobileView>
+        This website is only available on PC
+      </MobileView>
     }
+    
 
 
   }
