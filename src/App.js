@@ -34,6 +34,10 @@ class App extends Component {
         localStorage.removeItem('tokenLogin');
         window.location.reload();
       });
+    }else{
+      this.setState({
+        loaded: false
+      })
     }
   }
 

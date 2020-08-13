@@ -108,6 +108,7 @@ class OrdersCMS extends Component {
                 params: {
                     status: status,
                     code: paramBody.code,
+                    placeId: placeId
                 }
             }
         ).then(res => {
@@ -128,8 +129,8 @@ class OrdersCMS extends Component {
         var optionsPlace = []
         var renderOptPlace = drbPlaceId
         if (places.length > 0 && !fetchedPlace) {
-            
-            for (let i = 1; i <= places.length; i++) {
+            optionsPlace.push({ value: 0, label: 'All' });
+            for (let i = 0; i < places.length; i++) {
                 var option = { value: places[i].id, label: places[i].name }
                 optionsPlace.push(option);
                 if (drbPlaceId === option.value) {
