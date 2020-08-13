@@ -16,7 +16,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loaded: false,
+      loaded: true,
       tokenLoginGot: null
     }
   }
@@ -39,7 +39,6 @@ class App extends Component {
 
   render() {
     if(isBrowser){
-      debugger
       const { loaded } = this.state;
       if (loaded) {
         return (

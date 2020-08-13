@@ -111,7 +111,7 @@ class OrdersCMS extends Component {
                 NotificationManager.error('Error message', 'Booking date has been passed');
             }
             localStorage.removeItem('sendStatus')
-            const { txtOrderPaid, txtOrderUnpaid, txtOrderSent } = this.state;
+            const { txtOrderPaid, txtOrderUnpaid, txtOrderSent, searchList } = this.state;
             return (
                 <Tabs selectedIndex={this.state.tabIndex}
                     onSelect={tabIndex => this.onChangeTab(tabIndex)}>
@@ -140,8 +140,8 @@ class OrdersCMS extends Component {
                                 Search
                         </Button>
                         </Form>
-                        <PaidOrderList>
-                            {this.showPaid(this.state.searchList)}
+                        <PaidOrderList totalItems={searchList.length}>
+                            {this.showPaid(searchList)}
                         </PaidOrderList>
                     </TabPanel>
                     <TabPanel>
@@ -161,8 +161,8 @@ class OrdersCMS extends Component {
                                 Search
                         </Button>
                         </Form>
-                        <UnpaidOrderList>
-                            {this.showUnpaid(this.state.searchList)}
+                        <UnpaidOrderList totalItems={searchList.length}>
+                            {this.showUnpaid(searchList)}
                         </UnpaidOrderList>
                     </TabPanel>
                     <TabPanel>
@@ -182,8 +182,8 @@ class OrdersCMS extends Component {
                                 Search
                         </Button>
                         </Form>
-                        <SentOrderList>
-                            {this.showSent(this.state.searchList)}
+                        <SentOrderList totalItems={searchList.length}>
+                            {this.showSent(searchList)}
                         </SentOrderList>
                     </TabPanel>
                 </Tabs>

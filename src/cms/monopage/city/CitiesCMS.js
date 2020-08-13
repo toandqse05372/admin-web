@@ -89,6 +89,16 @@ class CitiesCMS extends Component {
 
     render() {
         if (this.state.loaded) {
+            if (localStorage.getItem('deleteResult')) {
+                const excelResult = localStorage.getItem('deleteResult');
+                if (excelResult === "OK") {
+                    NotificationManager.success('Success message', 'Deltete city successful');
+                    localStorage.removeItem('deleteResult');
+                } else {
+                    NotificationManager.error('Error message', "Something wrong");
+                    localStorage.removeItem('deleteResult');
+                }
+            }
             const pageList = []
             const { txtCityName, drbLimit, currentPage, totalItems } = this.state;
             var { cities } = this.props;
@@ -184,23 +194,28 @@ class CitiesCMS extends Component {
     handleDelete(itemId) {
         this.props.showOverlay(LoadType.deleting)
         const { searchList } = this.state;
-        axios.delete(Config.API_URL + `/city/${itemId}`,{
+        axios.delete(Config.API_URL + `/city/${itemId}`, {
             headers: {
                 Authorization: Config.Token
             }
         }).then(res => {
             this.props.showOverlay(LoadType.none)
-            NotificationManager.success('Success message', 'Delete city successful');
             const items = searchList.filter(item => item.id !== itemId)
-            this.setState({
-                searchList: items
-            })
+            if (items.length == 0) {
+                localStorage.setItem('deleteResult', 'OK');
+                window.location.reload()
+            } else {
+                NotificationManager.success('Success message', 'Delete city successful');
+                this.setState({
+                    searchList: items
+                })
+            }
         }).catch(error => {
             this.props.showOverlay(LoadType.none)
-            if(error.response){
+            if (error.response) {
                 if (error.response.data === 'CITY_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'City not found');
-                }else{
+                } else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
             }
@@ -213,7 +228,7 @@ class CitiesCMS extends Component {
         if (cities.length > 0) {
             result = cities.map((city, index) => {
                 return <CityItem city={city} key={index} index={index} onDeleteCity={this.handleDelete}
-                limit={this.state.drbLimit} currentPage={this.state.currentPage} />
+                    limit={this.state.drbLimit} currentPage={this.state.currentPage} />
             });
         }
         return result;

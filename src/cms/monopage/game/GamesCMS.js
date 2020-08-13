@@ -94,6 +94,16 @@ class GamesCMS extends Component {
 
     render() {
         if (this.state.loaded) {
+            if (localStorage.getItem('deleteResult')) {
+                const excelResult = localStorage.getItem('deleteResult');
+                if(excelResult === "OK"){
+                    NotificationManager.success('Success message', 'Deltete game successful');
+                    localStorage.removeItem('deleteResult');
+                }else{
+                    NotificationManager.error('Error message', "Something wrong");
+                    localStorage.removeItem('deleteResult');
+                }
+            }
             const pageList = []
             const { txtGameName, txtPlaceName,drbLimit, currentPage, totalItems } = this.state;
             for (let i = 1; i <= this.state.totalPage; i++) {
@@ -210,9 +220,15 @@ class GamesCMS extends Component {
             this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Delete game successful');
             const items = searchList.filter(item => item.id !== itemId)
-            this.setState({
-                searchList: items
-            })
+            if (items.length == 0) {
+                localStorage.setItem('deleteResult', 'OK');
+                window.location.reload()
+            } else {
+                NotificationManager.success('Success message', 'Delete game successful');
+                this.setState({
+                    searchList: items
+                })
+            }
         }).catch(error => {
             this.props.showOverlay(LoadType.none)
             if(error.response){

@@ -87,6 +87,16 @@ class CategoriesCMS extends Component {
 
     render() {
         if (this.state.loaded) {
+            if (localStorage.getItem('deleteResult')) {
+                const excelResult = localStorage.getItem('deleteResult');
+                if(excelResult === "OK"){
+                    NotificationManager.success('Success message', 'Deltete category successful');
+                    localStorage.removeItem('deleteResult');
+                }else{
+                    NotificationManager.error('Error message', "Something wrong");
+                    localStorage.removeItem('deleteResult');
+                }
+            }
             const pageList = []
             const { txtCategoryName, drbLimit, currentPage, searchList, totalItems } = this.state;
             for (let i = 1; i <= this.state.totalPage; i++) {
@@ -186,11 +196,16 @@ class CategoriesCMS extends Component {
             }
         }).then(res => {
             this.props.showOverlay(LoadType.none)
-            NotificationManager.success('Success message', 'Delete category successful');
             const items = searchList.filter(item => item.id !== itemId)
-            this.setState({
-                searchList: items
-            })
+            if (items.length == 0) {
+                localStorage.setItem('deleteResult', 'OK');
+                window.location.reload()
+            } else {
+                NotificationManager.success('Success message', 'Delete category successful');
+                this.setState({
+                    searchList: items
+                })
+            }
         }).catch(error => {
             this.props.showOverlay(LoadType.none)
             if(error.response){
