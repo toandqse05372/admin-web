@@ -42,8 +42,7 @@ class TicketTypesCMS extends Component {
             this.receivedData(placeId)
             this.setState({
                 drbPlaceId: Number(placeId),
-                txtPlaceName: placeName,
-                loaded: true
+                txtPlaceName: placeName
             })
         }
     }

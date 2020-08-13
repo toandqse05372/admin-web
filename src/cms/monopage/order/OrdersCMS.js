@@ -17,19 +17,19 @@ import { actUpdateOverlay } from '../../../actions/indexOverlay';
 import * as LoadType from '../../../constants/LoadingType';
 import callApi from '../../../utils/apiCaller'
 import { NotificationManager } from 'react-notifications';
+import Select from 'react-select';
+import { actFetchPlacesRequest } from '../../../actions/indexPlaces'
 
 class OrdersCMS extends Component {
     constructor(props) {
         super(props);
         this.state = {
             loaded: false,
-            searchListPaid: [],
-            searchListUnpaid: [],
-            searchListSent: [],
-
+            searchList: [],
             txtOrderPaid: '',
             txtOrderUnpaid: '',
             txtOrderSent: '',
+            fetchedPlace: false,
 
             tabIndex: 0,
             txtStatus: 'PAID',
@@ -41,7 +41,17 @@ class OrdersCMS extends Component {
         this.handleDelete = this.handleDelete.bind(this)
     }
     componentDidMount() {// Gọi trước khi component đc render lần đầu tiên
-        this.receivedData(this.state.paramBody, this.state.txtStatus);
+        this.props.fetchAllPlaces()
+        let placeId = localStorage.getItem('placeIdOrder');
+        let placeName = localStorage.getItem('placeNameOrder');
+        if (placeId != null) {
+            this.receivedData(this.state.paramBody, this.state.txtStatus, placeId);
+            this.setState({
+                drbPlaceId: Number(placeId),
+                txtPlaceName: placeName
+            })
+        }
+
     }
 
     onChange = (e) => {
@@ -62,6 +72,16 @@ class OrdersCMS extends Component {
         this.receivedData(this.state.paramBody, this.state.txtStatus);
     }
 
+    onChangePlace = (e) => {
+        this.setState({
+            drbPlaceId: e.value,
+            txtPlaceName: e.label
+        });
+        this.receivedData(this.state.paramBody, this.state.txtStatus, e.value);
+        localStorage.setItem('placeIdOrder', e.value);
+        localStorage.setItem('placeNameOrder', e.label);
+    }
+
     onChangeTab(tabIndex) {
         var status = null
         if (tabIndex === 0) {
@@ -78,7 +98,7 @@ class OrdersCMS extends Component {
         this.receivedData(this.state.paramBody, status)
     }
 
-    receivedData(paramBody, status) {
+    receivedData(paramBody, status, placeId) {
         this.props.showOverlay(LoadType.loading)
         axios.get(URL.API_URL + '/order/searchByStatus',
             {
@@ -94,99 +114,129 @@ class OrdersCMS extends Component {
             this.props.showOverlay(LoadType.none)
             this.setState({
                 searchList: res.data.listResult,
+                loaded: true
             })
         }).catch(function (error) {
             this.props.showOverlay(LoadType.none)
             console.log(error.response);
         });
-        this.state.loaded = true
     }
 
     render() {
-        if (this.state.loaded) {
-            if(localStorage.getItem('sendStatus') === 'OK'){
-                NotificationManager.success('Success message', 'Send ticket successful');
+        var { loaded, txtOrderPaid, txtOrderUnpaid, txtOrderSent, searchList, txtPlaceName, drbPlaceId, fetchedPlace } = this.state;
+        var { places } = this.props
+        var optionsPlace = []
+        var renderOptPlace = drbPlaceId
+        if (places.length > 0 && !fetchedPlace) {
+            
+            for (let i = 1; i <= places.length; i++) {
+                var option = { value: places[i].id, label: places[i].name }
+                optionsPlace.push(option);
+                if (drbPlaceId === option.value) {
+                    renderOptPlace = i
+                }
             }
-            if(localStorage.getItem('sendStatus') === 'ORDER_EXPIRED'){
-                NotificationManager.error('Error message', 'Booking date has been passed');
+            fetchedPlace = true
+        }
+        if (fetchedPlace) {
+            if (localStorage.getItem('sendStatus')) {
+                if (localStorage.getItem('sendStatus') === 'OK') {
+                    NotificationManager.success('Success message', 'Send ticket successful');
+                }
+                if (localStorage.getItem('sendStatus') === 'ORDER_EXPIRED') {
+                    NotificationManager.error('Error message', 'Booking date has been passed');
+                }
+                localStorage.removeItem('sendStatus')
             }
-            localStorage.removeItem('sendStatus')
-            const { txtOrderPaid, txtOrderUnpaid, txtOrderSent, searchList } = this.state;
             return (
-                <Tabs selectedIndex={this.state.tabIndex}
-                    onSelect={tabIndex => this.onChangeTab(tabIndex)}>
+                <React.Fragment>
                     <div style={{ marginBottom: '30px' }}>
                         <h1>Order Manager</h1>
                     </div>
-                    <TabList>
-                        <Tab>Show paid orders</Tab>
-                        <Tab>Show unpaid orders</Tab>
-                        <Tab>Show sent orders</Tab>
-                    </TabList>
-                    <TabPanel>
-                        <Form onSubmit={this.onSubmitSearch} >
-                            <Form.Label id="basic-addon1">Order Code </Form.Label>
-                            <FormControl
-                                type="text"
-                                placeholder="Order code"
-                                name="txtOrderPaid"
-                                value={txtOrderPaid}
-                                onChange={this.onChange}
+                    <div className="myDiv">
+                        <h3>Place Name: {txtPlaceName} </h3>
+                        <div className="rowElement">
+                            <Select
+                                options={optionsPlace}
+                                onChange={this.onChangePlace}
                             />
-                            <Button
-                                style={{ marginBottom: '10px', height: '32px' }}
-                                type="Submit"
-                                className="btn btn-inverse mb-5">
-                                Search
+                        </div>
+                    </div>   
+                    {loaded ?  <Tabs selectedIndex={this.state.tabIndex}
+                        onSelect={tabIndex => this.onChangeTab(tabIndex)}>
+
+                        <TabList>
+                            <Tab>Show paid orders</Tab>
+                            <Tab>Show unpaid orders</Tab>
+                            <Tab>Show sent orders</Tab>
+                        </TabList>
+                        <TabPanel>
+                            <Form onSubmit={this.onSubmitSearch} >
+                                <Form.Label id="basic-addon1">Order Code </Form.Label>
+                                <FormControl
+                                    type="text"
+                                    placeholder="Order code"
+                                    name="txtOrderPaid"
+                                    value={txtOrderPaid}
+                                    onChange={this.onChange}
+                                />
+                                <Button
+                                    style={{ marginBottom: '10px', height: '32px' }}
+                                    type="Submit"
+                                    className="btn btn-inverse mb-5">
+                                    Search
                         </Button>
-                        </Form>
-                        <PaidOrderList totalItems={searchList.length}>
-                            {this.showPaid(searchList)}
-                        </PaidOrderList>
-                    </TabPanel>
-                    <TabPanel>
-                        <Form onSubmit={this.onSubmitSearch} >
-                            <Form.Label id="basic-addon1">Order Code </Form.Label>
-                            <FormControl
-                                type="text"
-                                placeholder="Order code"
-                                name="txtOrderUnpaid"
-                                value={txtOrderUnpaid}
-                                onChange={this.onChange}
-                            />
-                            <Button
-                                style={{ marginBottom: '10px', height: '32px' }}
-                                type="Submit"
-                                className="btn btn-inverse mb-5">
-                                Search
+                            </Form>
+                            <PaidOrderList totalItems={searchList.length}>
+                                {this.showPaid(searchList)}
+                            </PaidOrderList>
+                        </TabPanel>
+                        <TabPanel>
+                            <Form onSubmit={this.onSubmitSearch} >
+                                <Form.Label id="basic-addon1">Order Code </Form.Label>
+                                <FormControl
+                                    type="text"
+                                    placeholder="Order code"
+                                    name="txtOrderUnpaid"
+                                    value={txtOrderUnpaid}
+                                    onChange={this.onChange}
+                                />
+                                <Button
+                                    style={{ marginBottom: '10px', height: '32px' }}
+                                    type="Submit"
+                                    className="btn btn-inverse mb-5">
+                                    Search
                         </Button>
-                        </Form>
-                        <UnpaidOrderList totalItems={searchList.length}>
-                            {this.showUnpaid(searchList)}
-                        </UnpaidOrderList>
-                    </TabPanel>
-                    <TabPanel>
-                        <Form onSubmit={this.onSubmitSearch} >
-                            <Form.Label id="basic-addon1">Order Code </Form.Label>
-                            <FormControl
-                                type="text"
-                                placeholder="Order code"
-                                name="txtOrderSent"
-                                value={txtOrderSent}
-                                onChange={this.onChange}
-                            />
-                            <Button
-                                style={{ marginBottom: '10px', height: '32px' }}
-                                type="Submit"
-                                className="btn btn-inverse mb-5">
-                                Search
+                            </Form>
+                            <UnpaidOrderList totalItems={searchList.length}>
+                                {this.showUnpaid(searchList)}
+                            </UnpaidOrderList>
+                        </TabPanel>
+                        <TabPanel>
+                            <Form onSubmit={this.onSubmitSearch} >
+                                <Form.Label id="basic-addon1">Order Code </Form.Label>
+                                <FormControl
+                                    type="text"
+                                    placeholder="Order code"
+                                    name="txtOrderSent"
+                                    value={txtOrderSent}
+                                    onChange={this.onChange}
+                                />
+                                <Button
+                                    style={{ marginBottom: '10px', height: '32px' }}
+                                    type="Submit"
+                                    className="btn btn-inverse mb-5">
+                                    Search
                         </Button>
-                        </Form>
-                        <SentOrderList totalItems={searchList.length}>
-                            {this.showSent(searchList)}
-                        </SentOrderList>
-                    </TabPanel>
-                </Tabs>
+                            </Form>
+                            <SentOrderList totalItems={searchList.length}>
+                                {this.showSent(searchList)}
+                            </SentOrderList>
+                        </TabPanel>
+                    </Tabs>
+                    : ""}           
+                </React.Fragment>
+
             );
         } else
             return ""
@@ -293,7 +343,8 @@ class OrdersCMS extends Component {
 
 const mapStateToProps = state => {
     return {
-        orders: state.orders
+        orders: state.orders,
+        places: state.places
     }
 }
 
@@ -301,6 +352,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         onDeleteOrder: (id) => {
             dispatch(actDeleteOrderRequest(id));
+        },
+        fetchAllPlaces: () => {
+            dispatch(actFetchPlacesRequest());
         },
         showOverlay: (overlay) => {
             dispatch(actUpdateOverlay(overlay))

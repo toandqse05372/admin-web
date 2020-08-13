@@ -11,6 +11,7 @@ class VisitorTypeItem extends Component {
 
     onMarkBasic = (id) => {
         if (window.confirm('Are you sure want to mark this as basic type?')) {
+            debugger
             this.props.onMarkBasic(id);
         }
     }

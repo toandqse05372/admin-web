@@ -44,17 +44,17 @@ class TicketTypeItem extends Component {
     }
 
     onMarkBasic = (id) => {
-        // this.props.showOverlay(LoadType.updating)
+        this.props.showOverlay(LoadType.updating)
         let data = new FormData();
         data.append('placeId', localStorage.getItem('placeId'));
         callApi(`markPrice/${id}`, 'PUT', data).then(res => {
             if (res) {
-                // this.props.showOverlay(LoadType.none)
+                this.props.showOverlay(LoadType.none)
                 localStorage.setItem('markType', "OK");
                 window.location.reload()
             }
         }).catch(function (error) {
-            //  this.props.showOverlay(LoadType.none)
+             this.props.showOverlay(LoadType.none)
             if (error.response) {
                 if (error.response.data === 'VISITOR_TYPE_NOT_FOUND') {
                     NotificationManager.error('Error  message', 'Type not found');
@@ -201,7 +201,7 @@ class TicketTypeItem extends Component {
                     key={index} index={index} onDeleteTicketType={this.handleDelete} 
                     onChangeStatus={this.handleChangeStatus} 
                     ticketTypeId={this.props.ticketTypes.id}
-                    ticketTypeName={this.props.ticketTypes.typeName} onMarrkBasic={this.onMarrkBasic} />
+                    ticketTypeName={this.props.ticketTypes.typeName} onMarkBasic={this.onMarkBasic} />
             });
         }
         return result;
