@@ -58,7 +58,6 @@ class App extends Component {
         );
       }
     }else{
-      debugger
       return <MobileView>
         This website is only available on PC
       </MobileView>

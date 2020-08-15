@@ -15,7 +15,8 @@ class SaleList extends Component {
                             <tr>
                                 <th>#</th>
                                 <th>Ticket Type</th>
-                                <th>Quantity</th>
+                                <th>Sold</th>
+                                <th>Remaining</th>
                                 <th>Total</th>
                             </tr>
                         </thead>

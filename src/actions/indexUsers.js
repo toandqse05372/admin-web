@@ -85,7 +85,6 @@ export const actUpdateUser = (user) => {
 
 export const actDeleteUserRequest = (id) => {
     return (dispatch) => {
-        // debugger
         // dispatch(actUpdateOverlay())
         return callApi(`user/${id}`, 'DELETE', null).then(res => {
             if (res) {

@@ -56,7 +56,7 @@ class LoginCMS extends Component {
                     if (error.response.data === 'WRONG_USERNAME_PASSWORD') {
                         errorStr = "Wrong username or password"
                     } else {
-                        errorStr = "Account has been logged in"
+                        errorStr = "Account doesn't have access to CMS"
                     }
                 }
                 self.setState({

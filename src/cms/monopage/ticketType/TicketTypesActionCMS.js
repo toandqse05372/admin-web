@@ -91,11 +91,12 @@ class TicketTypesActionCMS extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         var { id, txtName, drbGameId } = this.state;
+        var { match, location } = this.props
         var city = {
             id: id,
             typeName: txtName,
             gameId: drbGameId,
-            placeId: this.props.location.state.placeId
+            placeId: match ? match.params.place : location.state.placeId
         };
         if (drbGameId.length < 1) {
             this.setState({
@@ -130,24 +131,6 @@ class TicketTypesActionCMS extends Component {
         }
     }
 
-    // showPlace(places, choosed) {
-    //     var options = []
-    //     var renderOpt = null
-    //     if (places.length > 0 && this.state.fetched && typeof choosed !== "undefined") {
-    //         for (let i = 0; i < places.length; i++) {
-    //             var option = { value: places[i].id, label: places[i].name }
-    //             options.push(option);
-    //             if (choosed === places[i].id) {
-    //                 renderOpt = option
-    //             }
-    //         }
-    //         return <Select
-    //             defaultValue={renderOpt}
-    //             options={options}
-    //             onChange={this.onChangePlace} />
-    //     }
-    // }
-
     render() {
         var { txtName, gameErrorStr, drbGameId, loaded, fetched } = this.state;
         var { games, match } = this.props;
@@ -177,38 +160,6 @@ class TicketTypesActionCMS extends Component {
                                 <label>Ticket Name *</label>
                                 <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                             </div>
-                            {/* <div className="form-group">
-                                <label>Effective Time</label>
-                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtShortDescription} name="txtShortDescription" className="form-control" rows="3">
-                                </textarea>
-                            </div>
-                            <div className="form-group">
-                                <label>Description</label>
-                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                                </textarea>
-                            </div>
-                            <div className="form-group">
-                                <label>Cancel Policy</label>
-                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                                </textarea>
-                            </div>
-                            <div className="form-group">
-                                <label>Reservation Infomation</label>
-                                <textarea style={{ width: 350 }} onChange={this.onChange} value={txtDetailDescription} name="txtDetailDescription" className="form-control" rows="3">
-                                </textarea>
-                            </div>
-                            <div className="form-group">
-                                <label>Conversion Method</label>
-                                <textarea
-                                    style={{ width: 350 }}
-                                    value={txtDetailDescription}
-                                    name="txtDetailDescription"
-                                    className="form-control"
-                                    rows="3"
-                                    onBlur={this.handleBlur}
-                                >
-                                </textarea>
-                            </div> */}
                             <Link to="/ticketTypes" className="btn btn-danger mr-5">
                                 <i className="glyphicon glyphicon-arrow-left"></i> Back
                             </Link>

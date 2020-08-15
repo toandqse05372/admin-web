@@ -30,10 +30,10 @@ export const actAddVisitorType = (visitorType) => {
     }
 }
 
-export const actUpdateVisitorTypeRequest = (visitorType, child) => {
+export const actUpdateVisitorTypeRequest = (visitorType, id, child) => {
     return (dispatch) => {
         dispatch(actUpdateOverlay(LoadType.updating))
-        return callApi(`visitorType/${visitorType.id}`, 'PUT', visitorType).then(res => {
+        return callApi(`visitorType/${id}`, 'PUT', visitorType).then(res => {
             if (res) {
                 dispatch(actUpdateOverlay(LoadType.none))
                 dispatch(actUpdateVisitorType(res.data));
@@ -44,6 +44,10 @@ export const actUpdateVisitorTypeRequest = (visitorType, child) => {
             dispatch(actUpdateOverlay(LoadType.none))
             if (error.response.data === 'VISITOR_TYPE_EXISTED') {
                 NotificationManager.error('Error  message', 'Visitor type has been existed');
+            }else if(error.response.data === 'VISITOR_TYPE_KEY_EXISTED'){
+                NotificationManager.error('Error  message', 'Key has been existed');
+            }else{
+                NotificationManager.error('Error  message', 'Something wrong');
             }
         });
     }

@@ -51,7 +51,6 @@ export const actUpdatePaymentMethodRequest = (paymentMethod, child) => {
             }
             child.goBack();
         }).catch(function(error) {
-            debugger
             if(error.response){
                 if(error.response.data === 'PAYMENT_METHOD_EXISTED'){
                     NotificationManager.error('Error  message', 'Payment Method has been existed');

@@ -10,6 +10,7 @@ class SaleItem extends Component {
                 <td style={{width:"30px"}}>{index + 1}</td>
                 <td>{sale.ticketTypeName}</td>
                 <td>{sale.quantity}</td>
+                <td>{sale.remaining}</td>
                 <td>{moneyAdddot} VNĐ</td>
             </tr>
            

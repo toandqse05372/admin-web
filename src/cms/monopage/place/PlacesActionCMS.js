@@ -183,7 +183,6 @@ class PlacesActionCMS extends Component {
                 this.props.onAddPlace(data);
             }
         } else {
-            debugger
             this.setState({
                 errorCity: cityErrorStr,
                 errorCategory: catErrorStr,

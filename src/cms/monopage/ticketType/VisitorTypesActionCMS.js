@@ -64,7 +64,7 @@ class VisitorTypesActionCMS extends Component {
         data.append('placeId', localStorage.getItem('placeId'));
         data.append('visitorType', JSON.stringify(visitorType));
         if (id) {
-            this.props.onUpdateVisitorType(visitorType);
+            this.props.onUpdateVisitorType(data, id);
         } else {
             this.props.onAddVisitorType(data);
         }
@@ -82,7 +82,7 @@ class VisitorTypesActionCMS extends Component {
                         <input required style={{ width: 350 }} onChange={this.onChange} value={txtName} name="txtName" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
-                        <label>Product Code *</label>
+                        <label>Product Key *</label>
                         <input required style={{ width: 350 }} onChange={this.onChange} value={txtProductCode} name="txtProductCode" type="text" className="form-control" />
                     </div>
                     <div className="form-group">
@@ -114,8 +114,8 @@ const mapDispatchToProps = (dispatch, props) => {
         onAddVisitorType: (visitorType) => {
             dispatch(actAddVisitorTypeRequest(visitorType, props.history));
         },
-        onUpdateVisitorType: (visitorType) => {
-            dispatch(actUpdateVisitorTypeRequest(visitorType, props.history));
+        onUpdateVisitorType: (visitorType, id) => {
+            dispatch(actUpdateVisitorTypeRequest(visitorType, id, props.history));
         },
         onGetVisitorType: (id) => {
             dispatch(actGetVisitorTypeRequest(id));

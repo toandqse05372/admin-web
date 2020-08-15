@@ -25,8 +25,8 @@ class Report extends Component {
             txtPlaceName: '',
             drbPlaceId: 0,
             drbOption: 0,
-            startDate: new Date().setDate(new Date().getDate() - 7),
-            endDate: new Date().setDate(new Date().getDate()),
+            startDate: new Date().setHours(0,0,0,0),
+            endDate: new Date().setHours(23,59,59,0),
             history: null,
             totalRevenue: 0,
         }
@@ -53,7 +53,6 @@ class Report extends Component {
 
     receivedData() {
         const { drbPlaceId, drbOption, startDate, endDate } = this.state
-        debugger
         this.props.showOverlay(LoadType.loading)
         this.setState({
             searchList: []
@@ -148,6 +147,7 @@ class Report extends Component {
                             <div className="rowElement">
                                 <h3>From date</h3>
                                 <DatePicker
+                                    dateFormat="dd/MM/yyyy"
                                     selected={startDate}
                                     selectsStart
                                     onChange={date => this.changeStart(date)}
@@ -157,6 +157,7 @@ class Report extends Component {
                             <div className="rowElement">
                                 <h3>To date</h3>
                                 <DatePicker
+                                    dateFormat="dd/MM/yyyy"
                                     selected={endDate}
                                     selectsEnd
                                     onChange={date => this.changeEnd(date)}
@@ -165,10 +166,10 @@ class Report extends Component {
                                     minDate={startDate}
                                 /></div>
                         </div>
-                            <Button
-                                type="Submit"
-                                className="btn btn-inverse mb-5">
-                                Show report
+                        <Button
+                            type="Submit"
+                            className="btn btn-inverse mb-5">
+                            Show report
                             </Button>
 
                     </Form>

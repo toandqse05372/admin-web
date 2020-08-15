@@ -59,7 +59,6 @@ class PlacesCMS extends Component {
         var target = e.target;
         var name = target.name;
         var value = target.value;
-        debugger
         this.setState({
             [name]: value,
             paramBody: {
@@ -98,7 +97,6 @@ class PlacesCMS extends Component {
             }
         ).then(res => {
             this.props.showOverlay(LoadType.none)
-            debugger
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
@@ -287,13 +285,11 @@ class PlacesCMS extends Component {
                 const updateIndex = searchList.findIndex(item => item.id == itemId)
                 let newList = searchList
                 var up = searchList[updateIndex].status
-                debugger
                 newList[updateIndex] = {
                     ...newList[updateIndex],
                     status: searchList[updateIndex].status === "ACTIVE" ? "DEACTIVATE" : "ACTIVE"
                 }
                 var up2 = newList[updateIndex].status
-                debugger
                 this.setState({
                     searchList: newList
                 })

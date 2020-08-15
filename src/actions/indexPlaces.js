@@ -109,7 +109,6 @@ export const actDeletePlaceRequest = (id) => {
             }
             NotificationManager.success('Success message', 'Delete place successful');
         }).catch(function(error) {
-            debugger
             if(error.response.data === 'PLACE_NOT_FOUND'){
                 NotificationManager.error('Error  message', 'Place not found');
             }
