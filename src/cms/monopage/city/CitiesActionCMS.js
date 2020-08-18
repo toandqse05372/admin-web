@@ -70,8 +70,10 @@ class CitiesActionCMS extends Component {
 
     render() {
         var { txtName, txtShortDescription, txtDetailDescription, fileImage } = this.state;
+        var { match } = this.props
         return (
             <div className="container">
+                <h1> {match ? 'Update city': 'Add new city'} </h1>
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">

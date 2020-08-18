@@ -67,8 +67,10 @@ class CategoryActionCMS extends Component {
 
     render() {
         var { txtName, txtDescription } = this.state;
+        var {match} = this.props
         return (
             <div className="container">
+                <h1> {match ? 'Update category': 'Add new category'} </h1>
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">

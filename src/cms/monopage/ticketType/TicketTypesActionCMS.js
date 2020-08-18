@@ -144,6 +144,7 @@ class TicketTypesActionCMS extends Component {
         if (loaded) {
             return (
                 <div className="container">
+                    <h1> {match ? 'Update ticket type': 'Add new ticket type'} </h1>
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="myDiv">

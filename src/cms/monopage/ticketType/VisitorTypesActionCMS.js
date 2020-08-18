@@ -72,9 +72,11 @@ class VisitorTypesActionCMS extends Component {
 
     render() {
         var { txtName, txtPrice, txtProductCode } = this.state;
-        const data = this.props.match ? null : this.props.location.state
+        var { match } = this.props
+        const data = match ? null : this.props.location.state
         return (
             <div className="container">
+                <h1> {match ? 'Update visitor type': 'Add new visitor type'} </h1>
                 <form onSubmit={this.onSubmit}>
                     <legend>* Please enter full information</legend>
                     <div className="form-group">

@@ -175,6 +175,7 @@ class UsersActionCMS extends Component {
         if (!loaded) {
             return (
                 <div className="container">
+                    <h1> {match ? 'Update user': 'Add new user'} </h1>
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="form-group">

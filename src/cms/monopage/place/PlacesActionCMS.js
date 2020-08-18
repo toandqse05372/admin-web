@@ -240,6 +240,7 @@ class PlacesActionCMS extends Component {
         if (loaded) {
             return (
                 <div className="container">
+                    <h1> {match ? 'Update place': 'Add new place'} </h1>
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="form-group rowElement">

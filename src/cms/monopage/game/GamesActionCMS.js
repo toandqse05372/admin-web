@@ -93,7 +93,7 @@ class GamesActionCMS extends Component {
     }
 
     render() {
-        var { places } = this.props;
+        var { places, match } = this.props;
         var { txtName, txtDescription, drbPlaceId, loaded, errorPlace } = this.state;
         var options = []
         var renderOpt = drbPlaceId
@@ -110,6 +110,7 @@ class GamesActionCMS extends Component {
         if (loaded) {
             return (
                 <div className="container">
+                    <h1> {match ? 'Update game': 'Add new game'} </h1>
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="form-group">
