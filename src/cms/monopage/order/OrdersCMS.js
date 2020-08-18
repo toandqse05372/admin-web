@@ -95,7 +95,7 @@ class OrdersCMS extends Component {
             tabIndex: tabIndex,
             txtStatus: status
         })
-        this.receivedData(this.state.paramBody, status)
+        this.receivedData(this.state.paramBody, status, localStorage.getItem('placeIdOrder'))
     }
 
     receivedData(paramBody, status, placeId) {

@@ -109,11 +109,7 @@ class LoginCMS extends Component {
                                         <h3 style={{ color: 'red' }}>{txtError}</h3>
                                     </div>
                                     <div className="clearfix" />
-                                    <hr />
-                                    <h3>Forgot Password?</h3>
-                                    <p>
-                                        No problem, <a href="#">click here</a> to get a new password.
-                  </p>
+                                   
                                 </fieldset></form></div>{/*/span*/}
                     </div>{/*/row*/}
                 </div>{/*/.fluid-container*/}
