@@ -26,8 +26,8 @@ class OrderItem extends Component {
                 <td>{moneyAdddot} VNĐ</td>
                 <td className="center">
                     <a className="btn btn-primary" onClick={() => this.onSendTicket(order.id)}> Resend ticket </a>
-                    <Link to={`/orders/${order.id}/edit`} className="btn btn-info">
-                        <i className="halflings-icon white edit"></i>
+                    <Link to={`/orders/${order.id}/edit`} className="btn btn-success">
+                        <i className="halflings-icon white search"></i>
                     </Link>
                     <a className="btn btn-danger" onClick={() => this.onDeleteOrder(order.id)}>
                         <i className="halflings-icon white trash" />

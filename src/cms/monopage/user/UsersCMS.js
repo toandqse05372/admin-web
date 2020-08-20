@@ -71,6 +71,9 @@ class UsersCMS extends Component {
 
     onSubmitSearch = (e) => {
         e.preventDefault();
+        this.setState({
+            currentPage: 1
+        })
         this.receivedData(this.state.paramBody);
     }
 
@@ -98,8 +101,7 @@ class UsersCMS extends Component {
             this.setState({
                 totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
-                totalItems: res.data.totalItems,
-                totalPage: res.data.totalPage
+                totalItems: res.data.totalItems
             })
         }).catch(error => {
             this.props.showOverlay(LoadType.none)
@@ -247,7 +249,6 @@ class UsersCMS extends Component {
 
     handlePageChange(number) {
         this.setState({
-            activePage: number,
             paramBody: {
                 firstName: this.state.txtFirstName,
                 lastName: this.state.txtLastName,
@@ -287,6 +288,8 @@ class UsersCMS extends Component {
             this.props.showOverlay(LoadType.none)
             if (error.response.data === 'USER_NOT_FOUND') {
                 NotificationManager.error('Error  message', 'User not found');
+            }else if (error.response.data === 'IS_ADMIN') {
+                NotificationManager.error('Error  message', "Can't delete admin");
             }else{
                 NotificationManager.error('Error  message', 'Something wrong');
             }

@@ -61,6 +61,9 @@ class GamesCMS extends Component {
 
     onSubmitSearch = (e) => {
         e.preventDefault();
+        this.setState({
+            currentPage: 1
+        })
         this.receivedData(this.state.paramBody);
     }
 
@@ -195,7 +198,6 @@ class GamesCMS extends Component {
 
     handlePageChange(number) {
         this.setState({
-            activePage: number,
             paramBody: {
                 name: this.state.txtPlaceName,
                 address: this.state.txtAddress,

@@ -79,7 +79,7 @@ export const actDeleteOrder = (id) => {
 export const actGetOrderRequest = (id) => {
     return dispatch => {
         dispatch(actUpdateOverlay(LoadType.loading));
-        return callApi(`order/${id}`, 'GET', null).then(res => {
+        return callApi(`orderCMS/${id}`, 'GET', null).then(res => {
             dispatch(actUpdateOverlay(LoadType.none));
             dispatch(actGetOrder(res.data))
         }).catch(error => {

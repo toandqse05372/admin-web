@@ -52,7 +52,7 @@ const cmsMenus = [
         role: ["ADMIN","STAFF"]
     },
     {
-        name: 'Report Static',
+        name: 'Sales Report',
         to: '/report',
         exact: true,
         role: ["ADMIN","STAFF"]

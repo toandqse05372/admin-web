@@ -82,7 +82,7 @@ class OrderActionCMS extends Component {
             var moneyAdddot = orderInfor.totalPayment.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
             return (
                 <div className="container">
-                    <legend>* Order {orderInfor.orderCode}</legend>
+                    <legend>* Order #{orderInfor.orderCode}</legend>
                     <div className="form-group"><label>Name: {orderInfor.firstName} {orderInfor.lastName}</label></div>
                     <div className="form-group"><label>Mail: {orderInfor.mail}</label></div>
                     <div className="form-group"><label>Phone number: {orderInfor.phoneNumber}</label></div>

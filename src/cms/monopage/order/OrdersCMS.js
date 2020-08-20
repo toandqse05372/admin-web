@@ -26,16 +26,16 @@ class OrdersCMS extends Component {
         this.state = {
             loaded: false,
             searchList: [],
-            txtOrderPaid: '',
-            txtOrderUnpaid: '',
-            txtOrderSent: '',
+            txtOrder: '',
             fetchedPlace: false,
+            drbLimit: 10,
+            activePage: 1,
+            currentPage: 1,
+            totalItems: 0,
+            totalPage: 1,
 
             tabIndex: 0,
             txtStatus: 'PAID',
-            paramBody: {
-                code: '',
-            }
         }
         this.sendTicket = this.sendTicket.bind(this)
         this.handleDelete = this.handleDelete.bind(this)
@@ -45,7 +45,7 @@ class OrdersCMS extends Component {
         let placeId = localStorage.getItem('placeIdOrder');
         let placeName = localStorage.getItem('placeNameOrder');
         if (placeId != null) {
-            this.receivedData(this.state.paramBody, this.state.txtStatus, placeId);
+            this.receivedData(null, this.state.txtStatus, placeId, 1, 10);
             this.setState({
                 drbPlaceId: Number(placeId),
                 txtPlaceName: placeName
@@ -60,24 +60,26 @@ class OrdersCMS extends Component {
         var value = target.value;
         this.setState({
             [name]: value,
-            paramBody: {
-                code: value
-            }
         })
 
     }
 
     onSubmitSearch = (e) => {
+        var { txtOrder, txtStatus, drbLimit } = this.state
         e.preventDefault();
-        this.receivedData(this.state.paramBody, this.state.txtStatus);
+        this.setState({
+            currentPage: 1,
+        })
+        this.receivedData(txtOrder, txtStatus, localStorage.getItem('placeIdOrder'), 1, drbLimit);
     }
 
     onChangePlace = (e) => {
         this.setState({
             drbPlaceId: e.value,
-            txtPlaceName: e.label
+            txtPlaceName: e.label,
+            currentPage: 1
         });
-        this.receivedData(this.state.paramBody, this.state.txtStatus, e.value);
+        this.receivedData(null, this.state.txtStatus, e.value, 1, 10);
         localStorage.setItem('placeIdOrder', e.value);
         localStorage.setItem('placeNameOrder', e.label);
     }
@@ -93,12 +95,15 @@ class OrdersCMS extends Component {
         }
         this.setState({
             tabIndex: tabIndex,
-            txtStatus: status
+            currentPage: 1,
+            txtStatus: status,
+            txtOrder: "",
+            drbLimit: 10
         })
-        this.receivedData(this.state.paramBody, status, localStorage.getItem('placeIdOrder'))
+        this.receivedData(null, status, localStorage.getItem('placeIdOrder'), 1, 10)
     }
 
-    receivedData(paramBody, status, placeId) {
+    receivedData(code, status, placeId, page, limit) {
         this.props.showOverlay(LoadType.loading)
         axios.get(URL.API_URL + '/order/searchByStatus',
             {
@@ -107,14 +112,18 @@ class OrdersCMS extends Component {
                 },
                 params: {
                     status: status,
-                    code: paramBody.code,
-                    placeId: placeId
+                    code: code,
+                    placeId: placeId,
+                    page: page,
+                    limit: limit
                 }
             }
         ).then(res => {
             this.props.showOverlay(LoadType.none)
             this.setState({
+                totalPage: res.data.totalPage,
                 searchList: res.data.listResult,
+                totalItems: res.data.totalItems,
                 loaded: true
             })
         }).catch(function (error) {
@@ -124,7 +133,7 @@ class OrdersCMS extends Component {
     }
 
     render() {
-        var { loaded, txtOrderPaid, txtOrderUnpaid, txtOrderSent, searchList, txtPlaceName, drbPlaceId, fetchedPlace } = this.state;
+        var { drbLimit, loaded, txtOrder, searchList, txtPlaceName, drbPlaceId, fetchedPlace, currentPage } = this.state;
         var { places } = this.props
         var optionsPlace = []
         var renderOptPlace = drbPlaceId
@@ -139,6 +148,11 @@ class OrdersCMS extends Component {
             }
             fetchedPlace = true
         }
+        const pageList = []
+        for (let i = 1; i <= this.state.totalPage; i++) {
+            pageList.push(i)
+        }
+
         if (fetchedPlace) {
             if (localStorage.getItem('sendStatus')) {
                 if (localStorage.getItem('sendStatus') === 'OK') {
@@ -149,6 +163,20 @@ class OrdersCMS extends Component {
                 }
                 localStorage.removeItem('sendStatus')
             }
+            const renderPageNumbers = pageList.map(number => {
+                if (number == currentPage) {
+                    return (
+                        <li className="active" disabled >
+                            <a value={number} >{number}</a>
+                        </li>
+                    );
+                } else
+                    return (
+                        <li className='pointer'>
+                            <a value={number} onClick={() => this.handlePageChange(number)}>{number}</a>
+                        </li>
+                    );
+            });
             return (
                 <React.Fragment>
                     <div style={{ marginBottom: '30px' }}>
@@ -162,8 +190,8 @@ class OrdersCMS extends Component {
                                 onChange={this.onChangePlace}
                             />
                         </div>
-                    </div>   
-                    {loaded ?  <Tabs selectedIndex={this.state.tabIndex}
+                    </div>
+                    {loaded ? <Tabs selectedIndex={this.state.tabIndex}
                         onSelect={tabIndex => this.onChangeTab(tabIndex)}>
 
                         <TabList>
@@ -173,20 +201,39 @@ class OrdersCMS extends Component {
                         </TabList>
                         <TabPanel>
                             <Form onSubmit={this.onSubmitSearch} >
-                                <Form.Label id="basic-addon1">Order Code </Form.Label>
-                                <FormControl
-                                    type="text"
-                                    placeholder="Order code"
-                                    name="txtOrderPaid"
-                                    value={txtOrderPaid}
-                                    onChange={this.onChange}
-                                />
-                                <Button
-                                    style={{ marginBottom: '10px', height: '32px' }}
-                                    type="Submit"
-                                    className="btn btn-inverse mb-5">
-                                    Search
-                        </Button>
+                                <Table>
+                                    <tr>
+                                        <th>
+                                            <Form.Label id="basic-addon1">Order Code </Form.Label>
+                                            <FormControl
+                                                type="text"
+                                                placeholder="Order code"
+                                                name="txtOrder"
+                                                value={txtOrder}
+                                                onChange={this.onChange}
+                                            />
+                                            <br />
+                                            <Button
+                                                style={{ marginBottom: '10px', height: '32px' }}
+                                                type="Submit"
+                                                className="btn btn-inverse mb-5">
+                                                Search
+                                            </Button>
+                                        </th>
+                                        <th>
+                                            <Form.Label id="basic-addon1">Show </Form.Label>
+                                            <Form.Control as="select"
+                                                name="drbLimit"
+                                                value={drbLimit}
+                                                onChange={this.onChange}>
+                                                <option key={0} index={0} value={10}>10 / page</option>
+                                                <option key={1} index={1} value={15}>15 / page</option>
+                                                <option key={2} index={2} value={20}>20 / page</option>
+                                            </Form.Control>
+                                        </th>
+                                    </tr>
+                                </Table>
+
                             </Form>
                             <PaidOrderList totalItems={searchList.length}>
                                 {this.showPaid(searchList)}
@@ -194,20 +241,38 @@ class OrdersCMS extends Component {
                         </TabPanel>
                         <TabPanel>
                             <Form onSubmit={this.onSubmitSearch} >
-                                <Form.Label id="basic-addon1">Order Code </Form.Label>
-                                <FormControl
-                                    type="text"
-                                    placeholder="Order code"
-                                    name="txtOrderUnpaid"
-                                    value={txtOrderUnpaid}
-                                    onChange={this.onChange}
-                                />
-                                <Button
-                                    style={{ marginBottom: '10px', height: '32px' }}
-                                    type="Submit"
-                                    className="btn btn-inverse mb-5">
-                                    Search
-                        </Button>
+                                <Table>
+                                    <tr>
+                                        <th>
+                                            <Form.Label id="basic-addon1">Order Code </Form.Label>
+                                            <FormControl
+                                                type="text"
+                                                placeholder="Order code"
+                                                name="txtOrder"
+                                                value={txtOrder}
+                                                onChange={this.onChange}
+                                            />
+                                            <br />
+                                            <Button
+                                                style={{ marginBottom: '10px', height: '32px' }}
+                                                type="Submit"
+                                                className="btn btn-inverse mb-5">
+                                                Search
+                                            </Button>
+                                        </th>
+                                        <th>
+                                            <Form.Label id="basic-addon1">Show </Form.Label>
+                                            <Form.Control as="select"
+                                                name="drbLimit"
+                                                value={drbLimit}
+                                                onChange={this.onChange}>
+                                                <option key={0} index={0} value={10}>10 / page</option>
+                                                <option key={1} index={1} value={15}>15 / page</option>
+                                                <option key={2} index={2} value={20}>20 / page</option>
+                                            </Form.Control>
+                                        </th>
+                                    </tr>
+                                </Table>
                             </Form>
                             <UnpaidOrderList totalItems={searchList.length}>
                                 {this.showUnpaid(searchList)}
@@ -215,32 +280,62 @@ class OrdersCMS extends Component {
                         </TabPanel>
                         <TabPanel>
                             <Form onSubmit={this.onSubmitSearch} >
-                                <Form.Label id="basic-addon1">Order Code </Form.Label>
-                                <FormControl
-                                    type="text"
-                                    placeholder="Order code"
-                                    name="txtOrderSent"
-                                    value={txtOrderSent}
-                                    onChange={this.onChange}
-                                />
-                                <Button
-                                    style={{ marginBottom: '10px', height: '32px' }}
-                                    type="Submit"
-                                    className="btn btn-inverse mb-5">
-                                    Search
-                        </Button>
+                                <Table>
+                                    <tr>
+                                        <th>
+                                            <Form.Label id="basic-addon1">Order Code </Form.Label>
+                                            <FormControl
+                                                type="text"
+                                                placeholder="Order code"
+                                                name="txtOrder"
+                                                value={txtOrder}
+                                                onChange={this.onChange}
+                                            />
+                                            <br />
+                                            <Button
+                                                style={{ marginBottom: '10px', height: '32px' }}
+                                                type="Submit"
+                                                className="btn btn-inverse mb-5">
+                                                Search
+                                            </Button>
+                                        </th>
+                                        <th>
+                                            <Form.Label id="basic-addon1">Show </Form.Label>
+                                            <Form.Control as="select"
+                                                name="drbLimit"
+                                                value={drbLimit}
+                                                onChange={this.onChange}>
+                                                <option key={0} index={0} value={10}>10 / page</option>
+                                                <option key={1} index={1} value={15}>15 / page</option>
+                                                <option key={2} index={2} value={20}>20 / page</option>
+                                            </Form.Control>
+                                        </th>
+                                    </tr>
+                                </Table>
                             </Form>
                             <SentOrderList totalItems={searchList.length}>
                                 {this.showSent(searchList)}
                             </SentOrderList>
+                            
                         </TabPanel>
+                        <div className="dataTables_paginate paging_bootstrap pagination">
+                                <ul>
+                                    {renderPageNumbers}
+                                </ul>
+                            </div>
                     </Tabs>
-                    : ""}           
+                        : ""}
                 </React.Fragment>
 
             );
         } else
             return ""
+    }
+
+    handlePageChange(number) {
+        var { txtOrder, drbPlaceId, drbLimit, txtStatus } = this.state
+        this.receivedData(txtOrder, txtStatus, drbPlaceId, number, drbLimit)
+        this.state.currentPage = number
     }
 
     handleDelete(id) {

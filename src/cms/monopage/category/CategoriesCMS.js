@@ -54,6 +54,9 @@ class CategoriesCMS extends Component {
 
     onSubmitSearch = (e) => {
         e.preventDefault();
+        this.setState({
+            currentPage: 1
+        })
         this.receivedData(this.state.paramBody);
     }
 
@@ -175,7 +178,6 @@ class CategoriesCMS extends Component {
 
     handlePageChange(number) {
         this.setState({
-            activePage: number,
             paramBody: {
                 name: this.state.txtCityName,
                 page: number,

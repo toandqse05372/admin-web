@@ -15,11 +15,11 @@ class OrderItem extends Component {
     }
 
     render() {
-        var { order, index } = this.props;
+        var { order, index, limit, currentPage } = this.props;
         var moneyAdddot = order.totalPayment.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
         return (
             <tr>
-                <td>{index + 1}</td>
+                <td>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{order.orderCode}</td>
                 <td>{formatDate(order.purchaseDay)}</td>
                 <td>{formatDate(order.redemptionDate)}</td>
@@ -27,8 +27,8 @@ class OrderItem extends Component {
 
                 <td className="center">
                     <a className="btn btn-primary" onClick={() => this.onSendTicket(order.id)}> Send ticket </a>
-                    <Link to={`/orders/${order.id}/edit`} className="btn btn-info">
-                        <i className="halflings-icon white edit"></i>
+                    <Link to={`/orders/${order.id}/edit`} className="btn btn-success">
+                        <i className="halflings-icon white search"></i>
                     </Link>
                     <a className="btn btn-danger" onClick={() => this.onDeleteOrder(order.id)}>
                         <i className="halflings-icon white trash" />

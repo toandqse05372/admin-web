@@ -12,6 +12,9 @@ import Select from 'react-select'
 import callApi from '../../../utils/apiCaller';
 import { actUpdateOverlay } from '../../../actions/indexOverlay';
 import * as LoadType from '../../../constants/LoadingType';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import formatDate from '../../../utils/formatDate'
 
 class TicketTypesCMS extends Component {
     constructor(props) {
@@ -26,7 +29,8 @@ class TicketTypesCMS extends Component {
             txtPlaceName: '',
             selectPlace: 0,
             canExcel: true,
-
+            selectDate: new Date(),
+            activeDay: [0, 1],
             paramBody: {
                 typeName: '',
                 page: 1,
@@ -39,7 +43,7 @@ class TicketTypesCMS extends Component {
         let placeId = localStorage.getItem('placeId');
         let placeName = localStorage.getItem('placeName');
         if (placeId != null) {
-            this.receivedData(placeId)
+            this.receivedData(placeId, new Date())
             this.setState({
                 drbPlaceId: Number(placeId),
                 txtPlaceName: placeName
@@ -57,12 +61,12 @@ class TicketTypesCMS extends Component {
             drbPlaceId: e.value,
             txtPlaceName: e.label
         });
-        this.receivedData(e.value);
+        this.receivedData(e.value, this.state.selectDate);
         localStorage.setItem('placeId', e.value);
         localStorage.setItem('placeName', e.label);
     }
 
-    receivedData(placeId) {
+    receivedData(placeId, selectDate) {
         this.props.showOverlay(LoadType.loading)
         this.setState({
             searchList: []
@@ -73,7 +77,8 @@ class TicketTypesCMS extends Component {
                     Authorization: Config.Token
                 },
                 params: {
-                    placeId: placeId
+                    placeId: placeId,
+                    date: formatDate(selectDate)
                 }
             }
         ).then(res => {
@@ -81,7 +86,8 @@ class TicketTypesCMS extends Component {
             this.setState({
                 searchList: res.data.listResult,
                 loaded: true,
-                canExcel: res.data.importExcel
+                canExcel: res.data.importExcel,
+                activeDay: res.data.weekdays
             })
         }).catch(function (error) {
             console.log(error.response);
@@ -98,6 +104,7 @@ class TicketTypesCMS extends Component {
         let dataForm = new FormData();
         dataForm.append('file', e.target.files[0]);
         dataForm.append('placeId', localStorage.getItem("placeId"));
+        dataForm.append('date', formatDate(this.state.selectDate));
         e.target.value = "";
         callApi('upload', 'POST', dataForm).then(res => {
             this.props.showOverlay(LoadType.none)
@@ -114,17 +121,31 @@ class TicketTypesCMS extends Component {
                     window.location.reload();
                     localStorage.setItem('excelResult', error.response.data)
                 }
-            }else{
+            } else {
                 NotificationManager.error('Error  message', 'Something wrong');
             }
             this.props.showOverlay(LoadType.none)
-            
+
         })
+    }
+
+    isWeekday = (Date) => {
+        const { activeDay } = this.state;
+        const day = Date.getDay();
+        var fullList = [0, 1, 2, 3, 4, 5, 6];
+        fullList = fullList.filter(val => !activeDay.includes(val));
+        return day !== fullList[0] && day !== fullList[1] && day !== fullList[2] &&
+            day !== fullList[3] && day !== fullList[4] && day !== fullList[5] && day !== fullList[6]
+    }
+
+    changeDate(date){
+        this.setState({ selectDate: date })
+        this.receivedData(this.state.drbPlaceId, date.getTime())
     }
 
     render() {
         var { places } = this.props;
-        var { drbPlaceId, loaded, txtPlaceName, canExcel } = this.state;
+        var { drbPlaceId, loaded, txtPlaceName, canExcel, selectDate } = this.state;
         var optionsPlace = []
         var renderOptPlace = drbPlaceId
         if (places.length > 0 && !this.state.fetchedPlace) {
@@ -140,10 +161,10 @@ class TicketTypesCMS extends Component {
         if (loaded) {
             if (localStorage.getItem('excelResult')) {
                 const excelResult = localStorage.getItem('excelResult');
-                if(excelResult === "OK"){
+                if (excelResult === "OK") {
                     NotificationManager.success('Success message', 'Added code successful');
                     localStorage.removeItem('excelResult');
-                }else{
+                } else {
                     NotificationManager.error('Error message', localStorage.getItem('excelResult'));
                     localStorage.removeItem('excelResult');
                 }
@@ -163,25 +184,43 @@ class TicketTypesCMS extends Component {
                                 onChange={this.onChangePlace}
                             />
                         </div>
+                        <div className="datePicker">
+                            <div className="myRow">
+                                <h3>Date</h3>
+                            </div>
+
+                            <div className="myRow">
+                            <DatePicker
+                                className="datePicker"
+                                selected={selectDate}
+                                onChange={date => this.changeDate(date)}
+                                filterDate={this.isWeekday}
+                                dateFormat="dd/MM/yyyy"
+                                minDate={new Date()}
+                            />
+                            </div>
+                            
+                        </div>
                     </div>
                     <div style={{ display: drbPlaceId ? "" : "none" }}>
 
                         <Link to={{
                             pathname: "/ticketTypes/add",
-                            state: { placeId: drbPlaceId, placeName: txtPlaceName } }} className="btn btn-primary mb-5 ">
+                            state: { placeId: drbPlaceId, placeName: txtPlaceName }
+                        }} className="btn btn-primary mb-5 ">
                             <i className="glyphicon glyphicon-plus"></i> Add Ticket Type
                         </Link>
 
                         {`\t`}
 
-                        {canExcel ? 
+                        {canExcel ?
                             <button className="btn btn-success mb-5" type="file"
                                 onClick={() => this.onImportExcel()}>
                                 Import code from excel
                                 <input type="file"
                                     id="hiddenFileInput" style={{ display: "none" }}
                                     onChange={this.uploadExcel.bind(this)}
-                                /> 
+                                />
                             </button>
                             : ""}
                         <TicketTypeList>
@@ -218,11 +257,11 @@ class TicketTypesCMS extends Component {
             if (error.response) {
                 if (error.response.data === 'VISITOR_TYPE_IS_BASIC') {
                     NotificationManager.error('Error  message', 'Containing basic visitor type');
-                } 
+                }
                 else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
-            }else{
+            } else {
                 NotificationManager.error('Error  message', 'Something wrong');
             }
         });
@@ -260,9 +299,9 @@ class TicketTypesCMS extends Component {
         var result = null;
         if (ticketTypes.length > 0) {
             result = ticketTypes.map((ticketTypes, index) => {
-                return <TicketTypeItem ticketTypes={ticketTypes} key={index} index={index} 
-                onChangeStatus={this.handleChangeStatus}
-                onDeleteTicketType={this.handleDelete} />
+                return <TicketTypeItem ticketTypes={ticketTypes} key={index} index={index}
+                    onChangeStatus={this.handleChangeStatus}
+                    onDeleteTicketType={this.handleDelete} />
             });
         }
         return result;

@@ -75,6 +75,9 @@ class PlacesCMS extends Component {
 
     onSubmitSearch = (e) => {
         e.preventDefault();
+        this.setState({
+            currentPage: 1
+        })
         this.receivedData(this.state.paramBody);
     }
 
@@ -235,7 +238,6 @@ class PlacesCMS extends Component {
 
     handlePageChange(number) {
         this.setState({
-            activePage: number,
             paramBody: {
                 name: this.state.txtPlaceName,
                 address: this.state.txtAddress,
