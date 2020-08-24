@@ -47,7 +47,8 @@ class PlacesActionCMS extends Component {
             erorOpenDays: '',
             errorCity: '',
             errorMail: '',
-            errorPhoneNumber: ''
+            errorPhoneNumber: '',
+            errorFile: ''
 
         };
         this.onChange = this.onChange.bind(this);
@@ -79,7 +80,6 @@ class PlacesActionCMS extends Component {
                         txtDetailDescription: itemEditing.detailDescription,
                         txtMail: itemEditing.mail,
                         txtPhoneNumber: itemEditing.phoneNumber,
-                        fileImage: itemEditing.placeImageLink,
                         drbCityId: itemEditing.cityId,
                         drbCategory: itemEditing.categoryId,
                         drbWeekDays: itemEditing.weekDays,
@@ -153,6 +153,11 @@ class PlacesActionCMS extends Component {
                 errorMailStr = checkEmail.errorMessage
             }
         }
+        var errorFileStr = ''
+        if (fileImage.length !== 5 && fileImage.length > 0) {
+            hasError = true
+            errorFileStr = "Please choose 5 files"
+        }
         if (!hasError) {
             var place = {
                 id: id,
@@ -188,7 +193,8 @@ class PlacesActionCMS extends Component {
                 errorCategory: catErrorStr,
                 erorOpenDays: wdErrorStr,
                 errorPhoneNumber: errorPhoneNUmberStr,
-                errorMail: errorMailStr
+                errorMail: errorMailStr,
+                errorFile: errorFileStr
             })
             window.scrollTo(0, 0);
         }
@@ -220,7 +226,7 @@ class PlacesActionCMS extends Component {
 
     render() {
         var { drbCityId, drbWeekDays, txtAddress, txtOpenHours, txtPhoneNumber, txtMail, drbCategory, loaded, errorMail, errorPhoneNumber,
-            txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity, txtKey } = this.state;
+            txtName, txtDetailDescription, txtShortDescription, erorOpenDays, errorCategory, errorCity, txtKey, errorFile } = this.state;
         var { cities, categories, match } = this.props
         var renderOptWd = []
         if (this.state.fetched) {
@@ -240,7 +246,7 @@ class PlacesActionCMS extends Component {
         if (loaded) {
             return (
                 <div className="container">
-                    <h1> {match ? 'Update place': 'Add new place'} </h1>
+                    <h1> {match ? 'Update place' : 'Add new place'} </h1>
                     <form onSubmit={this.onSubmit}>
                         <legend>* Please enter full information</legend>
                         <div className="form-group rowElement">
@@ -249,7 +255,7 @@ class PlacesActionCMS extends Component {
                         </div>
                         <div className="form-group rowElement">
                             <label>Place Key </label>
-                            <input style={{ width: 50 }} type="text" className="form-control" value={txtKey} name="txtKey" onChange={this.onChange}/>
+                            <input style={{ width: 50 }} type="text" className="form-control" value={txtKey} name="txtKey" onChange={this.onChange} />
                         </div>
                         <div className="myDiv">
                             <label>Category *</label>
@@ -320,13 +326,16 @@ class PlacesActionCMS extends Component {
                         </div>
 
                         <div className="form-group">
-                            <label>Choose image file </label>
-                            <FormControl id="formControlsFile"
-                                type="file"
-                                multiple
-                                label="File"
-                                name="fileImage"
-                                onChange={this.onChange} />
+                            <div className="rowElement">
+                                <label>Choose image file</label>
+                                <FormControl id="formControlsFile"
+                                    type="file"
+                                    multiple
+                                    label="File"
+                                    name="fileImage"
+                                    onChange={this.onChange} />
+                            </div>
+                            <span className="rowElement"><h4 style={{ color: 'red' }}>{errorFile}</h4></span>
                         </div>
                         <br />
                         <Link to="/places" className="btn btn-danger mr-5">

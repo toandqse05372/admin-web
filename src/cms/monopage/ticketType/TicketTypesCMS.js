@@ -101,32 +101,37 @@ class TicketTypesCMS extends Component {
 
     uploadExcel = (e) => {
         this.props.showOverlay(LoadType.importing)
-        let dataForm = new FormData();
-        dataForm.append('file', e.target.files[0]);
-        dataForm.append('placeId', localStorage.getItem("placeId"));
-        dataForm.append('date', formatDate(this.state.selectDate));
-        e.target.value = "";
-        callApi('upload', 'POST', dataForm).then(res => {
+        var day = this.state.selectDate.getDay()
+        if (!this.state.activeDay.includes(day)) {
             this.props.showOverlay(LoadType.none)
-            localStorage.setItem('excelResult', "OK");
-            window.location.reload()
-        }).catch(error => {
-            if (error.response) {
-                if (error.response.data === 'NOT_EXCEL_FILE') {
-                    NotificationManager.error('Error  message', 'This is not excel file');
-                } else if (error.response.data === 'COULD_NOT_UPLOAD_FILE') {
-                    NotificationManager.error('Error  message', 'Could not import file');
+            NotificationManager.error('Error  message', 'Cannot add ticket for this day');
+        } else {
+            let dataForm = new FormData();
+            dataForm.append('file', e.target.files[0]);
+            dataForm.append('placeId', localStorage.getItem("placeId"));
+            dataForm.append('date', formatDate(this.state.selectDate));
+            e.target.value = "";
+            callApi('upload', 'POST', dataForm).then(res => {
+                this.props.showOverlay(LoadType.none)
+                localStorage.setItem('excelResult', "OK");
+                window.location.reload()
+            }).catch(error => {
+                if (error.response) {
+                    if (error.response.data === 'NOT_EXCEL_FILE') {
+                        NotificationManager.error('Error  message', 'This is not excel file');
+                    } else if (error.response.data === 'COULD_NOT_UPLOAD_FILE') {
+                        NotificationManager.error('Error  message', 'Could not import file');
+                    }
+                    else {
+                        window.location.reload();
+                        localStorage.setItem('excelResult', error.response.data)
+                    }
+                } else {
+                    NotificationManager.error('Error  message', 'Something wrong');
                 }
-                else {
-                    window.location.reload();
-                    localStorage.setItem('excelResult', error.response.data)
-                }
-            } else {
-                NotificationManager.error('Error  message', 'Something wrong');
-            }
-            this.props.showOverlay(LoadType.none)
-
-        })
+                this.props.showOverlay(LoadType.none)
+            })
+        }
     }
 
     isWeekday = (Date) => {
@@ -138,7 +143,7 @@ class TicketTypesCMS extends Component {
             day !== fullList[3] && day !== fullList[4] && day !== fullList[5] && day !== fullList[6]
     }
 
-    changeDate(date){
+    changeDate(date) {
         this.setState({ selectDate: date })
         this.receivedData(this.state.drbPlaceId, date.getTime())
     }
@@ -190,16 +195,16 @@ class TicketTypesCMS extends Component {
                             </div>
 
                             <div className="myRow">
-                            <DatePicker
-                                className="datePicker"
-                                selected={selectDate}
-                                onChange={date => this.changeDate(date)}
-                                filterDate={this.isWeekday}
-                                dateFormat="dd/MM/yyyy"
-                                minDate={new Date()}
-                            />
+                                <DatePicker
+                                    className="datePicker"
+                                    selected={selectDate}
+                                    onChange={date => this.changeDate(date)}
+                                    filterDate={this.isWeekday}
+                                    dateFormat="dd/MM/yyyy"
+                                    minDate={new Date()}
+                                />
                             </div>
-                            
+
                         </div>
                     </div>
                     <div style={{ display: drbPlaceId ? "" : "none" }}>
