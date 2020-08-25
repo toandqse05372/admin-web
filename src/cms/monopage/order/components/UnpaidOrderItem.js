@@ -15,11 +15,11 @@ class OrderItem extends Component {
     }
 
     render() {
-        var { order, index } = this.props;
+        var { order, index, limit, currentPage } = this.props;
         var moneyAdddot = order.totalPayment.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
         return (
             <tr>
-                <td>{index + 1}</td>
+                <td>{(currentPage - 1)*limit + index + 1}</td>
                 <td>{order.orderCode}</td>
                 <td>{formatDate(order.purchaseDay)}</td>
                 <td>{formatDate(order.redemptionDate)}</td>

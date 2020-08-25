@@ -37,7 +37,7 @@ const cmsMenus = [
         name: 'Ticket Manager',
         to: '/ticketTypes',
         exact: true,
-        role: ["ADMIN"]
+        role: ["ADMIN","STAFF"]
     },
     // {
     //     name: 'Payment Methods',

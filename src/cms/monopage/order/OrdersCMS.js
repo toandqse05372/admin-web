@@ -69,6 +69,7 @@ class OrdersCMS extends Component {
         e.preventDefault();
         this.setState({
             currentPage: 1,
+            activePage: 1
         })
         this.receivedData(txtOrder, txtStatus, localStorage.getItem('placeIdOrder'), 1, drbLimit);
     }
@@ -77,7 +78,8 @@ class OrdersCMS extends Component {
         this.setState({
             drbPlaceId: e.value,
             txtPlaceName: e.label,
-            currentPage: 1
+            currentPage: 1,
+            activePage: 1
         });
         this.receivedData(null, this.state.txtStatus, e.value, 1, 10);
         localStorage.setItem('placeIdOrder', e.value);
@@ -98,7 +100,8 @@ class OrdersCMS extends Component {
             currentPage: 1,
             txtStatus: status,
             txtOrder: "",
-            drbLimit: 10
+            drbLimit: 10,
+            activePage: 1
         })
         this.receivedData(null, status, localStorage.getItem('placeIdOrder'), 1, 10)
     }
@@ -340,11 +343,17 @@ class OrdersCMS extends Component {
 
     handleDelete(id) {
         this.props.showOverlay(LoadType.deleting)
-        const { searchList } = this.state;
+        const { searchList, txtOrder, currentPage, txtStatus } = this.state;
         callApi(`order/${id}`, 'DELETE', null).then(res => {
             this.props.showOverlay(LoadType.none)
             NotificationManager.success('Success message', 'Delete orrder successful');
             const items = searchList.filter(item => item.id !== id)
+            if(items.length == 0 && currentPage != 1){
+                this.receivedData(txtOrder, txtStatus, localStorage.getItem('placeIdOrder'), currentPage - 1, 10)
+                this.setState({
+                    currentPage: currentPage - 1
+                })
+            }
             this.setState({
                 searchList: items
             })
