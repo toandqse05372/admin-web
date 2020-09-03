@@ -257,6 +257,7 @@ class PlacesCMS extends Component {
         const { searchList } = this.state;
         callApi(`place/${itemId}`, 'DELETE', null).then(res => {
             const items = searchList.filter(item => item.id !== itemId)
+            this.props.showOverlay(LoadType.none)
             if (items.length == 0) {
                 localStorage.setItem('deleteResult', 'OK');
                 window.location.reload()

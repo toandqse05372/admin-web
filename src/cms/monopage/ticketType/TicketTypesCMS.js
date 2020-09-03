@@ -114,7 +114,8 @@ class TicketTypesCMS extends Component {
             callApi('upload', 'POST', dataForm).then(res => {
                 this.props.showOverlay(LoadType.none)
                 localStorage.setItem('excelResult', "OK");
-                window.location.reload()
+                this.receivedData(this.state.drbPlaceId, this.state.selectDate)
+                NotificationManager.success('Success message', 'Added code successful');
             }).catch(error => {
                 if (error.response) {
                     if (error.response.data === 'NOT_EXCEL_FILE') {
@@ -123,12 +124,12 @@ class TicketTypesCMS extends Component {
                         NotificationManager.error('Error  message', 'Could not import file');
                     }
                     else {
-                        window.location.reload();
-                        localStorage.setItem('excelResult', error.response.data)
+                        NotificationManager.error('Error message', error.response.data);
                     }
                 } else {
                     NotificationManager.error('Error  message', 'Something wrong');
                 }
+                this.receivedData(this.state.drbPlaceId, this.state.selectDate)
                 this.props.showOverlay(LoadType.none)
             })
         }
@@ -164,16 +165,6 @@ class TicketTypesCMS extends Component {
             loaded = true
         }
         if (loaded) {
-            if (localStorage.getItem('excelResult')) {
-                const excelResult = localStorage.getItem('excelResult');
-                if (excelResult === "OK") {
-                    NotificationManager.success('Success message', 'Added code successful');
-                    localStorage.removeItem('excelResult');
-                } else {
-                    NotificationManager.error('Error message', localStorage.getItem('excelResult'));
-                    localStorage.removeItem('excelResult');
-                }
-            }
             if (localStorage.getItem('markType') === "OK") {
                 NotificationManager.success('Success message', 'Marked successfully');
                 localStorage.removeItem('markType');
